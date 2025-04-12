@@ -8,7 +8,16 @@
     <div class="container">
         <h1>About This App</h1>
         <p>This is a simple Flask application that demonstrates how to use aider to create web apps.</p>
-        <a href="{{ url_for('home') }}">Home</a>
+        
+        <div class="navigation">
+            <a href="{{ url_for('home') }}">Home</a>
+            {% if session.get('logged_in') %}
+                <span>Welcome, {{ session.get('username') }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

@@ -7,8 +7,28 @@
 <body>
     <div class="container">
         <h1>Welcome to My Flask App</h1>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
         <p>This is a simple Flask application created with aider.</p>
-        <a href="{{ url_for('about') }}">About</a>
+        
+        <div class="navigation">
+            <a href="{{ url_for('about') }}">About</a>
+            {% if session.get('logged_in') %}
+                <span>Welcome, {{ session.get('username') }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

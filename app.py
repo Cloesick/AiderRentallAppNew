@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import webbrowser
 import threading
 import time
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)  # For session management
 
 @app.route('/')
 def home():
@@ -12,6 +14,31 @@ def home():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # This is a simple example - in a real app, you'd check against a database
+        # and use proper password hashing
+        if username == 'admin' and password == 'password':
+            session['logged_in'] = True
+            session['username'] = username
+            flash('You were successfully logged in')
+            return redirect(url_for('home'))
+        else:
+            flash('Invalid credentials')
+    
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    session.pop('username', None)
+    flash('You were logged out')
+    return redirect(url_for('home'))
 
 def open_browser():
     """Open browser after a short delay"""
