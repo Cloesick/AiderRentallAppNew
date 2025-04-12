@@ -40,6 +40,22 @@ def logout():
     flash('You were logged out')
     return redirect(url_for('home'))
 
+@app.route('/rentals')
+def rentals():
+    return render_template('rentals.html')
+
+@app.route('/purchase')
+def purchase():
+    return render_template('purchase.html')
+
+@app.route('/leasing')
+def leasing():
+    return render_template('leasing.html')
+
+@app.route('/visiting')
+def visiting():
+    return render_template('visiting.html')
+
 def open_browser():
     """Open browser after a short delay"""
     time.sleep(1)

@@ -11,6 +11,10 @@
         
         <div class="navigation">
             <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('rentals') }}">Rentals</a>
+            <a href="{{ url_for('purchase') }}">Purchase</a>
+            <a href="{{ url_for('leasing') }}">Leasing</a>
+            <a href="{{ url_for('visiting') }}">Schedule a Visit</a>
             {% if session.get('logged_in') %}
                 <span>Welcome, {{ session.get('username') }}!</span>
                 <a href="{{ url_for('logout') }}">Logout</a>

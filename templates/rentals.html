@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rentals - Real Estate App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/real-estate.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Available Rental Properties</h1>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
+        <div class="calendar-container">
+            <h2>Schedule a Viewing</h2>
+            <form method="POST" action="#">
+                <div class="form-group">
+                    <label for="viewing-date">Select Date:</label>
+                    <input type="date" id="viewing-date" name="viewing-date" class="date-picker" required>
+                </div>
+                <div class="form-group">
+                    <label for="viewing-time">Select Time:</label>
+                    <input type="time" id="viewing-time" name="viewing-time" class="date-picker" required>
+                </div>
+                <button type="submit" class="submit-button">Schedule Viewing</button>
+            </form>
+        </div>
+        
+        <div class="property-list">
+            <div class="property-card">
+                <img src="https://via.placeholder.com/300x200" alt="Luxury Apartment">
+                <h3>Luxury Downtown Apartment</h3>
+                <p>2 bed, 2 bath, 1,200 sq ft</p>
+                <p>Modern apartment with stunning city views, granite countertops, and hardwood floors.</p>
+                <p class="price">$2,500/month</p>
+            </div>
+            
+            <div class="property-card">
+                <img src="https://via.placeholder.com/300x200" alt="Suburban Home">
+                <h3>Spacious Suburban Home</h3>
+                <p>4 bed, 3 bath, 2,500 sq ft</p>
+                <p>Family home with large backyard, updated kitchen, and two-car garage.</p>
+                <p class="price">$3,200/month</p>
+            </div>
+            
+            <div class="property-card">
+                <img src="https://via.placeholder.com/300x200" alt="Studio Apartment">
+                <h3>Cozy Studio Apartment</h3>
+                <p>Studio, 1 bath, 550 sq ft</p>
+                <p>Perfect starter apartment with modern amenities and great location.</p>
+                <p class="price">$1,100/month</p>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('purchase') }}">Purchase</a>
+            <a href="{{ url_for('leasing') }}">Leasing</a>
+            <a href="{{ url_for('visiting') }}">Schedule a Visit</a>
+        </div>
+    </div>
+</body>
+</html>

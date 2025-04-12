@@ -18,7 +18,17 @@
           {% endif %}
         {% endwith %}
         
-        <p>This is a simple Flask application created with aider.</p>
+        <p>This is a simple real estate application to help you find your dream property.</p>
+        
+        <div class="real-estate-options">
+            <h2>Explore Our Services</h2>
+            <div class="button-container">
+                <a href="{{ url_for('rentals') }}" class="option-button">Rentals</a>
+                <a href="{{ url_for('purchase') }}" class="option-button">Purchase</a>
+                <a href="{{ url_for('leasing') }}" class="option-button">Leasing</a>
+                <a href="{{ url_for('visiting') }}" class="option-button">Schedule a Visit</a>
+            </div>
+        </div>
         
         <div class="navigation">
             <a href="{{ url_for('about') }}">About</a>
