@@ -43,7 +43,8 @@ def logout():
 def open_browser():
     """Open browser after a short delay"""
     time.sleep(1)
-    webbrowser.open('http://localhost:5000/')
+    # Use the default browser without specifying a command
+    webbrowser.open('http://localhost:5000/', new=2)
 
 if __name__ == '__main__':
     # Start a thread to open the browser

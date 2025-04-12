@@ -3,10 +3,12 @@
 <head>
     <title>Login - My Flask App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>Login</h1>
+        <div class="login-container">
         
         {% with messages = get_flashed_messages() %}
           {% if messages %}
@@ -31,6 +33,7 @@
         </form>
         
         <p><a href="{{ url_for('home') }}">Back to Home</a></p>
+        </div>
     </div>
 </body>
 </html>
