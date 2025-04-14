@@ -110,54 +110,44 @@
         
         <!-- Main Content with Property Listings -->
         <div class="main-content">
-            <div class="property-list">
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Luxury Home">
-                    <h3>Luxury Waterfront Estate</h3>
-                    <p>5 bed, 4.5 bath, 4,500 sq ft</p>
-                    <p>Stunning waterfront property with private dock, gourmet kitchen, and home theater.</p>
-                    <p class="price">$1,250,000</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Townhouse">
-                    <h3>Modern Townhouse</h3>
-                    <p>3 bed, 2.5 bath, 1,800 sq ft</p>
-                    <p>Contemporary townhouse with rooftop terrace, open floor plan, and smart home features.</p>
-                    <p class="price">$450,000</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Condo">
-                    <h3>Downtown Luxury Condo</h3>
-                    <p>2 bed, 2 bath, 1,200 sq ft</p>
-                    <p>High-rise condo with floor-to-ceiling windows, concierge service, and fitness center.</p>
-                    <p class="price">$650,000</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Single Family Home">
-                    <h3>Charming Single Family Home</h3>
-                    <p>4 bed, 3 bath, 2,200 sq ft</p>
-                    <p>Beautiful home in a quiet neighborhood with updated kitchen, hardwood floors, and large backyard.</p>
-                    <p class="price">$525,000</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Mountain Cabin">
-                    <h3>Mountain Retreat Cabin</h3>
-                    <p>3 bed, 2 bath, 1,500 sq ft</p>
-                    <p>Cozy cabin with stunning mountain views, stone fireplace, and wraparound deck.</p>
-                    <p class="price">$375,000</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Beachfront Property">
-                    <h3>Beachfront Paradise</h3>
-                    <p>4 bed, 3.5 bath, 3,200 sq ft</p>
-                    <p>Spectacular beachfront property with panoramic ocean views, private beach access, and luxury finishes.</p>
-                    <p class="price">$1,850,000</p>
-                </div>
+            <div class="property-list" id="purchase-properties">
+                <!-- Properties will be loaded dynamically -->
+                {% set properties = load_properties('purchase') %}
+                {% if properties %}
+                    {% for property in properties %}
+                        <div class="property-card">
+                            <img src="https://via.placeholder.com/300x200" alt="{{ property.name }}">
+                            <h3>{{ property.name }}</h3>
+                            <p>{{ property.bedrooms }} bed, {{ property.bathrooms }} bath, {{ property.squareMeters }} sq m</p>
+                            <p>{{ property.description }}</p>
+                            <p class="price">{{ property.price }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="property-card">
+                        <img src="https://via.placeholder.com/300x200" alt="Luxury Home">
+                        <h3>Luxury Waterfront Estate</h3>
+                        <p>5 bed, 4.5 bath, 4,500 sq ft</p>
+                        <p>Stunning waterfront property with private dock, gourmet kitchen, and home theater.</p>
+                        <p class="price">$1,250,000</p>
+                    </div>
+                    
+                    <div class="property-card">
+                        <img src="https://via.placeholder.com/300x200" alt="Townhouse">
+                        <h3>Modern Townhouse</h3>
+                        <p>3 bed, 2.5 bath, 1,800 sq ft</p>
+                        <p>Contemporary townhouse with rooftop terrace, open floor plan, and smart home features.</p>
+                        <p class="price">$450,000</p>
+                    </div>
+                    
+                    <div class="property-card">
+                        <img src="https://via.placeholder.com/300x200" alt="Condo">
+                        <h3>Downtown Luxury Condo</h3>
+                        <p>2 bed, 2 bath, 1,200 sq ft</p>
+                        <p>High-rise condo with floor-to-ceiling windows, concierge service, and fitness center.</p>
+                        <p class="price">$650,000</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -1,0 +1,779 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Properties - Real Estate App{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-panel {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .tab-container {
+        margin-bottom: 20px;
+    }
+    
+    .tab-buttons {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
+    }
+    
+    .tab-button {
+        padding: 10px 20px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        font-weight: bold;
+        color: #666;
+    }
+    
+    .tab-button.active {
+        border-bottom-color: #4CAF50;
+        color: #4CAF50;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+    }
+    
+    .property-form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .form-section {
+        grid-column: span 2;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .form-section h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group.full-width {
+        grid-column: span 2;
+    }
+    
+    .checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+    }
+    
+    .checkbox-item input {
+        margin-right: 5px;
+    }
+    
+    .property-list-container {
+        margin-top: 30px;
+    }
+    
+    .property-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .property-table th, 
+    .property-table td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .property-table th {
+        background-color: #f5f5f5;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+    }
+    
+    .edit-button, .delete-button {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .edit-button {
+        background-color: #2196F3;
+        color: white;
+    }
+    
+    .delete-button {
+        background-color: #f44336;
+        color: white;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 400px;
+        max-width: 90%;
+    }
+    
+    .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab functionality
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            this.classList.add('active');
+            const tabId = this.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+            
+            // Load properties for the selected category
+            loadProperties(tabId.replace('-tab', ''));
+        });
+    });
+    
+    // Initialize first tab
+    if (tabButtons.length > 0) {
+        tabButtons[0].click();
+    }
+    
+    // Form submission
+    const propertyForms = document.querySelectorAll('.property-form');
+    propertyForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const category = this.getAttribute('data-category');
+            submitPropertyForm(this, category);
+        });
+    });
+    
+    // Delete confirmation modal
+    const deleteModal = document.getElementById('delete-modal');
+    const confirmDeleteBtn = document.getElementById('confirm-delete');
+    const cancelDeleteBtn = document.getElementById('cancel-delete');
+    
+    cancelDeleteBtn.addEventListener('click', function() {
+        deleteModal.style.display = 'none';
+    });
+    
+    confirmDeleteBtn.addEventListener('click', function() {
+        const propertyId = this.getAttribute('data-id');
+        const category = this.getAttribute('data-category');
+        deleteProperty(propertyId, category);
+    });
+});
+
+// Load properties for a category
+function loadProperties(category) {
+    fetch(`/api/properties/${category}`)
+        .then(response => response.json())
+        .then(properties => {
+            displayProperties(properties, category);
+        })
+        .catch(error => {
+            console.error('Error loading properties:', error);
+        });
+}
+
+// Display properties in the table
+function displayProperties(properties, category) {
+    const tableBody = document.querySelector(`#${category}-table tbody`);
+    tableBody.innerHTML = '';
+    
+    if (properties.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td colspan="5">No properties found</td>`;
+        tableBody.appendChild(row);
+        return;
+    }
+    
+    properties.forEach(property => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${property.name}</td>
+            <td>${property.address}</td>
+            <td>${property.bedrooms} bed, ${property.bathrooms} bath</td>
+            <td>${property.price}</td>
+            <td class="action-buttons">
+                <button class="edit-button" onclick="editProperty('${property.id}', '${category}')">Edit</button>
+                <button class="delete-button" onclick="showDeleteModal('${property.id}', '${category}')">Delete</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Submit property form
+function submitPropertyForm(form, category) {
+    // Gather form data
+    const formData = new FormData(form);
+    const propertyData = {
+        name: formData.get('name'),
+        address: formData.get('address'),
+        description: formData.get('description'),
+        price: formData.get('price'),
+        squareMeters: formData.get('square-meters'),
+        bedrooms: formData.get('bedrooms'),
+        bathrooms: formData.get('bathrooms'),
+        kitchens: formData.get('kitchens'),
+        beds: formData.get('beds'),
+        amenities: {}
+    };
+    
+    // Get all checkboxes
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        propertyData.amenities[checkbox.name] = checkbox.checked;
+    });
+    
+    // Send data to server
+    fetch(`/api/properties/${category}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(propertyData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Reset form and reload properties
+            form.reset();
+            loadProperties(category);
+            alert('Property added successfully!');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error adding property:', error);
+        alert('An error occurred while adding the property.');
+    });
+}
+
+// Show delete confirmation modal
+function showDeleteModal(propertyId, category) {
+    const modal = document.getElementById('delete-modal');
+    const confirmBtn = document.getElementById('confirm-delete');
+    
+    confirmBtn.setAttribute('data-id', propertyId);
+    confirmBtn.setAttribute('data-category', category);
+    
+    modal.style.display = 'flex';
+}
+
+// Delete property
+function deleteProperty(propertyId, category) {
+    fetch(`/api/properties/${category}/${propertyId}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Hide modal and reload properties
+            document.getElementById('delete-modal').style.display = 'none';
+            loadProperties(category);
+            alert('Property deleted successfully!');
+        } else {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error deleting property:', error);
+        alert('An error occurred while deleting the property.');
+    });
+}
+
+// Edit property (load data into form)
+function editProperty(propertyId, category) {
+    // This would be implemented to load property data into the form for editing
+    alert('Edit functionality would be implemented here for property ID: ' + propertyId);
+}
+</script>
+{% endblock %}
+
+{% block content %}
+    <h1>Manage Properties</h1>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    
+    <div class="admin-panel">
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button" data-tab="rentals-tab">Rental Properties</button>
+                <button class="tab-button" data-tab="purchase-tab">Purchase Properties</button>
+                <button class="tab-button" data-tab="leasing-tab">Leasing Properties</button>
+                <button class="tab-button" data-tab="visiting-tab">Visiting Properties</button>
+            </div>
+            
+            <!-- Rentals Tab -->
+            <div id="rentals-tab" class="tab-content">
+                <h2>Add New Rental Property</h2>
+                <form class="property-form" data-category="rentals">
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+                        <div class="form-group">
+                            <label for="rentals-name">Property Name:</label>
+                            <input type="text" id="rentals-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rentals-address">Address:</label>
+                            <input type="text" id="rentals-address" name="address" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="rentals-description">Description:</label>
+                            <textarea id="rentals-description" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="rentals-price">Monthly Rent:</label>
+                            <input type="text" id="rentals-price" name="price" required placeholder="e.g. $1,500/month">
+                        </div>
+                        <div class="form-group">
+                            <label for="rentals-square-meters">Square Meters:</label>
+                            <input type="number" id="rentals-square-meters" name="square-meters" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Property Details</h3>
+                        <div class="form-group">
+                            <label for="rentals-bedrooms">Bedrooms:</label>
+                            <input type="number" id="rentals-bedrooms" name="bedrooms" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="rentals-bathrooms">Bathrooms:</label>
+                            <input type="number" id="rentals-bathrooms" name="bathrooms" required min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="rentals-kitchens">Kitchens:</label>
+                            <input type="number" id="rentals-kitchens" name="kitchens" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="rentals-beds">Beds:</label>
+                            <input type="number" id="rentals-beds" name="beds" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Amenities</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-parking" name="parking">
+                                <label for="rentals-parking">Parking</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-wifi" name="wifi">
+                                <label for="rentals-wifi">WiFi</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-laundry" name="laundry">
+                                <label for="rentals-laundry">Laundry Machine</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-tv" name="tv">
+                                <label for="rentals-tv">Television</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-hdmi" name="hdmi">
+                                <label for="rentals-hdmi">HDMI Connection</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-terrace" name="terrace">
+                                <label for="rentals-terrace">Terrace</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-barbecue" name="barbecue">
+                                <label for="rentals-barbecue">Barbecue</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-oven" name="oven">
+                                <label for="rentals-oven">Oven</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-microwave" name="microwave">
+                                <label for="rentals-microwave">Microwave</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-freezer" name="freezer">
+                                <label for="rentals-freezer">Freezer</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="rentals-fridge" name="fridge">
+                                <label for="rentals-fridge">Refrigerator</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <button type="submit" class="submit-button">Add Rental Property</button>
+                    </div>
+                </form>
+                
+                <div class="property-list-container">
+                    <h2>Existing Rental Properties</h2>
+                    <table id="rentals-table" class="property-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Details</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Properties will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Purchase Tab -->
+            <div id="purchase-tab" class="tab-content">
+                <h2>Add New Purchase Property</h2>
+                <form class="property-form" data-category="purchase">
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+                        <div class="form-group">
+                            <label for="purchase-name">Property Name:</label>
+                            <input type="text" id="purchase-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchase-address">Address:</label>
+                            <input type="text" id="purchase-address" name="address" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="purchase-description">Description:</label>
+                            <textarea id="purchase-description" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="purchase-price">Price:</label>
+                            <input type="text" id="purchase-price" name="price" required placeholder="e.g. $450,000">
+                        </div>
+                        <div class="form-group">
+                            <label for="purchase-square-meters">Square Meters:</label>
+                            <input type="number" id="purchase-square-meters" name="square-meters" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Property Details</h3>
+                        <div class="form-group">
+                            <label for="purchase-bedrooms">Bedrooms:</label>
+                            <input type="number" id="purchase-bedrooms" name="bedrooms" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="purchase-bathrooms">Bathrooms:</label>
+                            <input type="number" id="purchase-bathrooms" name="bathrooms" required min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="purchase-kitchens">Kitchens:</label>
+                            <input type="number" id="purchase-kitchens" name="kitchens" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Amenities</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="purchase-parking" name="parking">
+                                <label for="purchase-parking">Parking</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="purchase-terrace" name="terrace">
+                                <label for="purchase-terrace">Terrace</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="purchase-barbecue" name="barbecue">
+                                <label for="purchase-barbecue">Barbecue</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="purchase-oven" name="oven">
+                                <label for="purchase-oven">Oven</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="purchase-microwave" name="microwave">
+                                <label for="purchase-microwave">Microwave</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="purchase-freezer" name="freezer">
+                                <label for="purchase-freezer">Freezer</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="purchase-fridge" name="fridge">
+                                <label for="purchase-fridge">Refrigerator</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <button type="submit" class="submit-button">Add Purchase Property</button>
+                    </div>
+                </form>
+                
+                <div class="property-list-container">
+                    <h2>Existing Purchase Properties</h2>
+                    <table id="purchase-table" class="property-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Details</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Properties will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Leasing Tab -->
+            <div id="leasing-tab" class="tab-content">
+                <h2>Add New Leasing Property</h2>
+                <form class="property-form" data-category="leasing">
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+                        <div class="form-group">
+                            <label for="leasing-name">Property Name:</label>
+                            <input type="text" id="leasing-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="leasing-address">Address:</label>
+                            <input type="text" id="leasing-address" name="address" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="leasing-description">Description:</label>
+                            <textarea id="leasing-description" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="leasing-price">Lease Price:</label>
+                            <input type="text" id="leasing-price" name="price" required placeholder="e.g. $2,000/month">
+                        </div>
+                        <div class="form-group">
+                            <label for="leasing-square-meters">Square Meters:</label>
+                            <input type="number" id="leasing-square-meters" name="square-meters" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Property Details</h3>
+                        <div class="form-group">
+                            <label for="leasing-bedrooms">Bedrooms:</label>
+                            <input type="number" id="leasing-bedrooms" name="bedrooms" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="leasing-bathrooms">Bathrooms:</label>
+                            <input type="number" id="leasing-bathrooms" name="bathrooms" required min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="leasing-kitchens">Kitchens:</label>
+                            <input type="number" id="leasing-kitchens" name="kitchens" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Amenities</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="leasing-parking" name="parking">
+                                <label for="leasing-parking">Parking</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="leasing-wifi" name="wifi">
+                                <label for="leasing-wifi">WiFi</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="leasing-terrace" name="terrace">
+                                <label for="leasing-terrace">Terrace</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="leasing-barbecue" name="barbecue">
+                                <label for="leasing-barbecue">Barbecue</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <button type="submit" class="submit-button">Add Leasing Property</button>
+                    </div>
+                </form>
+                
+                <div class="property-list-container">
+                    <h2>Existing Leasing Properties</h2>
+                    <table id="leasing-table" class="property-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Details</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Properties will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Visiting Tab -->
+            <div id="visiting-tab" class="tab-content">
+                <h2>Add New Visiting Property</h2>
+                <form class="property-form" data-category="visiting">
+                    <div class="form-section">
+                        <h3>Basic Information</h3>
+                        <div class="form-group">
+                            <label for="visiting-name">Property Name:</label>
+                            <input type="text" id="visiting-name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="visiting-address">Address:</label>
+                            <input type="text" id="visiting-address" name="address" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="visiting-description">Description:</label>
+                            <textarea id="visiting-description" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="visiting-price">Visiting Fee:</label>
+                            <input type="text" id="visiting-price" name="price" required placeholder="e.g. $50 per visit">
+                        </div>
+                        <div class="form-group">
+                            <label for="visiting-square-meters">Square Meters:</label>
+                            <input type="number" id="visiting-square-meters" name="square-meters" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Property Details</h3>
+                        <div class="form-group">
+                            <label for="visiting-bedrooms">Bedrooms:</label>
+                            <input type="number" id="visiting-bedrooms" name="bedrooms" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="visiting-bathrooms">Bathrooms:</label>
+                            <input type="number" id="visiting-bathrooms" name="bathrooms" required min="0" step="0.5">
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Amenities</h3>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="visiting-parking" name="parking">
+                                <label for="visiting-parking">Parking</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="visiting-wifi" name="wifi">
+                                <label for="visiting-wifi">WiFi</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="visiting-guided-tour" name="guided-tour">
+                                <label for="visiting-guided-tour">Guided Tour</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="visiting-virtual-tour" name="virtual-tour">
+                                <label for="visiting-virtual-tour">Virtual Tour</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <button type="submit" class="submit-button">Add Visiting Property</button>
+                    </div>
+                </form>
+                
+                <div class="property-list-container">
+                    <h2>Existing Visiting Properties</h2>
+                    <table id="visiting-table" class="property-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Details</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Properties will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete this property? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="cancel-delete" class="submit-button filter-reset">Cancel</button>
+                <button id="confirm-delete" class="submit-button">Delete</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

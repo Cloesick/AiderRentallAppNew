@@ -116,36 +116,35 @@
         <!-- Main Content with Available Properties -->
         <div class="main-content">
             <h2>Available Properties for Viewing</h2>
-            <div class="property-list">
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Featured Property">
-                    <h3>Featured Property Tours</h3>
-                    <p>We offer guided tours of our featured properties with our experienced agents.</p>
-                    <button class="submit-button">Request Tour</button>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Virtual Tours">
-                    <h3>Virtual Tours Available</h3>
-                    <p>Can't visit in person? Ask about our virtual tour options for remote viewing.</p>
-                    <button class="submit-button">Request Virtual Tour</button>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Luxury Home">
-                    <h3>Luxury Waterfront Estate</h3>
-                    <p>5 bed, 4.5 bath, 4,500 sq ft</p>
-                    <p>Stunning waterfront property with private dock, gourmet kitchen, and home theater.</p>
-                    <button class="submit-button">Schedule Viewing</button>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Downtown Apartment">
-                    <h3>Downtown Luxury Apartment</h3>
-                    <p>2 bed, 2 bath, 1,200 sq ft</p>
-                    <p>Modern apartment with stunning city views, granite countertops, and hardwood floors.</p>
-                    <button class="submit-button">Schedule Viewing</button>
-                </div>
+            <div class="property-list" id="visiting-properties">
+                <!-- Properties will be loaded dynamically -->
+                {% set properties = load_properties('visiting') %}
+                {% if properties %}
+                    {% for property in properties %}
+                        <div class="property-card">
+                            <img src="https://via.placeholder.com/300x200" alt="{{ property.name }}">
+                            <h3>{{ property.name }}</h3>
+                            <p>{{ property.bedrooms }} bed, {{ property.bathrooms }} bath, {{ property.squareMeters }} sq m</p>
+                            <p>{{ property.description }}</p>
+                            <p class="price">{{ property.price }}</p>
+                            <button class="submit-button">Schedule Viewing</button>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="property-card">
+                        <img src="https://via.placeholder.com/300x200" alt="Featured Property">
+                        <h3>Featured Property Tours</h3>
+                        <p>We offer guided tours of our featured properties with our experienced agents.</p>
+                        <button class="submit-button">Request Tour</button>
+                    </div>
+                    
+                    <div class="property-card">
+                        <img src="https://via.placeholder.com/300x200" alt="Virtual Tours">
+                        <h3>Virtual Tours Available</h3>
+                        <p>Can't visit in person? Ask about our virtual tour options for remote viewing.</p>
+                        <button class="submit-button">Request Virtual Tour</button>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

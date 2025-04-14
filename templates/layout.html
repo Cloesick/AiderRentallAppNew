@@ -25,7 +25,10 @@
                     <li><a href="{{ url_for('leasing') }}" {% if request.path == url_for('leasing') %}class="active"{% endif %}>Leasing</a></li>
                     <li><a href="{{ url_for('visiting') }}" {% if request.path == url_for('visiting') %}class="active"{% endif %}>Schedule a Visit</a></li>
                     {% if session.get('logged_in') %}
-                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                        {% if session.get('is_admin') %}
+                            <li><a href="{{ url_for('manage_properties') }}" {% if request.path == url_for('manage_properties') %}class="active"{% endif %}>Manage Properties</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Logout ({{ session.get('username') }})</a></li>
                     {% else %}
                         <li><a href="{{ url_for('login') }}">Login</a></li>
                     {% endif %}

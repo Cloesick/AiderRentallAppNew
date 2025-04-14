@@ -113,54 +113,44 @@
         
         <!-- Main Content with Property Listings -->
         <div class="main-content">
-            <div class="property-list">
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Luxury Apartment">
-                    <h3>Luxury Downtown Apartment</h3>
-                    <p>2 bed, 2 bath, 1,200 sq ft</p>
-                    <p>Modern apartment with stunning city views, granite countertops, and hardwood floors.</p>
-                    <p class="price">$2,500/month</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Suburban Home">
-                    <h3>Spacious Suburban Home</h3>
-                    <p>4 bed, 3 bath, 2,500 sq ft</p>
-                    <p>Family home with large backyard, updated kitchen, and two-car garage.</p>
-                    <p class="price">$3,200/month</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Studio Apartment">
-                    <h3>Cozy Studio Apartment</h3>
-                    <p>Studio, 1 bath, 550 sq ft</p>
-                    <p>Perfect starter apartment with modern amenities and great location.</p>
-                    <p class="price">$1,100/month</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Modern Loft">
-                    <h3>Modern Downtown Loft</h3>
-                    <p>1 bed, 1 bath, 850 sq ft</p>
-                    <p>Industrial-style loft with high ceilings, exposed brick, and modern finishes.</p>
-                    <p class="price">$1,800/month</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Family Home">
-                    <h3>Family Home with Garden</h3>
-                    <p>3 bed, 2 bath, 1,800 sq ft</p>
-                    <p>Charming home with beautiful garden, updated kitchen, and close to schools.</p>
-                    <p class="price">$2,800/month</p>
-                </div>
-                
-                <div class="property-card">
-                    <img src="https://via.placeholder.com/300x200" alt="Penthouse">
-                    <h3>Luxury Penthouse</h3>
-                    <p>3 bed, 3.5 bath, 2,200 sq ft</p>
-                    <p>Stunning penthouse with panoramic city views, private terrace, and luxury finishes.</p>
-                    <p class="price">$5,500/month</p>
-                </div>
+            <div class="property-list" id="rental-properties">
+                <!-- Properties will be loaded dynamically -->
+                {% set properties = load_properties('rentals') %}
+                {% if properties %}
+                    {% for property in properties %}
+                        <div class="property-card">
+                            <img src="https://via.placeholder.com/300x200" alt="{{ property.name }}">
+                            <h3>{{ property.name }}</h3>
+                            <p>{{ property.bedrooms }} bed, {{ property.bathrooms }} bath, {{ property.squareMeters }} sq m</p>
+                            <p>{{ property.description }}</p>
+                            <p class="price">{{ property.price }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="property-card">
+                        <img src="https://via.placeholder.com/300x200" alt="Luxury Apartment">
+                        <h3>Luxury Downtown Apartment</h3>
+                        <p>2 bed, 2 bath, 1,200 sq ft</p>
+                        <p>Modern apartment with stunning city views, granite countertops, and hardwood floors.</p>
+                        <p class="price">$2,500/month</p>
+                    </div>
+                    
+                    <div class="property-card">
+                        <img src="https://via.placeholder.com/300x200" alt="Suburban Home">
+                        <h3>Spacious Suburban Home</h3>
+                        <p>4 bed, 3 bath, 2,500 sq ft</p>
+                        <p>Family home with large backyard, updated kitchen, and two-car garage.</p>
+                        <p class="price">$3,200/month</p>
+                    </div>
+                    
+                    <div class="property-card">
+                        <img src="https://via.placeholder.com/300x200" alt="Studio Apartment">
+                        <h3>Cozy Studio Apartment</h3>
+                        <p>Studio, 1 bath, 550 sq ft</p>
+                        <p>Perfect starter apartment with modern amenities and great location.</p>
+                        <p class="price">$1,100/month</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
