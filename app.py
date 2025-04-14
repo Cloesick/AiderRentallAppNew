@@ -150,6 +150,20 @@ def add_property(category):
     property_data['id'] = str(int(datetime.now().timestamp()))
     property_data['created_at'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
+    # Ensure the property has the correct category
+    property_data['category'] = category
+    
+    # Handle images (in a real app, you'd save these to a file system or cloud storage)
+    if 'images' in property_data and property_data['images']:
+        # Limit to 8 images
+        property_data['images'] = property_data['images'][:8]
+        
+        # In a real app, you'd process and store these images
+        # For this demo, we'll just keep the base64 data
+        print(f"Received {len(property_data['images'])} images for property {property_data['name']}")
+    else:
+        property_data['images'] = []
+    
     # Add to properties list
     properties.append(property_data)
     

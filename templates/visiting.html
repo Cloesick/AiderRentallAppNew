@@ -8,6 +8,7 @@
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/calendar.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -122,7 +123,24 @@
                 {% if properties %}
                     {% for property in properties %}
                         <div class="property-card">
-                            <img src="https://via.placeholder.com/300x200" alt="{{ property.name }}">
+                            {% if property.images and property.images|length > 0 %}
+                                <div class="property-image-slider">
+                                    {% for image in property.images %}
+                                        <img src="{{ image }}" alt="{{ property.name }}" class="property-image {% if loop.index == 1 %}active{% endif %}">
+                                    {% endfor %}
+                                    {% if property.images|length > 1 %}
+                                        <button class="image-nav prev">&lt;</button>
+                                        <button class="image-nav next">&gt;</button>
+                                        <div class="image-dots">
+                                            {% for image in property.images %}
+                                                <span class="image-dot {% if loop.index == 1 %}active{% endif %}" data-index="{{ loop.index0 }}"></span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <img src="https://via.placeholder.com/300x200" alt="{{ property.name }}">
+                            {% endif %}
                             <h3>{{ property.name }}</h3>
                             <p>{{ property.bedrooms }} bed, {{ property.bathrooms }} bath, {{ property.squareMeters }} sq m</p>
                             <p>{{ property.description }}</p>
