@@ -117,7 +117,7 @@
                 {% if properties %}
                     {% for property in properties %}
                         <div class="property-card">
-                            {% if property.images is defined and property.images and property.images|length > 0 %}
+                            {% if property.images is defined and property.images is iterable and property.images|length > 0 %}
                                 <div class="property-image-slider">
                                     {% for image in property.images %}
                                         <img src="{{ image }}" alt="{{ property.name }}" class="property-image {% if loop.index == 1 %}active{% endif %}">
