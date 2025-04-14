@@ -465,8 +465,14 @@ def delete_property(category, property_id):
 def open_browser():
     """Open browser after a short delay"""
     time.sleep(1)
-    # Use the default browser without specifying a command
-    webbrowser.open('http://localhost:5000/', new=2)
+    # Use the default browser with specific handling for Windows
+    if os.name == 'nt':  # Windows
+        try:
+            webbrowser.get('windows-default').open('http://localhost:5000/', new=2)
+        except:
+            webbrowser.open('http://localhost:5000/', new=2)
+    else:
+        webbrowser.open('http://localhost:5000/', new=2)
 
 if __name__ == '__main__':
     # Start a thread to open the browser
