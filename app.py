@@ -468,8 +468,10 @@ def open_browser():
     # Use the default browser with specific handling for Windows
     if os.name == 'nt':  # Windows
         try:
-            webbrowser.get('windows-default').open('http://localhost:5000/', new=2)
+            # Try using the standard Windows command
+            os.system('start http://localhost:5000/')
         except:
+            # Fall back to webbrowser module
             webbrowser.open('http://localhost:5000/', new=2)
     else:
         webbrowser.open('http://localhost:5000/', new=2)
