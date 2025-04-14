@@ -190,12 +190,28 @@ a:hover {
     margin: 5px 0;
 }
 
+/* Page Layout */
+.page-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.sidebar {
+    flex: 0 0 300px;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 300px;
+}
+
 /* Property Cards */
 .property-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
-    margin-top: 30px;
 }
 
 .property-card {
@@ -312,6 +328,14 @@ input[type="time"].date-picker {
     .footer-container,
     .footer-bottom {
         width: 90%;
+    }
+    
+    .page-content {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        flex: 0 0 100%;
     }
     
     .property-list {

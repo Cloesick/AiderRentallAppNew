@@ -12,9 +12,7 @@ import os
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
 
-@app.before_request
-def before_request():
-    g.request = request
+# No need for g.request since we're using request directly in templates
 
 @app.route('/')
 def home():

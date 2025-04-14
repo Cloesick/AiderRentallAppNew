@@ -23,101 +23,130 @@
       {% endif %}
     {% endwith %}
     
-    <!-- Filter Section -->
-    <div class="filter-container">
-        <h2>Filter Properties</h2>
-        <form>
-            <div class="filter-section">
-                <h3>Property Type</h3>
-                <select id="property-type">
-                    <option value="">All Types</option>
-                    <option value="residential">Residential</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="industrial">Industrial</option>
-                </select>
+    <div class="page-content">
+        <!-- Sidebar with Filters and Visit Form -->
+        <div class="sidebar">
+            <div class="filter-container">
+                <h2>Filter Properties</h2>
+                <form>
+                    <div class="filter-section">
+                        <h3>Property Type</h3>
+                        <select id="property-type">
+                            <option value="">All Types</option>
+                            <option value="residential">Residential</option>
+                            <option value="commercial">Commercial</option>
+                            <option value="industrial">Industrial</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h3>Location</h3>
+                        <div class="filter-options">
+                            <select id="country">
+                                <option value="">Select Country</option>
+                                <option value="usa">United States</option>
+                                <option value="canada">Canada</option>
+                                <option value="uk">United Kingdom</option>
+                            </select>
+                            <select id="region" style="margin-top: 10px;">
+                                <option value="">Select Region</option>
+                                <option value="northeast">Northeast</option>
+                                <option value="midwest">Midwest</option>
+                                <option value="south">South</option>
+                                <option value="west">West</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="filter-button">Apply Filters</button>
+                    <button type="button" class="filter-button filter-reset">Reset</button>
+                </form>
             </div>
             
-            <div class="filter-section">
-                <h3>Location</h3>
-                <div class="filter-options">
-                    <select id="country">
-                        <option value="">Select Country</option>
-                        <option value="usa">United States</option>
-                        <option value="canada">Canada</option>
-                        <option value="uk">United Kingdom</option>
-                    </select>
-                    <select id="region" style="margin-top: 10px;">
-                        <option value="">Select Region</option>
-                        <option value="northeast">Northeast</option>
-                        <option value="midwest">Midwest</option>
-                        <option value="south">South</option>
-                        <option value="west">West</option>
-                    </select>
-                </div>
+            <!-- Visit Scheduling Form -->
+            <div class="calendar-container">
+                <h2>Schedule Your Visit</h2>
+                <form method="POST" action="#">
+                    <div class="form-group">
+                        <label for="property-type-select">Property Type:</label>
+                        <select id="property-type-select" name="property-type" required>
+                            <option value="">Select a property type</option>
+                            <option value="residential">Residential</option>
+                            <option value="commercial">Commercial</option>
+                            <option value="industrial">Industrial</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Hidden inputs for actual form submission -->
+                    <input type="date" id="visit-date" name="visit-date" class="date-picker" required>
+                    
+                    <!-- Visual calendar -->
+                    <div class="form-group">
+                        <label>Visit Date:</label>
+                        <div class="calendar-wrapper"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="visit-time-select">Preferred Time:</label>
+                        <select id="visit-time-select" name="visit-time-select" required>
+                            <option value="">Select a time</option>
+                            <option value="morning">Morning (9AM - 12PM)</option>
+                            <option value="afternoon">Afternoon (1PM - 5PM)</option>
+                            <option value="evening">Evening (6PM - 8PM)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contact-name">Your Name:</label>
+                        <input type="text" id="contact-name" name="contact-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Your Email:</label>
+                        <input type="email" id="contact-email" name="contact-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">Your Phone:</label>
+                        <input type="tel" id="contact-phone" name="contact-phone" required>
+                    </div>
+                    <button type="submit" class="submit-button">Schedule Visit</button>
+                </form>
             </div>
-            
-            <button type="button" class="filter-button">Apply Filters</button>
-            <button type="button" class="filter-button filter-reset">Reset</button>
-        </form>
-    </div>
-    
-    <!-- Calendar Section -->
-    <div class="calendar-container">
-        <h2>Select Your Preferred Date and Time</h2>
-        <form method="POST" action="#">
-            <div class="form-group">
-                <label for="property-type-select">Property Type:</label>
-                <select id="property-type-select" name="property-type" required>
-                    <option value="">Select a property type</option>
-                    <option value="residential">Residential</option>
-                    <option value="commercial">Commercial</option>
-                    <option value="industrial">Industrial</option>
-                </select>
-            </div>
-            
-            <!-- Hidden inputs for actual form submission -->
-            <input type="date" id="visit-date" name="visit-date" class="date-picker" required>
-            <input type="time" id="visit-time" name="visit-time" class="date-picker" required>
-            
-            <!-- Visual calendar -->
-            <div class="form-group">
-                <label>Visit Date:</label>
-                <div class="calendar-wrapper"></div>
-            </div>
-            
-            <!-- Visual clock -->
-            <div class="form-group">
-                <label>Visit Time:</label>
-                <div class="clock-picker"></div>
-            </div>
-            
-            <div class="form-group">
-                <label for="contact-name">Your Name:</label>
-                <input type="text" id="contact-name" name="contact-name" required>
-            </div>
-            <div class="form-group">
-                <label for="contact-email">Your Email:</label>
-                <input type="email" id="contact-email" name="contact-email" required>
-            </div>
-            <div class="form-group">
-                <label for="contact-phone">Your Phone:</label>
-                <input type="tel" id="contact-phone" name="contact-phone" required>
-            </div>
-            <button type="submit" class="submit-button">Schedule Visit</button>
-        </form>
-    </div>
-    
-    <div class="property-list">
-        <div class="property-card">
-            <img src="https://via.placeholder.com/300x200" alt="Featured Property">
-            <h3>Featured Property Tours</h3>
-            <p>We offer guided tours of our featured properties with our experienced agents.</p>
         </div>
         
-        <div class="property-card">
-            <img src="https://via.placeholder.com/300x200" alt="Virtual Tours">
-            <h3>Virtual Tours Available</h3>
-            <p>Can't visit in person? Ask about our virtual tour options for remote viewing.</p>
+        <!-- Main Content with Available Properties -->
+        <div class="main-content">
+            <h2>Available Properties for Viewing</h2>
+            <div class="property-list">
+                <div class="property-card">
+                    <img src="https://via.placeholder.com/300x200" alt="Featured Property">
+                    <h3>Featured Property Tours</h3>
+                    <p>We offer guided tours of our featured properties with our experienced agents.</p>
+                    <button class="submit-button">Request Tour</button>
+                </div>
+                
+                <div class="property-card">
+                    <img src="https://via.placeholder.com/300x200" alt="Virtual Tours">
+                    <h3>Virtual Tours Available</h3>
+                    <p>Can't visit in person? Ask about our virtual tour options for remote viewing.</p>
+                    <button class="submit-button">Request Virtual Tour</button>
+                </div>
+                
+                <div class="property-card">
+                    <img src="https://via.placeholder.com/300x200" alt="Luxury Home">
+                    <h3>Luxury Waterfront Estate</h3>
+                    <p>5 bed, 4.5 bath, 4,500 sq ft</p>
+                    <p>Stunning waterfront property with private dock, gourmet kitchen, and home theater.</p>
+                    <button class="submit-button">Schedule Viewing</button>
+                </div>
+                
+                <div class="property-card">
+                    <img src="https://via.placeholder.com/300x200" alt="Downtown Apartment">
+                    <h3>Downtown Luxury Apartment</h3>
+                    <p>2 bed, 2 bath, 1,200 sq ft</p>
+                    <p>Modern apartment with stunning city views, granite countertops, and hardwood floors.</p>
+                    <button class="submit-button">Schedule Viewing</button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

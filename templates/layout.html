@@ -20,10 +20,10 @@
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="{{ url_for('rentals') }}" {% if g.request.path == url_for('rentals') %}class="active"{% endif %}>Rentals</a></li>
-                    <li><a href="{{ url_for('purchase') }}" {% if g.request.path == url_for('purchase') %}class="active"{% endif %}>Purchase</a></li>
-                    <li><a href="{{ url_for('leasing') }}" {% if g.request.path == url_for('leasing') %}class="active"{% endif %}>Leasing</a></li>
-                    <li><a href="{{ url_for('visiting') }}" {% if g.request.path == url_for('visiting') %}class="active"{% endif %}>Schedule a Visit</a></li>
+                    <li><a href="{{ url_for('rentals') }}" {% if request.path == url_for('rentals') %}class="active"{% endif %}>Rentals</a></li>
+                    <li><a href="{{ url_for('purchase') }}" {% if request.path == url_for('purchase') %}class="active"{% endif %}>Purchase</a></li>
+                    <li><a href="{{ url_for('leasing') }}" {% if request.path == url_for('leasing') %}class="active"{% endif %}>Leasing</a></li>
+                    <li><a href="{{ url_for('visiting') }}" {% if request.path == url_for('visiting') %}class="active"{% endif %}>Schedule a Visit</a></li>
                     {% if session.get('logged_in') %}
                         <li><a href="{{ url_for('logout') }}">Logout</a></li>
                     {% else %}
