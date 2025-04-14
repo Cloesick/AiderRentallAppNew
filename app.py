@@ -4,19 +4,105 @@ import threading
 import time
 import os
 import json
+import uuid
 from datetime import datetime
 from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
 
+# User data storage
+def get_users_file():
+    return 'data/users.json'
+
+def load_users():
+    filename = get_users_file()
+    try:
+        if os.path.exists(filename):
+            with open(filename, 'r') as f:
+                return json.load(f)
+        else:
+            # Create directory if it doesn't exist
+            os.makedirs('data', exist_ok=True)
+            # Return empty list if file doesn't exist
+            return []
+    except Exception as e:
+        print(f"Error loading users: {e}")
+        return []
+
+def save_users(users):
+    filename = get_users_file()
+    try:
+        with open(filename, 'w') as f:
+            json.dump(users, f, indent=4)
+        return True
+    except Exception as e:
+        print(f"Error saving users: {e}")
+        return False
+
+# Visitor tracking data storage
+def get_visitor_tracking_file():
+    return 'data/visitor_tracking.json'
+
+def save_visitor_tracking(tracking_data):
+    filename = get_visitor_tracking_file()
+    try:
+        # Create directory if it doesn't exist
+        os.makedirs('data', exist_ok=True)
+        
+        # Load existing data
+        existing_data = []
+        if os.path.exists(filename):
+            with open(filename, 'r') as f:
+                existing_data = json.load(f)
+        
+        # Append new data
+        existing_data.append(tracking_data)
+        
+        # Save updated data
+        with open(filename, 'w') as f:
+            json.dump(existing_data, f, indent=4)
+        return True
+    except Exception as e:
+        print(f"Error saving visitor tracking: {e}")
+        return False
+
 # Make request and property functions available to templates
 @app.context_processor
 def inject_context():
     return {
         'request': request,
-        'load_properties': load_properties
+        'load_properties': load_properties,
+        'session': session
     }
+
+# Create a default visitor user if none exists
+@app.before_first_request
+def create_default_visitor():
+    users = load_users()
+    
+    # Check if we have a visitor user
+    if not any(u.get('user_type') == 'visitor' for u in users):
+        # Create a default visitor user
+        default_visitor = {
+            'id': str(uuid.uuid4()),
+            'first_name': 'Test',
+            'last_name': 'Visitor',
+            'email': 'visitor@example.com',
+            'phone': '+1 234 567 8900',
+            'password': 'password',  # In a real app, hash the password
+            'gender': 'X',
+            'address': '123 Test Street',
+            'city': 'Test City',
+            'country': 'Test Country',
+            'vat': '',
+            'user_type': 'visitor',
+            'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        
+        users.append(default_visitor)
+        save_users(users)
+        print("Created default visitor user: visitor@example.com / password")
 
 # Admin check decorator
 def admin_required(f):
@@ -76,12 +162,17 @@ def login():
         email = request.form['email']
         password = request.form['password']
         
-        # This is a simple example - in a real app, you'd check against a database
-        # and use proper password hashing
-        if password == 'password':  # Simple password check for demo
+        # Load users
+        users = load_users()
+        
+        # Find user by email
+        user = next((u for u in users if u['email'] == email), None)
+        
+        if user and user['password'] == password:  # In a real app, use password hashing
             session['logged_in'] = True
-            session['username'] = email.split('@')[0]  # Use part before @ as username
-            session['email'] = email
+            session['user_id'] = user['id']
+            session['username'] = user['first_name']
+            session['email'] = user['email']
             
             # Check if user is admin (email contains @realestate.com)
             if '@realestate.com' in email:
@@ -89,13 +180,80 @@ def login():
                 flash('Welcome, Administrator!')
             else:
                 session['is_admin'] = False
+                session['is_visitor'] = user.get('user_type') == 'visitor'
                 flash('You were successfully logged in')
+            
+            # Track login
+            if 'visitor_id' in session:
+                tracking_data = {
+                    'visitor_id': session['visitor_id'],
+                    'user_id': user['id'],
+                    'action': 'login',
+                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                }
+                save_visitor_tracking(tracking_data)
                 
             return redirect(url_for('home'))
         else:
             flash('Invalid credentials')
     
     return render_template('login.html')
+
+@app.route('/register', methods=['POST'])
+def register():
+    # Get form data
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    email = request.form['email']
+    phone = request.form['phone']
+    password = request.form['password']
+    confirm_password = request.form['confirm_password']
+    gender = request.form['gender']
+    address = request.form['address']
+    city = request.form['city']
+    country = request.form['country']
+    vat = request.form.get('vat', '')
+    
+    # Validate data
+    if password != confirm_password:
+        flash('Passwords do not match')
+        return redirect(url_for('login'))
+    
+    # Load existing users
+    users = load_users()
+    
+    # Check if email already exists
+    if any(u['email'] == email for u in users):
+        flash('Email already registered')
+        return redirect(url_for('login'))
+    
+    # Create new user
+    new_user = {
+        'id': str(uuid.uuid4()),
+        'first_name': first_name,
+        'last_name': last_name,
+        'email': email,
+        'phone': phone,
+        'password': password,  # In a real app, hash the password
+        'gender': gender,
+        'address': address,
+        'city': city,
+        'country': country,
+        'vat': vat,
+        'user_type': 'visitor',
+        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+    
+    # Add user to list
+    users.append(new_user)
+    
+    # Save updated users
+    if save_users(users):
+        flash('Registration successful! Please log in.')
+    else:
+        flash('Error during registration. Please try again.')
+    
+    return redirect(url_for('login'))
 
 @app.route('/logout')
 def logout():
@@ -126,6 +284,51 @@ def payment_methods():
         flash('Please log in to manage your payment methods')
         return redirect(url_for('login'))
     return render_template('payment-methods.html')
+
+@app.route('/api/cookie-preferences', methods=['POST'])
+def cookie_preferences():
+    preferences = request.json
+    
+    # Store cookie preferences in session
+    session['cookie_preferences'] = preferences
+    
+    # If visitor ID doesn't exist, create one
+    if 'visitor_id' not in session:
+        session['visitor_id'] = str(uuid.uuid4())
+    
+    # Track cookie preferences
+    tracking_data = {
+        'visitor_id': session['visitor_id'],
+        'action': 'cookie_preferences',
+        'preferences': preferences,
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+    save_visitor_tracking(tracking_data)
+    
+    return jsonify({'success': True})
+
+@app.route('/api/track-visitor', methods=['POST'])
+def track_visitor():
+    # Get tracking data
+    data = request.json
+    
+    # If visitor ID doesn't exist, create one
+    if 'visitor_id' not in session:
+        session['visitor_id'] = str(uuid.uuid4())
+    
+    # Add visitor ID to data
+    tracking_data = {
+        'visitor_id': session['visitor_id'],
+        'user_id': session.get('user_id', None),
+        'action': data['action'],
+        'data': data['data'],
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    }
+    
+    # Save tracking data
+    save_visitor_tracking(tracking_data)
+    
+    return jsonify({'success': True})
 
 # Admin property management routes
 @app.route('/manage')

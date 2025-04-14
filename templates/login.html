@@ -2,6 +2,28 @@
 
 {% block title %}Login - Real Estate App{% endblock %}
 
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('login-form');
+        const registrationForm = document.getElementById('registration-form');
+        const toggleFormBtn = document.getElementById('toggle-form');
+        
+        toggleFormBtn.addEventListener('click', function() {
+            if (registrationForm.style.display === 'block') {
+                registrationForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                toggleFormBtn.textContent = 'New user? Register here';
+            } else {
+                registrationForm.style.display = 'block';
+                loginForm.style.display = 'none';
+                toggleFormBtn.textContent = 'Already have an account? Login here';
+            }
+        });
+    });
+</script>
+{% endblock %}
+
 {% block content %}
     <h1>Login</h1>
     
@@ -16,7 +38,7 @@
     {% endwith %}
     
     <div class="login-container">
-        <form method="POST" action="{{ url_for('login') }}">
+        <form method="POST" action="{{ url_for('login') }}" id="login-form">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required>
@@ -28,5 +50,90 @@
             </div>
             <button type="submit" class="submit-button">Login</button>
         </form>
+        
+        <form method="POST" action="{{ url_for('register') }}" id="registration-form" class="registration-form">
+            <h2>Create an Account</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first-name">First Name:</label>
+                    <input type="text" id="first-name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name:</label>
+                    <input type="text" id="last-name" name="last_name" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-email">Email:</label>
+                <input type="email" id="reg-email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number (with country code):</label>
+                <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="reg-password">Password:</label>
+                <input type="password" id="reg-password" name="password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirm_password" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Gender:</label>
+                <div class="gender-options">
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="M" required>
+                        <span>Male</span>
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="F">
+                        <span>Female</span>
+                    </label>
+                    <label class="gender-option">
+                        <input type="radio" name="gender" value="X">
+                        <span>Other</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="country">Country:</label>
+                    <input type="text" id="country" name="country" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="vat">VAT Number (optional):</label>
+                <input type="text" id="vat" name="vat">
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" name="terms" required>
+                    I agree to the Terms and Conditions
+                </label>
+            </div>
+            
+            <button type="submit" class="submit-button">Register</button>
+        </form>
+        
+        <button type="button" id="toggle-form" class="toggle-form">New user? Register here</button>
     </div>
 {% endblock %}

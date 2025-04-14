@@ -122,6 +122,35 @@ function updateImageDataInput(input, previewArea) {
 function initializeAddressAutocomplete() {
     const addressInputs = document.querySelectorAll('input[name="address"]');
     
+    // Add event listeners for manual address input
+    addressInputs.forEach(input => {
+        // Create suggestions container
+        const suggestionsContainer = document.createElement('div');
+        suggestionsContainer.className = 'address-suggestions';
+        input.parentNode.appendChild(suggestionsContainer);
+        
+        // Add input event listener
+        input.addEventListener('input', function() {
+            const query = this.value.trim();
+            fetchAddressSuggestions(query, suggestionsContainer, this);
+        });
+        
+        // Add focus event listener
+        input.addEventListener('focus', function() {
+            const query = this.value.trim();
+            if (query.length >= 2) {
+                fetchAddressSuggestions(query, suggestionsContainer, this);
+            }
+        });
+        
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (e.target !== input && !suggestionsContainer.contains(e.target)) {
+                suggestionsContainer.style.display = 'none';
+            }
+        });
+    });
+    
     // Load Google Maps API script if not already loaded
     if (!window.google || !window.google.maps) {
         const script = document.createElement('script');
@@ -295,6 +324,12 @@ function fetchAddressSuggestions(query, container, input) {
     // Check if Google Maps API is loaded
     if (window.google && window.google.maps) {
         // Google Maps API is handling this
+        return;
+    }
+    
+    // Only show suggestions if query is at least 2 characters
+    if (query.length < 2) {
+        container.style.display = 'none';
         return;
     }
     

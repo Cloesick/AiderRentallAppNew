@@ -476,6 +476,127 @@ input[type="time"].date-picker {
     display: none;
 }
 
+/* Cookie Banner */
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(51, 51, 51, 0.8);
+    color: white;
+    z-index: 1000;
+    transition: transform 0.5s ease;
+    backdrop-filter: blur(5px);
+}
+
+.cookie-banner.hiding {
+    transform: translateY(100%);
+}
+
+.cookie-content {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.cookie-content h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.cookie-types {
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.cookie-type {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.cookie-type p {
+    font-size: 12px;
+    margin: 5px 0 0;
+}
+
+.cookie-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.cookie-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.cookie-button.accept-all {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cookie-button.reject-all {
+    background-color: #f44336;
+    color: white;
+}
+
+.cookie-button.save-preferences {
+    background-color: #2196F3;
+    color: white;
+}
+
+/* Registration Form */
+.registration-form {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.registration-form h2 {
+    margin-top: 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.gender-options {
+    display: flex;
+    gap: 15px;
+}
+
+.gender-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.toggle-form {
+    margin-top: 15px;
+    background: none;
+    border: none;
+    color: #4CAF50;
+    cursor: pointer;
+    padding: 0;
+    font-size: 14px;
+    text-decoration: underline;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container,
@@ -503,5 +624,14 @@ input[type="time"].date-picker {
     
     .main-nav li {
         margin: 5px 0;
+    }
+    
+    .cookie-types {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
     }
 }
