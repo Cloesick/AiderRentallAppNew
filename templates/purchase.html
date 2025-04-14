@@ -6,14 +6,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/real-estate.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
     <script src="{{ url_for('static', filename='js/calendar.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/icon-customizer.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/icon-customizer.js') }}" defer></script>
 </head>
 <body>
     <!-- Header -->
     <header class="site-header">
         <div class="header-container">
             <div class="logo">
-                <a href="{{ url_for('home') }}" class="home-icon">
-                    <img src="{{ url_for('static', filename='images/home-icon.svg') }}" alt="Home">
+                <a href="{{ url_for('home') }}" class="home-icon" id="home-icon">
+                    <img src="{{ url_for('static', filename='images/home-icon.svg') }}" alt="Home" id="home-icon-img">
                 </a>
                 <h1>Real Estate App</h1>
             </div>
@@ -177,16 +179,16 @@
             <div class="footer-section">
                 <h3>Follow Us</h3>
                 <div class="social-links">
-                    <a href="#" class="social-icon">
+                    <a href="https://twitter.com/realestate" target="_blank" class="social-icon">
                         <img src="{{ url_for('static', filename='images/twitter-icon.svg') }}" alt="X (Twitter)">
                     </a>
-                    <a href="#" class="social-icon">
+                    <a href="https://facebook.com/realestate" target="_blank" class="social-icon">
                         <img src="{{ url_for('static', filename='images/facebook-icon.svg') }}" alt="Facebook">
                     </a>
-                    <a href="#" class="social-icon">
+                    <a href="https://instagram.com/realestate" target="_blank" class="social-icon">
                         <img src="{{ url_for('static', filename='images/instagram-icon.svg') }}" alt="Instagram">
                     </a>
-                    <a href="#" class="social-icon">
+                    <a href="https://wa.me/1234567890" target="_blank" class="social-icon">
                         <img src="{{ url_for('static', filename='images/whatsapp-icon.svg') }}" alt="WhatsApp">
                     </a>
                 </div>

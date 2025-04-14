@@ -95,8 +95,18 @@ function renderCalendar(container, month, year) {
     // Fill in the days of the month
     for (let day = 1; day <= daysInMonth; day++) {
         const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        const date = new Date(year, month, day);
+        const isPast = date < new Date(today.setHours(0,0,0,0));
+        const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+        const classes = [
+            'calendar-day',
+            isToday ? 'today' : '',
+            isPast ? 'disabled' : '',
+            isWeekend ? 'weekend' : ''
+        ].filter(Boolean).join(' ');
+        
         calendarHTML += `
-            <div class="calendar-day ${isToday ? 'today' : ''}" data-date="${year}-${month+1}-${day}">
+            <div class="${classes}" data-date="${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}">
                 ${day}
             </div>
         `;
@@ -147,8 +157,29 @@ function initializeClock(container) {
         `;
     }
     
-    // Add time display
-    clockHTML += `<div class="time-display">12:00</div>`;
+    // Add minute markers
+    for (let i = 0; i < 60; i++) {
+        if (i % 5 !== 0) { // Skip positions where hour numbers are
+            const angle = (i - 15) * (Math.PI / 30); // Start at 3 o'clock position
+            const x = 90 + 90 * Math.cos(angle);
+            const y = 100 + 90 * Math.sin(angle);
+            
+            clockHTML += `
+                <div class="clock-minute-marker" style="left: ${x}px; top: ${y}px;"></div>
+            `;
+        }
+    }
+    
+    // Add time display and time selection buttons
+    clockHTML += `
+        <div class="time-display">12:00</div>
+        <div class="time-selection">
+            <button class="time-preset" data-hour="9" data-minute="0">9:00 AM</button>
+            <button class="time-preset" data-hour="12" data-minute="0">12:00 PM</button>
+            <button class="time-preset" data-hour="15" data-minute="0">3:00 PM</button>
+            <button class="time-preset" data-hour="18" data-minute="0">6:00 PM</button>
+        </div>
+    `;
     
     // Update the container
     container.innerHTML = clockHTML;
@@ -158,6 +189,11 @@ function initializeClock(container) {
     
     // Make clock interactive
     container.addEventListener('click', function(e) {
+        // Only process clicks on the clock face, not the buttons
+        if (e.target.classList.contains('time-preset')) {
+            return;
+        }
+        
         const rect = container.getBoundingClientRect();
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
@@ -173,19 +209,40 @@ function initializeClock(container) {
         let hour = Math.round(((angle * 6 / Math.PI) + 3) % 12);
         if (hour === 0) hour = 12;
         
-        // For simplicity, set minutes to 0 or 30 based on distance from center
-        const distance = Math.sqrt(x * x + y * y);
-        const isOuterRing = distance > 60;
-        const minute = isOuterRing ? 30 : 0;
+        // Calculate minutes based on precise angle
+        const minute = Math.round(((angle * 30 / Math.PI) + 15) % 60);
+        // Round to nearest 5 minutes for better usability
+        const roundedMinute = Math.round(minute / 5) * 5;
         
-        updateClockHands(hour, minute);
+        updateClockHands(hour, roundedMinute);
         
         // Update the hidden input with the selected time
         const timeInput = document.getElementById('viewing-time') || document.getElementById('visit-time');
         if (timeInput) {
-            const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+            const timeValue = `${hour.toString().padStart(2, '0')}:${roundedMinute.toString().padStart(2, '0')}`;
             timeInput.value = timeValue;
         }
+    });
+    
+    // Add event listeners to time preset buttons
+    const timePresets = container.querySelectorAll('.time-preset');
+    timePresets.forEach(button => {
+        button.addEventListener('click', function() {
+            const hour = parseInt(this.dataset.hour);
+            const minute = parseInt(this.dataset.minute);
+            
+            // Convert 24-hour format to 12-hour format for display
+            const displayHour = hour > 12 ? hour - 12 : hour;
+            
+            updateClockHands(displayHour, minute);
+            
+            // Update the hidden input with the selected time
+            const timeInput = document.getElementById('viewing-time') || document.getElementById('visit-time');
+            if (timeInput) {
+                const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                timeInput.value = timeValue;
+            }
+        });
     });
 }
 
