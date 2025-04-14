@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Real Estate App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
+    {% block extra_css %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/icon-customizer.js') }}" defer></script>
+    {% block extra_js %}{% endblock %}
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="header-container">
+            <div class="logo">
+                <a href="{{ url_for('home') }}" class="home-icon" id="home-icon">
+                    <img src="{{ url_for('static', filename='images/home-icon.svg') }}" alt="Home" id="home-icon-img">
+                </a>
+                <h1>Real Estate App</h1>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ url_for('rentals') }}" {% if request.path == url_for('rentals') %}class="active"{% endif %}>Rentals</a></li>
+                    <li><a href="{{ url_for('purchase') }}" {% if request.path == url_for('purchase') %}class="active"{% endif %}>Purchase</a></li>
+                    <li><a href="{{ url_for('leasing') }}" {% if request.path == url_for('leasing') %}class="active"{% endif %}>Leasing</a></li>
+                    <li><a href="{{ url_for('visiting') }}" {% if request.path == url_for('visiting') %}class="active"{% endif %}>Schedule a Visit</a></li>
+                    {% if session.get('logged_in') %}
+                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>We are a leading real estate company dedicated to helping you find your perfect property.</p>
+                <p><a href="{{ url_for('about') }}">Learn more about us</a></p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@realestate.com</p>
+                <p>Phone: (123) 456-7890</p>
+                <p>Address: 123 Property St, Real Estate City</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="https://twitter.com/realestate" target="_blank" class="social-icon">
+                        <img src="{{ url_for('static', filename='images/twitter-icon.svg') }}" alt="X (Twitter)">
+                    </a>
+                    <a href="https://facebook.com/realestate" target="_blank" class="social-icon">
+                        <img src="{{ url_for('static', filename='images/facebook-icon.svg') }}" alt="Facebook">
+                    </a>
+                    <a href="https://instagram.com/realestate" target="_blank" class="social-icon">
+                        <img src="{{ url_for('static', filename='images/instagram-icon.svg') }}" alt="Instagram">
+                    </a>
+                    <a href="https://wa.me/1234567890" target="_blank" class="social-icon">
+                        <img src="{{ url_for('static', filename='images/whatsapp-icon.svg') }}" alt="WhatsApp">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Real Estate App. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

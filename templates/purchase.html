@@ -1,201 +1,138 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Purchase - Real Estate App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/real-estate.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
-    <script src="{{ url_for('static', filename='js/calendar.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='js/icon-customizer.js') }}" defer></script>
-</head>
-<body>
-    <!-- Header -->
-    <header class="site-header">
-        <div class="header-container">
-            <div class="logo">
-                <a href="{{ url_for('home') }}" class="home-icon" id="home-icon">
-                    <img src="{{ url_for('static', filename='images/home-icon.svg') }}" alt="Home" id="home-icon-img">
-                </a>
-                <h1>Real Estate App</h1>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="{{ url_for('rentals') }}">Rentals</a></li>
-                    <li><a href="{{ url_for('purchase') }}" class="active">Purchase</a></li>
-                    <li><a href="{{ url_for('leasing') }}">Leasing</a></li>
-                    <li><a href="{{ url_for('visiting') }}">Schedule a Visit</a></li>
-                    {% if session.get('logged_in') %}
-                        <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                    {% else %}
-                        <li><a href="{{ url_for('login') }}">Login</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    </header>
+{% extends "layout.html" %}
 
-    <div class="container">
-        <h1>Properties for Sale</h1>
-        
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <div class="flash-messages">
-              {% for message in messages %}
-                <p>{{ message }}</p>
-              {% endfor %}
-            </div>
-          {% endif %}
-        {% endwith %}
-        
-        <!-- Filter Section -->
-        <div class="filter-container">
-            <h2>Filter Properties</h2>
-            <form>
-                <div class="filter-section">
-                    <h3>Price Range</h3>
-                    <div class="price-range">
-                        <input type="number" id="min-price" placeholder="Min Price" min="0">
-                        <span>to</span>
-                        <input type="number" id="max-price" placeholder="Max Price" min="0">
-                    </div>
-                </div>
-                
-                <div class="filter-section">
-                    <h3>Property Type</h3>
-                    <select id="property-type">
-                        <option value="">All Types</option>
-                        <option value="house">House</option>
-                        <option value="condo">Condo</option>
-                        <option value="townhouse">Townhouse</option>
-                        <option value="estate">Estate</option>
-                    </select>
-                </div>
-                
-                <div class="filter-section">
-                    <h3>Bedrooms</h3>
-                    <div class="filter-options">
-                        <label class="filter-checkbox">
-                            <input type="radio" name="bedrooms" value="1"> 1
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="radio" name="bedrooms" value="2"> 2
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="radio" name="bedrooms" value="3"> 3
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="radio" name="bedrooms" value="4"> 4
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="radio" name="bedrooms" value="5"> 5+
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="filter-section">
-                    <h3>Amenities</h3>
-                    <div class="filter-options">
-                        <label class="filter-checkbox">
-                            <input type="checkbox" id="terrace"> Terrace
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" id="barbecue"> Barbecue
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" id="elevator"> Elevator
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" id="parking"> Parking
-                        </label>
-                    </div>
-                </div>
-                
-                <button type="button" class="filter-button">Apply Filters</button>
-                <button type="button" class="filter-button filter-reset">Reset</button>
-            </form>
+{% block title %}Purchase - Real Estate App{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/real-estate.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/calendar.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+    <h1>Properties for Sale</h1>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
         </div>
-        
-        <!-- Calendar Section -->
-        <div class="calendar-container">
-            <h2>Schedule a Viewing</h2>
-            <form method="POST" action="#">
-                <!-- Hidden inputs for actual form submission -->
-                <input type="date" id="viewing-date" name="viewing-date" class="date-picker" required>
-                <input type="time" id="viewing-time" name="viewing-time" class="date-picker" required>
-                
-                <!-- Visual calendar -->
-                <div class="calendar-wrapper"></div>
-                
-                <!-- Visual clock -->
-                <h3>Select Time</h3>
-                <div class="clock-picker"></div>
-                
-                <button type="submit" class="submit-button">Schedule Viewing</button>
-            </form>
-        </div>
-        
-        <div class="property-list">
-            <div class="property-card">
-                <img src="https://via.placeholder.com/300x200" alt="Luxury Home">
-                <h3>Luxury Waterfront Estate</h3>
-                <p>5 bed, 4.5 bath, 4,500 sq ft</p>
-                <p>Stunning waterfront property with private dock, gourmet kitchen, and home theater.</p>
-                <p class="price">$1,250,000</p>
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Filter Section -->
+    <div class="filter-container">
+        <h2>Filter Properties</h2>
+        <form>
+            <div class="filter-section">
+                <h3>Price Range</h3>
+                <div class="price-range">
+                    <input type="number" id="min-price" placeholder="Min Price" min="0">
+                    <span>to</span>
+                    <input type="number" id="max-price" placeholder="Max Price" min="0">
+                </div>
             </div>
             
-            <div class="property-card">
-                <img src="https://via.placeholder.com/300x200" alt="Townhouse">
-                <h3>Modern Townhouse</h3>
-                <p>3 bed, 2.5 bath, 1,800 sq ft</p>
-                <p>Contemporary townhouse with rooftop terrace, open floor plan, and smart home features.</p>
-                <p class="price">$450,000</p>
+            <div class="filter-section">
+                <h3>Property Type</h3>
+                <select id="property-type">
+                    <option value="">All Types</option>
+                    <option value="house">House</option>
+                    <option value="condo">Condo</option>
+                    <option value="townhouse">Townhouse</option>
+                    <option value="estate">Estate</option>
+                </select>
             </div>
             
-            <div class="property-card">
-                <img src="https://via.placeholder.com/300x200" alt="Condo">
-                <h3>Downtown Luxury Condo</h3>
-                <p>2 bed, 2 bath, 1,200 sq ft</p>
-                <p>High-rise condo with floor-to-ceiling windows, concierge service, and fitness center.</p>
-                <p class="price">$650,000</p>
+            <div class="filter-section">
+                <h3>Bedrooms</h3>
+                <div class="filter-options">
+                    <label class="filter-checkbox">
+                        <input type="radio" name="bedrooms" value="1"> 1
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="radio" name="bedrooms" value="2"> 2
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="radio" name="bedrooms" value="3"> 3
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="radio" name="bedrooms" value="4"> 4
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="radio" name="bedrooms" value="5"> 5+
+                    </label>
+                </div>
             </div>
-        </div>
+            
+            <div class="filter-section">
+                <h3>Amenities</h3>
+                <div class="filter-options">
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="terrace"> Terrace
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="barbecue"> Barbecue
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="elevator"> Elevator
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="parking"> Parking
+                    </label>
+                </div>
+            </div>
+            
+            <button type="button" class="filter-button">Apply Filters</button>
+            <button type="button" class="filter-button filter-reset">Reset</button>
+        </form>
     </div>
     
-    <!-- Footer -->
-    <footer class="site-footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p>We are a leading real estate company dedicated to helping you find your perfect property.</p>
-                <p><a href="{{ url_for('about') }}">Learn more about us</a></p>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p>Email: info@realestate.com</p>
-                <p>Phone: (123) 456-7890</p>
-                <p>Address: 123 Property St, Real Estate City</p>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <div class="social-links">
-                    <a href="https://twitter.com/realestate" target="_blank" class="social-icon">
-                        <img src="{{ url_for('static', filename='images/twitter-icon.svg') }}" alt="X (Twitter)">
-                    </a>
-                    <a href="https://facebook.com/realestate" target="_blank" class="social-icon">
-                        <img src="{{ url_for('static', filename='images/facebook-icon.svg') }}" alt="Facebook">
-                    </a>
-                    <a href="https://instagram.com/realestate" target="_blank" class="social-icon">
-                        <img src="{{ url_for('static', filename='images/instagram-icon.svg') }}" alt="Instagram">
-                    </a>
-                    <a href="https://wa.me/1234567890" target="_blank" class="social-icon">
-                        <img src="{{ url_for('static', filename='images/whatsapp-icon.svg') }}" alt="WhatsApp">
-                    </a>
-                </div>
-            </div>
+    <!-- Calendar Section -->
+    <div class="calendar-container">
+        <h2>Schedule a Viewing</h2>
+        <form method="POST" action="#">
+            <!-- Hidden inputs for actual form submission -->
+            <input type="date" id="viewing-date" name="viewing-date" class="date-picker" required>
+            <input type="time" id="viewing-time" name="viewing-time" class="date-picker" required>
+            
+            <!-- Visual calendar -->
+            <div class="calendar-wrapper"></div>
+            
+            <!-- Visual clock -->
+            <h3>Select Time</h3>
+            <div class="clock-picker"></div>
+            
+            <button type="submit" class="submit-button">Schedule Viewing</button>
+        </form>
+    </div>
+    
+    <div class="property-list">
+        <div class="property-card">
+            <img src="https://via.placeholder.com/300x200" alt="Luxury Home">
+            <h3>Luxury Waterfront Estate</h3>
+            <p>5 bed, 4.5 bath, 4,500 sq ft</p>
+            <p>Stunning waterfront property with private dock, gourmet kitchen, and home theater.</p>
+            <p class="price">$1,250,000</p>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Real Estate App. All rights reserved.</p>
+        
+        <div class="property-card">
+            <img src="https://via.placeholder.com/300x200" alt="Townhouse">
+            <h3>Modern Townhouse</h3>
+            <p>3 bed, 2.5 bath, 1,800 sq ft</p>
+            <p>Contemporary townhouse with rooftop terrace, open floor plan, and smart home features.</p>
+            <p class="price">$450,000</p>
         </div>
-    </footer>
-</body>
-</html>
+        
+        <div class="property-card">
+            <img src="https://via.placeholder.com/300x200" alt="Condo">
+            <h3>Downtown Luxury Condo</h3>
+            <p>2 bed, 2 bath, 1,200 sq ft</p>
+            <p>High-rise condo with floor-to-ceiling windows, concierge service, and fitness center.</p>
+            <p class="price">$650,000</p>
+        </div>
+    </div>
+{% endblock %}
