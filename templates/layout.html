@@ -24,15 +24,15 @@
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="{{ url_for('rentals') if 'rentals' in (app.view_functions|list) else '#' }}" {% if request.path == url_for('rentals') if 'rentals' in (app.view_functions|list) else False %}class="active"{% endif %}>Rentals</a></li>
-                    <li><a href="{{ url_for('purchase') if 'purchase' in (app.view_functions|list) else '#' }}" {% if request.path == url_for('purchase') if 'purchase' in (app.view_functions|list) else False %}class="active"{% endif %}>Purchase</a></li>
-                    <li><a href="{{ url_for('leasing') if 'leasing' in (app.view_functions|list) else '#' }}" {% if request.path == url_for('leasing') if 'leasing' in (app.view_functions|list) else False %}class="active"{% endif %}>Leasing</a></li>
-                    <li><a href="{{ url_for('visiting') if 'visiting' in (app.view_functions|list) else '#' }}" {% if request.path == url_for('visiting') if 'visiting' in (app.view_functions|list) else False %}class="active"{% endif %}>Schedule a Visit</a></li>
+                    <li><a href="{{ url_for('rentals') }}" {% if request.path == url_for('rentals') %}class="active"{% endif %}>Rentals</a></li>
+                    <li><a href="{{ url_for('purchase') }}" {% if request.path == url_for('purchase') %}class="active"{% endif %}>Purchase</a></li>
+                    <li><a href="{{ url_for('leasing') }}" {% if request.path == url_for('leasing') %}class="active"{% endif %}>Leasing</a></li>
+                    <li><a href="{{ url_for('visiting') }}" {% if request.path == url_for('visiting') %}class="active"{% endif %}>Schedule a Visit</a></li>
                     {% if session.get('logged_in') %}
                         {% if session.get('is_admin') %}
-                            <li><a href="{{ url_for('manage_properties') if 'manage_properties' in (app.view_functions|list) else '#' }}" {% if request.path == url_for('manage_properties') if 'manage_properties' in (app.view_functions|list) else False %}class="active"{% endif %}>Manage Properties</a></li>
+                            <li><a href="{{ url_for('manage_properties') }}" {% if request.path == url_for('manage_properties') %}class="active"{% endif %}>Manage Properties</a></li>
                         {% endif %}
-                        <li><a href="{{ url_for('payment_methods') if 'payment_methods' in (app.view_functions|list) else '#' }}" {% if request.path == url_for('payment_methods') if 'payment_methods' in (app.view_functions|list) else False %}class="active"{% endif %}>Payment Methods</a></li>
+                        <li><a href="{{ url_for('payment_methods') }}" {% if request.path == url_for('payment_methods') %}class="active"{% endif %}>Payment Methods</a></li>
                         <li><a href="{{ url_for('logout') }}">Logout ({{ session.get('username') }})</a></li>
                     {% else %}
                         <li><a href="{{ url_for('login') }}">Login</a></li>
