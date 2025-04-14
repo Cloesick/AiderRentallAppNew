@@ -1,0 +1,58 @@
+[
+    {
+        "name": "el andaluz",
+        "address": "marbella, calle del espirito sante, New York, NY, USA",
+        "description": "test",
+        "price": "490",
+        "squareMeters": "55",
+        "bedrooms": "2",
+        "bathrooms": "1",
+        "kitchens": "1",
+        "beds": "2",
+        "amenities": {
+            "parking": true,
+            "wifi": true,
+            "laundry": false,
+            "tv": true,
+            "hdmi": true,
+            "terrace": false,
+            "barbecue": false,
+            "oven": true,
+            "microwave": false,
+            "freezer": false,
+            "fridge": false
+        },
+        "id": "1744640153",
+        "created_at": "2025-04-14 16:15:53",
+        "category": "rentals",
+        "images": []
+    },
+    {
+        "name": "Cadiz",
+        "address": "cadiz, New York, NY, USA",
+        "description": "Lovely condoo in Cadiz, spain",
+        "price": "450",
+        "squareMeters": "55",
+        "bedrooms": "2",
+        "bathrooms": "1",
+        "kitchens": "3",
+        "beds": "2",
+        "amenities": {
+            "parking": true,
+            "wifi": true,
+            "laundry": false,
+            "tv": false,
+            "hdmi": true,
+            "terrace": false,
+            "barbecue": false,
+            "oven": true,
+            "microwave": false,
+            "freezer": false,
+            "fridge": false
+        },
+        "id": "1744644823",
+        "created_at": "2025-04-14 17:33:43",
+        "category": "rentals",
+        "images": []
+    }
+]
