@@ -462,23 +462,7 @@ def delete_property(category, property_id):
     
     return jsonify({'error': 'Property not found'}), 404
 
-def open_browser():
-    """Open browser after a short delay"""
-    time.sleep(1)
-    # Use the default browser with specific handling for Windows
-    if os.name == 'nt':  # Windows
-        try:
-            # Try using the standard Windows command
-            os.system('start http://localhost:5000/')
-        except:
-            # Fall back to webbrowser module
-            webbrowser.open('http://localhost:5000/', new=2)
-    else:
-        webbrowser.open('http://localhost:5000/', new=2)
-
 if __name__ == '__main__':
-    # Start a thread to open the browser
-    threading.Thread(target=open_browser).start()
     # Run the Flask app
-    print("Starting Flask server... Browser will open automatically.")
+    print("Starting Flask server...")
     app.run(debug=True, host='0.0.0.0')
