@@ -1,0 +1,336 @@
+/* Payment Methods Styling */
+.payment-methods-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.payment-methods-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.payment-methods-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.add-payment-method {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.add-payment-method:hover {
+    background-color: #45a049;
+}
+
+.payment-methods-list {
+    margin-bottom: 20px;
+}
+
+.payment-method-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.payment-method-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 15px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.payment-method-icon.visa {
+    background-image: url('/static/images/payment/visa.svg');
+}
+
+.payment-method-icon.mastercard {
+    background-image: url('/static/images/payment/mastercard.svg');
+}
+
+.payment-method-icon.amex {
+    background-image: url('/static/images/payment/amex.svg');
+}
+
+.payment-method-icon.discover {
+    background-image: url('/static/images/payment/discover.svg');
+}
+
+.payment-method-icon.bank-account {
+    background-image: url('/static/images/payment/bank.svg');
+}
+
+.payment-method-icon.paypal {
+    background-image: url('/static/images/payment/paypal.svg');
+}
+
+.payment-method-details {
+    flex: 1;
+}
+
+.payment-method-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.payment-method-expiry,
+.payment-method-number,
+.payment-method-email {
+    font-size: 14px;
+    color: #666;
+}
+
+.payment-method-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-payment-method,
+.delete-payment-method {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-payment-method {
+    color: #2196F3;
+}
+
+.delete-payment-method {
+    color: #f44336;
+}
+
+.edit-payment-method:hover {
+    background-color: #e3f2fd;
+}
+
+.delete-payment-method:hover {
+    background-color: #ffebee;
+}
+
+/* Payment Method Modal */
+.payment-method-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.payment-method-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.payment-method-modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.payment-method-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.payment-method-tab {
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-weight: bold;
+    color: #666;
+}
+
+.payment-method-tab.active {
+    border-bottom-color: #4CAF50;
+    color: #4CAF50;
+}
+
+.payment-method-tab-content {
+    display: none;
+}
+
+.payment-method-tab-content.active {
+    display: block;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.card-types {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.card-type-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.card-type-option input {
+    margin-right: 5px;
+}
+
+.card-type-icon {
+    width: 40px;
+    height: 25px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.card-type-icon.visa {
+    background-image: url('/static/images/payment/visa.svg');
+}
+
+.card-type-icon.mastercard {
+    background-image: url('/static/images/payment/mastercard.svg');
+}
+
+.card-type-icon.amex {
+    background-image: url('/static/images/payment/amex.svg');
+}
+
+.card-type-icon.discover {
+    background-image: url('/static/images/payment/discover.svg');
+}
+
+.card-number-display,
+.account-number-display {
+    padding: 10px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel-button,
+.save-button {
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.cancel-button {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.save-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #e0e0e0;
+}
+
+.save-button:hover {
+    background-color: #45a049;
+}
+
+/* Spanish Location Suggestion */
+.spanish-location-suggestion {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #e3f2fd;
+    border-radius: 4px;
+    border: 1px solid #bbdefb;
+}
+
+.spanish-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.spanish-image-option {
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.spanish-image-option:hover {
+    transform: scale(1.05);
+}
+
+.spanish-location-thumbnail {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+/* Currency Converter */
+.currency-converter {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.currency-select {
+    margin-left: 5px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.converted-price {
+    margin-top: 5px;
+    font-weight: bold;
+    color: #4CAF50;
+}

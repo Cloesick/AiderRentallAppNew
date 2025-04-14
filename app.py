@@ -120,6 +120,13 @@ def leasing():
 def visiting():
     return render_template('visiting.html')
 
+@app.route('/payment-methods')
+def payment_methods():
+    if not session.get('logged_in'):
+        flash('Please log in to manage your payment methods')
+        return redirect(url_for('login'))
+    return render_template('payment-methods.html')
+
 # Admin property management routes
 @app.route('/manage')
 @admin_required

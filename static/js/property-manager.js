@@ -118,46 +118,198 @@ function updateImageDataInput(input, previewArea) {
     input.value = JSON.stringify(imageData);
 }
 
-// Address Autocomplete Functionality
+// Address Autocomplete Functionality with Google Maps Integration
 function initializeAddressAutocomplete() {
     const addressInputs = document.querySelectorAll('input[name="address"]');
     
-    addressInputs.forEach(input => {
-        // Create suggestions container
-        const suggestionsContainer = document.createElement('div');
-        suggestionsContainer.className = 'address-suggestions';
-        input.parentNode.appendChild(suggestionsContainer);
+    // Load Google Maps API script if not already loaded
+    if (!window.google || !window.google.maps) {
+        const script = document.createElement('script');
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initGoogleMapsAutocomplete';
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
         
-        // Add input event
-        input.addEventListener('input', function() {
-            const query = this.value.trim();
-            if (query.length > 3) {
-                fetchAddressSuggestions(query, suggestionsContainer, input);
-            } else {
-                suggestionsContainer.innerHTML = '';
-                suggestionsContainer.style.display = 'none';
-            }
+        // Define the callback function
+        window.initGoogleMapsAutocomplete = function() {
+            setupAddressAutocomplete(addressInputs);
+        };
+    } else {
+        setupAddressAutocomplete(addressInputs);
+    }
+}
+
+// Setup Google Maps Places Autocomplete for address inputs
+function setupAddressAutocomplete(addressInputs) {
+    addressInputs.forEach(input => {
+        // Create a new Google Maps Places Autocomplete instance
+        const autocomplete = new google.maps.places.Autocomplete(input, {
+            types: ['address'],
+            fields: ['address_components', 'formatted_address', 'geometry', 'name']
         });
         
-        // Hide suggestions when clicking outside
-        document.addEventListener('click', function(e) {
-            if (e.target !== input && e.target !== suggestionsContainer) {
-                suggestionsContainer.style.display = 'none';
+        // Store the autocomplete instance on the input element
+        input.autocomplete = autocomplete;
+        
+        // Add a hidden input to store location data
+        const locationDataInput = document.createElement('input');
+        locationDataInput.type = 'hidden';
+        locationDataInput.name = 'location-data';
+        locationDataInput.id = input.id + '-location-data';
+        input.parentNode.appendChild(locationDataInput);
+        
+        // Listen for place selection
+        autocomplete.addListener('place_changed', function() {
+            const place = autocomplete.getPlace();
+            if (!place.geometry) {
+                // User entered the name of a place that was not suggested
+                return;
+            }
+            
+            // Store location data
+            const locationData = {
+                address: place.formatted_address,
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+                components: {}
+            };
+            
+            // Extract address components
+            place.address_components.forEach(component => {
+                const type = component.types[0];
+                locationData.components[type] = component.long_name;
+                if (type === 'country') {
+                    locationData.country_code = component.short_name;
+                }
+            });
+            
+            // Store location data in hidden input
+            locationDataInput.value = JSON.stringify(locationData);
+            
+            // Check if the address is in Spain and suggest Spanish location images
+            if (locationData.country_code === 'ES') {
+                suggestSpanishLocationImages(locationData, input);
             }
         });
     });
 }
 
-// Fetch address suggestions
+// Suggest Spanish location images based on address
+function suggestSpanishLocationImages(locationData, input) {
+    // Get the form that contains this input
+    const form = input.closest('form');
+    if (!form) return;
+    
+    // Find the image upload container
+    const imageUploadContainer = form.querySelector('.image-upload-container');
+    if (!imageUploadContainer) return;
+    
+    // Create a suggestion message
+    const suggestionMsg = document.createElement('div');
+    suggestionMsg.className = 'spanish-location-suggestion';
+    suggestionMsg.innerHTML = `
+        <p>We detected a Spanish address! Would you like to use one of our Spanish location images?</p>
+        <div class="spanish-images-grid"></div>
+    `;
+    
+    // Add Spanish location images
+    const imagesGrid = suggestionMsg.querySelector('.spanish-images-grid');
+    const locations = ['barcelona', 'madrid', 'valencia', 'seville', 'malaga'];
+    
+    locations.forEach(location => {
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'spanish-image-option';
+        
+        const img = document.createElement('img');
+        img.src = `/static/images/spain_locations/${location}.jpg`;
+        img.alt = `${location.charAt(0).toUpperCase() + location.slice(1)}`;
+        img.className = 'spanish-location-thumbnail';
+        
+        const label = document.createElement('span');
+        label.textContent = img.alt;
+        
+        imgContainer.appendChild(img);
+        imgContainer.appendChild(label);
+        imagesGrid.appendChild(imgContainer);
+        
+        // Add click event to select this image
+        imgContainer.addEventListener('click', function() {
+            // Create a File object from the image URL
+            fetch(img.src)
+                .then(response => response.blob())
+                .then(blob => {
+                    const file = new File([blob], `${location}.jpg`, { type: 'image/jpeg' });
+                    
+                    // Get the preview area
+                    const previewArea = imageUploadContainer.querySelector('.image-preview-area');
+                    const imageDataInput = imageUploadContainer.querySelector('input[name="image-data"]');
+                    
+                    if (previewArea && imageDataInput) {
+                        // Clear existing previews
+                        previewArea.innerHTML = '';
+                        
+                        // Create a preview item
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'image-preview-item';
+                        
+                        // Create image element
+                        const previewImg = document.createElement('img');
+                        previewImg.className = 'preview-image';
+                        previewImg.src = img.src;
+                        
+                        // Create remove button
+                        const removeBtn = document.createElement('button');
+                        removeBtn.type = 'button';
+                        removeBtn.className = 'remove-image-button';
+                        removeBtn.textContent = '×';
+                        
+                        // Add elements to preview item
+                        previewItem.appendChild(previewImg);
+                        previewItem.appendChild(removeBtn);
+                        
+                        // Add preview item to preview area
+                        previewArea.appendChild(previewItem);
+                        
+                        // Update image data input
+                        updateImageDataInput(imageDataInput, previewArea);
+                        
+                        // Add remove button event
+                        removeBtn.addEventListener('click', function() {
+                            previewArea.removeChild(previewItem);
+                            updateImageDataInput(imageDataInput, previewArea);
+                        });
+                    }
+                });
+            
+            // Remove the suggestion message
+            imageUploadContainer.removeChild(suggestionMsg);
+        });
+    });
+    
+    // Add the suggestion message to the image upload container
+    imageUploadContainer.appendChild(suggestionMsg);
+}
+
+// For demo purposes, we'll also keep a simplified version that works without the API key
 function fetchAddressSuggestions(query, container, input) {
-    // In a real app, this would call an API like Google Places API
-    // For demo purposes, we'll use some mock data
+    // Check if Google Maps API is loaded
+    if (window.google && window.google.maps) {
+        // Google Maps API is handling this
+        return;
+    }
+    
+    // Fallback to mock data if Google Maps API is not available
     const mockSuggestions = [
+        query + ", Madrid, Spain",
+        query + ", Barcelona, Spain",
+        query + ", Valencia, Spain",
+        query + ", Seville, Spain",
+        query + ", Malaga, Spain",
         query + ", New York, NY, USA",
         query + ", Los Angeles, CA, USA",
-        query + ", Chicago, IL, USA",
-        query + ", Houston, TX, USA",
-        query + ", Phoenix, AZ, USA"
+        query + ", London, UK",
+        query + ", Paris, France",
+        query + ", Tokyo, Japan"
     ];
     
     // Display suggestions
@@ -170,6 +322,15 @@ function fetchAddressSuggestions(query, container, input) {
         item.addEventListener('click', function() {
             input.value = suggestion;
             container.style.display = 'none';
+            
+            // Check if the address is in Spain
+            if (suggestion.includes('Spain')) {
+                const locationData = {
+                    address: suggestion,
+                    country_code: 'ES'
+                };
+                suggestSpanishLocationImages(locationData, input);
+            }
         });
         
         container.appendChild(item);
@@ -178,19 +339,23 @@ function fetchAddressSuggestions(query, container, input) {
     container.style.display = 'block';
 }
 
-// Price Regionalization Functionality
+// Price Regionalization and Currency Conversion Functionality
 function initializePriceRegionalization() {
     const priceInputs = document.querySelectorAll('input[name="price"]');
     
-    // Get user's region
-    getUserRegion().then(region => {
+    // Get user's region and exchange rates
+    Promise.all([getUserRegion(), getExchangeRates()]).then(([region, rates]) => {
+        // Store exchange rates globally
+        window.exchangeRates = rates;
+        
         priceInputs.forEach(input => {
             // Add currency symbol based on region
             const currencySymbol = getCurrencySymbol(region);
-            input.placeholder = input.placeholder.replace('$', currencySymbol);
+            input.placeholder = input.placeholder.replace(/[$€£¥₹]/, currencySymbol);
             
             // Add data attribute for region
             input.dataset.region = region;
+            input.dataset.currency = getCurrencyCode(region);
             
             // Add helper text
             const helperText = document.createElement('small');
@@ -199,45 +364,294 @@ function initializePriceRegionalization() {
             helperText.style.marginTop = '5px';
             helperText.style.color = '#666';
             input.parentNode.appendChild(helperText);
+            
+            // Add currency converter dropdown
+            addCurrencyConverter(input, region);
         });
+        
+        // Also update displayed prices on the page
+        updateDisplayedPrices(region);
     });
 }
 
-// Get user's region (in a real app, this would use geolocation or IP-based detection)
-async function getUserRegion() {
-    // Mock function - in reality would call an API
-    return new Promise(resolve => {
-        setTimeout(() => {
-            // Default to US for demo
-            resolve('US');
-        }, 500);
+// Add currency converter dropdown next to price input
+function addCurrencyConverter(input, userRegion) {
+    const userCurrency = getCurrencyCode(userRegion);
+    
+    // Create container
+    const converterContainer = document.createElement('div');
+    converterContainer.className = 'currency-converter';
+    converterContainer.style.marginTop = '10px';
+    
+    // Create dropdown
+    const currencySelect = document.createElement('select');
+    currencySelect.className = 'currency-select';
+    
+    // Add options for top 10 currencies
+    const currencies = [
+        { code: 'USD', name: 'US Dollar' },
+        { code: 'EUR', name: 'Euro' },
+        { code: 'JPY', name: 'Japanese Yen' },
+        { code: 'GBP', name: 'British Pound' },
+        { code: 'AUD', name: 'Australian Dollar' },
+        { code: 'CAD', name: 'Canadian Dollar' },
+        { code: 'CHF', name: 'Swiss Franc' },
+        { code: 'CNY', name: 'Chinese Yuan' },
+        { code: 'HKD', name: 'Hong Kong Dollar' },
+        { code: 'NZD', name: 'New Zealand Dollar' }
+    ];
+    
+    currencies.forEach(currency => {
+        const option = document.createElement('option');
+        option.value = currency.code;
+        option.textContent = `${currency.name} (${currency.code})`;
+        if (currency.code === userCurrency) {
+            option.selected = true;
+        }
+        currencySelect.appendChild(option);
     });
+    
+    // Create converted price display
+    const convertedPrice = document.createElement('div');
+    convertedPrice.className = 'converted-price';
+    convertedPrice.style.marginTop = '5px';
+    convertedPrice.style.fontWeight = 'bold';
+    
+    // Add elements to container
+    converterContainer.appendChild(document.createTextNode('Show price in: '));
+    converterContainer.appendChild(currencySelect);
+    converterContainer.appendChild(convertedPrice);
+    
+    // Add container after the input
+    input.parentNode.appendChild(converterContainer);
+    
+    // Add event listener to update converted price
+    input.addEventListener('input', function() {
+        updateConvertedPrice(input, currencySelect, convertedPrice);
+    });
+    
+    currencySelect.addEventListener('change', function() {
+        updateConvertedPrice(input, currencySelect, convertedPrice);
+    });
+    
+    // Initial update
+    updateConvertedPrice(input, currencySelect, convertedPrice);
+}
+
+// Update converted price display
+function updateConvertedPrice(input, currencySelect, displayElement) {
+    const value = parseFloat(input.value.replace(/[^0-9.]/g, ''));
+    if (isNaN(value)) {
+        displayElement.textContent = '';
+        return;
+    }
+    
+    const sourceCurrency = input.dataset.currency || 'USD';
+    const targetCurrency = currencySelect.value;
+    
+    if (sourceCurrency === targetCurrency) {
+        displayElement.textContent = '';
+        return;
+    }
+    
+    const convertedValue = convertCurrency(value, sourceCurrency, targetCurrency);
+    const symbol = getCurrencySymbolFromCode(targetCurrency);
+    
+    displayElement.textContent = `${symbol}${convertedValue.toFixed(2)} ${targetCurrency}`;
+}
+
+// Update all displayed prices on the page
+function updateDisplayedPrices(userRegion) {
+    const userCurrency = getCurrencyCode(userRegion);
+    const priceElements = document.querySelectorAll('.price');
+    
+    priceElements.forEach(element => {
+        const originalText = element.textContent;
+        const priceMatch = originalText.match(/([€$£¥₹])\s*([0-9,]+(\.[0-9]+)?)/);
+        
+        if (priceMatch) {
+            const originalSymbol = priceMatch[1];
+            const originalValue = parseFloat(priceMatch[2].replace(/,/g, ''));
+            const originalCurrency = getCurrencyCodeFromSymbol(originalSymbol);
+            
+            if (originalCurrency !== userCurrency) {
+                const convertedValue = convertCurrency(originalValue, originalCurrency, userCurrency);
+                const userSymbol = getCurrencySymbol(userRegion);
+                
+                // Create a tooltip with the original price
+                element.setAttribute('title', `Original price: ${originalText}`);
+                
+                // Update the displayed price
+                element.innerHTML = `${userSymbol}${convertedValue.toFixed(2)} <small>(${originalText})</small>`;
+            }
+        }
+    });
+}
+
+// Convert currency using exchange rates
+function convertCurrency(amount, fromCurrency, toCurrency) {
+    if (!window.exchangeRates || !window.exchangeRates.rates) {
+        return amount; // Fallback if rates not available
+    }
+    
+    const rates = window.exchangeRates.rates;
+    
+    // Convert to USD first (base currency)
+    let inUSD = amount;
+    if (fromCurrency !== 'USD') {
+        inUSD = amount / rates[fromCurrency];
+    }
+    
+    // Convert from USD to target currency
+    if (toCurrency === 'USD') {
+        return inUSD;
+    }
+    
+    return inUSD * rates[toCurrency];
+}
+
+// Get user's region using IP geolocation
+async function getUserRegion() {
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        return data.country || 'US';
+    } catch (error) {
+        console.error('Error detecting region:', error);
+        return 'US'; // Default to US if detection fails
+    }
+}
+
+// Get current exchange rates
+async function getExchangeRates() {
+    try {
+        const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching exchange rates:', error);
+        // Return mock exchange rates as fallback
+        return {
+            base: 'USD',
+            rates: {
+                USD: 1,
+                EUR: 0.85,
+                JPY: 110.2,
+                GBP: 0.72,
+                AUD: 1.35,
+                CAD: 1.25,
+                CHF: 0.92,
+                CNY: 6.45,
+                HKD: 7.78,
+                NZD: 1.41
+            }
+        };
+    }
 }
 
 // Get currency symbol based on region
 function getCurrencySymbol(region) {
     const symbols = {
         'US': '$',
+        'CA': 'CA$',
         'GB': '£',
         'EU': '€',
+        'DE': '€',
+        'FR': '€',
+        'ES': '€',
+        'IT': '€',
         'JP': '¥',
-        'IN': '₹'
+        'CN': '¥',
+        'IN': '₹',
+        'AU': 'A$',
+        'NZ': 'NZ$',
+        'CH': 'CHF',
+        'HK': 'HK$'
     };
     
     return symbols[region] || '$';
+}
+
+// Get currency code based on region
+function getCurrencyCode(region) {
+    const codes = {
+        'US': 'USD',
+        'CA': 'CAD',
+        'GB': 'GBP',
+        'EU': 'EUR',
+        'DE': 'EUR',
+        'FR': 'EUR',
+        'ES': 'EUR',
+        'IT': 'EUR',
+        'JP': 'JPY',
+        'CN': 'CNY',
+        'IN': 'INR',
+        'AU': 'AUD',
+        'NZ': 'NZD',
+        'CH': 'CHF',
+        'HK': 'HKD'
+    };
+    
+    return codes[region] || 'USD';
 }
 
 // Get currency name based on region
 function getCurrencyName(region) {
     const names = {
         'US': 'US Dollars (USD)',
+        'CA': 'Canadian Dollars (CAD)',
         'GB': 'British Pounds (GBP)',
         'EU': 'Euros (EUR)',
+        'DE': 'Euros (EUR)',
+        'FR': 'Euros (EUR)',
+        'ES': 'Euros (EUR)',
+        'IT': 'Euros (EUR)',
         'JP': 'Japanese Yen (JPY)',
-        'IN': 'Indian Rupees (INR)'
+        'CN': 'Chinese Yuan (CNY)',
+        'IN': 'Indian Rupees (INR)',
+        'AU': 'Australian Dollars (AUD)',
+        'NZ': 'New Zealand Dollars (NZD)',
+        'CH': 'Swiss Francs (CHF)',
+        'HK': 'Hong Kong Dollars (HKD)'
     };
     
     return names[region] || 'US Dollars (USD)';
+}
+
+// Get currency code from symbol
+function getCurrencyCodeFromSymbol(symbol) {
+    const codes = {
+        '$': 'USD',
+        '€': 'EUR',
+        '£': 'GBP',
+        '¥': 'JPY',
+        '₹': 'INR',
+        'CA$': 'CAD',
+        'A$': 'AUD',
+        'NZ$': 'NZD',
+        'CHF': 'CHF',
+        'HK$': 'HKD'
+    };
+    
+    return codes[symbol] || 'USD';
+}
+
+// Get currency symbol from code
+function getCurrencySymbolFromCode(code) {
+    const symbols = {
+        'USD': '$',
+        'EUR': '€',
+        'GBP': '£',
+        'JPY': '¥',
+        'INR': '₹',
+        'CAD': 'CA$',
+        'AUD': 'A$',
+        'NZD': 'NZ$',
+        'CHF': 'CHF',
+        'HKD': 'HK$',
+        'CNY': '¥'
+    };
+    
+    return symbols[code] || '$';
 }
 
 // Submit property form with additional data

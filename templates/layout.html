@@ -6,7 +6,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
     {% block extra_css %}{% endblock %}
     <script src="{{ url_for('static', filename='js/icon-customizer.js') }}" defer></script>
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}
+    <script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
+    {% endblock %}
 </head>
 <body>
     <!-- Header -->
@@ -28,6 +30,7 @@
                         {% if session.get('is_admin') %}
                             <li><a href="{{ url_for('manage_properties') }}" {% if request.path == url_for('manage_properties') %}class="active"{% endif %}>Manage Properties</a></li>
                         {% endif %}
+                        <li><a href="{{ url_for('payment_methods') }}" {% if request.path == url_for('payment_methods') %}class="active"{% endif %}>Payment Methods</a></li>
                         <li><a href="{{ url_for('logout') }}">Logout ({{ session.get('username') }})</a></li>
                     {% else %}
                         <li><a href="{{ url_for('login') }}">Login</a></li>

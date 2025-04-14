@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block title %}Payment Methods - Real Estate App{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payment-methods.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/payment-methods.js') }}" defer></script>
+{% endblock %}
+
+{% block content %}
+    <h1>Payment Methods</h1>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    
+    <div class="payment-methods-container">
+        <div class="payment-methods-header">
+            <h2>Your Payment Methods</h2>
+            <button class="add-payment-method">Add Payment Method</button>
+        </div>
+        
+        <div class="payment-methods-list">
+            <!-- Payment methods will be loaded here -->
+            <p>No payment methods added yet.</p>
+        </div>
+        
+        <p>Your payment information is securely stored and processed. We never store your full card details on our servers.</p>
+    </div>
+{% endblock %}
