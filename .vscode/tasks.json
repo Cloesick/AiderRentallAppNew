@@ -9,12 +9,7 @@
         "kind": "build",
         "isDefault": true
       },
-      "problemMatcher": [],
-      "options": {
-        "env": {
-          "ANTHROPIC_API_KEY": "REMOVED_SECRET"
-        }
-      }
+      "problemMatcher": []
     }
   ]
 }
