@@ -3,7 +3,6 @@ import webbrowser
 import threading
 import time
 import os
-from flask import g
 import webbrowser
 import threading
 import time
@@ -12,7 +11,10 @@ import os
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
 
-# No need for g.request since we're using request directly in templates
+# Make request available to templates
+@app.context_processor
+def inject_request():
+    return {'request': request}
 
 @app.route('/')
 def home():
