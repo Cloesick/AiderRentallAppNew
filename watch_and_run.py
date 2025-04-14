@@ -83,9 +83,10 @@ class ChangeHandler(FileSystemEventHandler):
             # Use the default browser with specific handling for Windows
             if os.name == 'nt':  # Windows
                 try:
-                    # Try using the standard Windows command
-                    os.system(f'start {url}')
-                except:
+                    # Use cmd.exe's start command directly
+                    os.system(f'cmd /c start {url}')
+                except Exception as e:
+                    print(f"Error opening browser with cmd: {e}")
                     # Fall back to webbrowser module
                     import webbrowser
                     webbrowser.open(url, new=2)
