@@ -597,6 +597,75 @@ input[type="time"].date-picker {
     text-decoration: underline;
 }
 
+/* Destination Slideshow */
+.destination-slideshow {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin: 30px 0;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.destination-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.destination-slide.active {
+    opacity: 1;
+}
+
+.destination-slide img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.destination-info {
+    position: relative;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 15px;
+    width: 100%;
+}
+
+.destination-info h3 {
+    margin: 0 0 5px;
+    font-size: 24px;
+}
+
+.destination-info p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.view-rentals-btn {
+    display: inline-block;
+    background: #4CAF50;
+    color: white;
+    padding: 8px 15px;
+    margin-top: 10px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container,
@@ -633,5 +702,9 @@ input[type="time"].date-picker {
     .form-row {
         flex-direction: column;
         gap: 0;
+    }
+    
+    .destination-slideshow {
+        height: 300px;
     }
 }

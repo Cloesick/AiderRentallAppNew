@@ -24,6 +24,21 @@
       {% endif %}
     {% endwith %}
     
+    {% if destination_search %}
+        <div class="destination-search-results">
+            <h2>Rental Properties in {{ location }}</h2>
+            {% if properties|length > 0 %}
+                <p>We found {{ properties|length }} properties matching your destination.</p>
+            {% else %}
+                <p>No properties found for this destination. Please try another location or browse all our rentals below.</p>
+            {% endif %}
+        </div>
+        
+        <div class="back-to-all">
+            <a href="{{ url_for('rentals') }}" class="option-button">View All Rentals</a>
+        </div>
+    {% endif %}
+    
     <div class="page-content">
         <!-- Sidebar with Filters -->
         <div class="sidebar">

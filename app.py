@@ -266,6 +266,38 @@ def logout():
 def rentals():
     return render_template('rentals.html')
 
+@app.route('/rentals/destination/<location>')
+def rentals_by_destination(location):
+    # Load all rental properties
+    properties = load_properties('rentals')
+    
+    # Filter properties by location (case-insensitive partial match)
+    location_lower = location.lower()
+    matching_properties = [
+        p for p in properties 
+        if location_lower in p.get('address', '').lower() or 
+           location_lower in p.get('city', '').lower() or
+           location_lower in p.get('country', '').lower()
+    ]
+    
+    # Track this search if analytics is enabled
+    if session.get('cookie_preferences', {}).get('analytics', False):
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': session.get('user_id', None),
+            'action': 'destination_search',
+            'data': {'location': location},
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
+    return render_template(
+        'rentals.html', 
+        destination_search=True,
+        location=location,
+        properties=matching_properties
+    )
+
 @app.route('/purchase')
 def purchase():
     return render_template('purchase.html')

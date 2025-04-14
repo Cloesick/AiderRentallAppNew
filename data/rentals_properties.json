@@ -55,4 +55,100 @@
         "category": "rentals",
         "images": []
     }
+][
+    {
+        "id": "1681234567",
+        "name": "Luxury Apartment in Paris",
+        "address": "15 Rue de Rivoli, Paris, France",
+        "city": "Paris",
+        "country": "France",
+        "description": "Beautiful apartment with a view of the Eiffel Tower",
+        "price": "€250 per night",
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "squareMeters": 90,
+        "amenities": ["WiFi", "Air Conditioning", "Kitchen", "Washer"],
+        "images": [
+            "https://images.unsplash.com/photo-1549638441-b787d2e11f14?w=800&h=600&q=80",
+            "https://images.unsplash.com/photo-1550581190-9c1c48d21d6c?w=800&h=600&q=80"
+        ],
+        "category": "rentals",
+        "created_at": "2023-04-10 12:00:00"
+    },
+    {
+        "id": "1681234568",
+        "name": "Cozy Studio in Barcelona",
+        "address": "123 La Rambla, Barcelona, Spain",
+        "city": "Barcelona",
+        "country": "Spain",
+        "description": "Charming studio in the heart of Barcelona",
+        "price": "€120 per night",
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "squareMeters": 45,
+        "amenities": ["WiFi", "Kitchen", "Balcony"],
+        "images": [
+            "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&h=600&q=80",
+            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&q=80"
+        ],
+        "category": "rentals",
+        "created_at": "2023-04-11 14:30:00"
+    },
+    {
+        "id": "1681234569",
+        "name": "Historic Apartment in Rome",
+        "address": "45 Via del Corso, Rome, Italy",
+        "city": "Rome",
+        "country": "Italy",
+        "description": "Elegant apartment near the Colosseum",
+        "price": "€180 per night",
+        "bedrooms": 2,
+        "bathrooms": 1,
+        "squareMeters": 85,
+        "amenities": ["WiFi", "Air Conditioning", "Kitchen", "Washer"],
+        "images": [
+            "https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=800&h=600&q=80",
+            "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&h=600&q=80"
+        ],
+        "category": "rentals",
+        "created_at": "2023-04-12 10:15:00"
+    },
+    {
+        "id": "1681234570",
+        "name": "Canal View Apartment in Amsterdam",
+        "address": "78 Prinsengracht, Amsterdam, Netherlands",
+        "city": "Amsterdam",
+        "country": "Netherlands",
+        "description": "Charming apartment overlooking the canals",
+        "price": "€200 per night",
+        "bedrooms": 1,
+        "bathrooms": 1,
+        "squareMeters": 70,
+        "amenities": ["WiFi", "Kitchen", "Washer", "Balcony"],
+        "images": [
+            "https://images.unsplash.com/photo-1576924542622-772281b13aa8?w=800&h=600&q=80",
+            "https://images.unsplash.com/photo-1614267157481-ca2b81ac6fcc?w=800&h=600&q=80"
+        ],
+        "category": "rentals",
+        "created_at": "2023-04-13 16:45:00"
+    },
+    {
+        "id": "1681234571",
+        "name": "Santorini Villa with Pool",
+        "address": "25 Oia Street, Santorini, Greece",
+        "city": "Santorini",
+        "country": "Greece",
+        "description": "Stunning villa with private pool and sea views",
+        "price": "€350 per night",
+        "bedrooms": 3,
+        "bathrooms": 2,
+        "squareMeters": 150,
+        "amenities": ["WiFi", "Air Conditioning", "Kitchen", "Pool", "Terrace"],
+        "images": [
+            "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&h=600&q=80",
+            "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800&h=600&q=80"
+        ],
+        "category": "rentals",
+        "created_at": "2023-04-14 09:30:00"
+    }
 ]
