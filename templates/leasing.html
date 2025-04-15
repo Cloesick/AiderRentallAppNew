@@ -36,27 +36,39 @@
         
     <div class="property-list">
         <div class="property-card">
-            <img src="{{ get_property_image('Downtown') or url_for('static', filename='img/placeholder.jpg') }}" alt="Office Space">
-            <h3>Downtown Office Space</h3>
-            <p>2,500 sq ft</p>
-            <p>Prime location office space with modern amenities, conference rooms, and reception area.</p>
-            <p class="price">$35/sq ft per year</p>
+            <div class="property-image-container">
+                <img src="{{ get_property_image('Downtown Office') or url_for('static', filename='img/placeholder.jpg') }}" alt="Office Space" class="property-image">
+            </div>
+            <div class="property-details">
+                <h3>Downtown Office Space</h3>
+                <p class="property-size">2,500 sq ft</p>
+                <p class="property-description">Prime location office space with modern amenities, conference rooms, and reception area.</p>
+                <p class="price">$35/sq ft per year</p>
+            </div>
         </div>
         
         <div class="property-card">
-            <img src="{{ get_property_image('Retail') or url_for('static', filename='img/placeholder.jpg') }}" alt="Retail Space">
-            <h3>High-Traffic Retail Space</h3>
-            <p>1,800 sq ft</p>
-            <p>Corner retail location with large display windows and high foot traffic.</p>
-            <p class="price">$28/sq ft per year</p>
+            <div class="property-image-container">
+                <img src="{{ get_property_image('Retail Space') or url_for('static', filename='img/placeholder.jpg') }}" alt="Retail Space" class="property-image">
+            </div>
+            <div class="property-details">
+                <h3>High-Traffic Retail Space</h3>
+                <p class="property-size">1,800 sq ft</p>
+                <p class="property-description">Corner retail location with large display windows and high foot traffic.</p>
+                <p class="price">$28/sq ft per year</p>
+            </div>
         </div>
         
         <div class="property-card">
-            <img src="{{ get_property_image('Industrial') or url_for('static', filename='img/placeholder.jpg') }}" alt="Industrial Space">
-            <h3>Industrial Warehouse</h3>
-            <p>10,000 sq ft</p>
-            <p>Modern warehouse with loading docks, high ceilings, and office space included.</p>
-            <p class="price">$12/sq ft per year</p>
+            <div class="property-image-container">
+                <img src="{{ get_property_image('Industrial Warehouse') or url_for('static', filename='img/placeholder.jpg') }}" alt="Industrial Space" class="property-image">
+            </div>
+            <div class="property-details">
+                <h3>Industrial Warehouse</h3>
+                <p class="property-size">10,000 sq ft</p>
+                <p class="property-description">Modern warehouse with loading docks, high ceilings, and office space included.</p>
+                <p class="price">$12/sq ft per year</p>
+            </div>
         </div>
     </div>
 </div>

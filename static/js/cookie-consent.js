@@ -272,21 +272,23 @@ function disablePreferenceCookies() {
     console.log('Preference cookies disabled');
 }
 
-// Track visitor behavior
+// Track visitor behavior for analytics and targeted ads
 function trackVisitorBehavior(action, data = {}) {
-    // Only track if analytics cookies are enabled
-    if (!window.analyticsEnabled) {
-        return;
-    }
-    
     // Add timestamp
     data.timestamp = new Date().toISOString();
+    
+    // Add current page URL
+    data.page = window.location.pathname;
+    
+    // Add interests based on page content
+    data.interests = extractInterestsFromPage();
     
     // Send tracking data to server
     fetch('/api/track-visitor', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-Current-Page': window.location.pathname
         },
         body: JSON.stringify({
             action: action,
@@ -295,6 +297,37 @@ function trackVisitorBehavior(action, data = {}) {
     }).catch(error => {
         console.error('Error tracking visitor behavior:', error);
     });
+}
+
+// Extract potential interests from page content
+function extractInterestsFromPage() {
+    const interests = [];
+    
+    // Check for property types
+    const propertyTypes = ['apartment', 'house', 'condo', 'villa', 'townhouse', 'office', 'retail', 'industrial'];
+    propertyTypes.forEach(type => {
+        if (document.body.innerHTML.toLowerCase().includes(type)) {
+            interests.push(type);
+        }
+    });
+    
+    // Check for locations
+    const locations = ['marbella', 'nice', 'malaga', 'paris', 'luxembourg', 'ibiza', 'downtown', 'beachfront', 'suburban'];
+    locations.forEach(location => {
+        if (document.body.innerHTML.toLowerCase().includes(location)) {
+            interests.push(location);
+        }
+    });
+    
+    // Check for amenities
+    const amenities = ['pool', 'garden', 'balcony', 'parking', 'garage', 'gym', 'security', 'elevator'];
+    amenities.forEach(amenity => {
+        if (document.body.innerHTML.toLowerCase().includes(amenity)) {
+            interests.push(amenity);
+        }
+    });
+    
+    return interests;
 }
 
 // Expose tracking function globally

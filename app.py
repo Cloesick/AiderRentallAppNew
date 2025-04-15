@@ -433,7 +433,14 @@ def leasing():
 def visiting():
     return render_template('visiting.html')
 
-@app.route('/payment-methods')
+@app.route('/account')
+def account():
+    if not session.get('logged_in'):
+        flash('Please log in to access your account')
+        return redirect(url_for('login'))
+    return render_template('account.html')
+
+@app.route('/account/payment-methods')
 def payment_methods():
     if not session.get('logged_in'):
         flash('Please log in to manage your payment methods')
@@ -477,13 +484,99 @@ def track_visitor():
         'user_id': session.get('user_id', None),
         'action': data['action'],
         'data': data['data'],
-        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'ip_address': request.remote_addr,
+        'user_agent': request.headers.get('User-Agent', ''),
+        'referrer': request.headers.get('Referer', ''),
+        'page': request.headers.get('X-Current-Page', data['data'].get('page', '')),
+        'interests': data['data'].get('interests', [])
     }
     
-    # Save tracking data
+    # Save tracking data for analytics and ad targeting
     save_visitor_tracking(tracking_data)
     
+    # Update visitor profile for ad targeting
+    update_visitor_ad_profile(tracking_data)
+    
     return jsonify({'success': True})
+
+def update_visitor_ad_profile(tracking_data):
+    """Update visitor profile for targeted advertising"""
+    visitor_id = tracking_data['visitor_id']
+    profile_file = os.path.join('data', 'ad_profiles', f'{visitor_id}.json')
+    
+    # Create directory if it doesn't exist
+    os.makedirs(os.path.join('data', 'ad_profiles'), exist_ok=True)
+    
+    # Load existing profile or create new one
+    profile = {}
+    if os.path.exists(profile_file):
+        try:
+            with open(profile_file, 'r') as f:
+                profile = json.load(f)
+        except:
+            profile = {}
+    
+    # Initialize profile structure if needed
+    if 'interests' not in profile:
+        profile['interests'] = {}
+    if 'locations' not in profile:
+        profile['locations'] = {}
+    if 'property_types' not in profile:
+        profile['property_types'] = {}
+    if 'price_range' not in profile:
+        profile['price_range'] = {'min': 0, 'max': 0, 'count': 0}
+    if 'visits' not in profile:
+        profile['visits'] = []
+    
+    # Update profile based on tracking data
+    action = tracking_data['action']
+    data = tracking_data['data']
+    
+    # Add this visit
+    profile['visits'].append({
+        'timestamp': tracking_data['timestamp'],
+        'action': action,
+        'page': tracking_data['page']
+    })
+    
+    # Keep only the last 100 visits
+    profile['visits'] = profile['visits'][-100:]
+    
+    # Update interests based on action
+    if action == 'property_view':
+        # Update property type interest
+        prop_type = data.get('property_type', '')
+        if prop_type:
+            profile['property_types'][prop_type] = profile['property_types'].get(prop_type, 0) + 1
+        
+        # Update location interest
+        location = data.get('location', '')
+        if location:
+            profile['locations'][location] = profile['locations'].get(location, 0) + 1
+        
+        # Update price range
+        price = data.get('price', 0)
+        if price and isinstance(price, (int, float)):
+            current_min = profile['price_range']['min']
+            current_max = profile['price_range']['max']
+            current_count = profile['price_range']['count']
+            
+            # Update min/max
+            if current_min == 0 or price < current_min:
+                profile['price_range']['min'] = price
+            if price > current_max:
+                profile['price_range']['max'] = price
+            
+            # Update average
+            profile['price_range']['count'] = current_count + 1
+    
+    # Save updated profile
+    try:
+        with open(profile_file, 'w') as f:
+            json.dump(profile, f, indent=4)
+    except Exception as e:
+        print(f"Error saving ad profile: {e}")
 
 # Admin property management routes
 @app.route('/manage')
@@ -712,6 +805,129 @@ def get_destinations():
                 })
     
     return jsonify(destinations)
+
+# Visitor ad profile endpoint
+@app.route('/api/visitor-ad-profile', methods=['GET'])
+def get_visitor_ad_profile():
+    # If visitor ID doesn't exist, create one
+    if 'visitor_id' not in session:
+        session['visitor_id'] = str(uuid.uuid4())
+        return jsonify({
+            'success': True,
+            'profile': {},
+            'available_ads': get_default_ads()
+        })
+    
+    visitor_id = session['visitor_id']
+    profile_file = os.path.join('data', 'ad_profiles', f'{visitor_id}.json')
+    
+    # Load profile if it exists
+    if os.path.exists(profile_file):
+        try:
+            with open(profile_file, 'r') as f:
+                profile = json.load(f)
+                
+            # Get ads that match this profile
+            available_ads = get_matching_ads(profile)
+            
+            return jsonify({
+                'success': True,
+                'profile': profile,
+                'available_ads': available_ads
+            })
+        except Exception as e:
+            print(f"Error loading ad profile: {e}")
+    
+    # Return default ads if no profile exists
+    return jsonify({
+        'success': True,
+        'profile': {},
+        'available_ads': get_default_ads()
+    })
+
+def get_matching_ads(profile):
+    # In a real app, this would query a database of ads
+    # For this demo, we'll return some sample ads based on the profile
+    
+    ads = []
+    
+    # Add property type specific ads
+    if 'property_types' in profile:
+        for prop_type, count in profile['property_types'].items():
+            if count > 0:
+                ads.append({
+                    'id': f'ad-{prop_type}-{len(ads) + 1}',
+                    'title': f'Exclusive {prop_type.title()} Properties',
+                    'description': f'Discover our premium selection of {prop_type} properties.',
+                    'image': f'/static/img/ads/{prop_type.lower()}.jpg',
+                    'url': f'/properties?type={prop_type}',
+                    'property_type': prop_type,
+                    'cta': 'View Properties'
+                })
+    
+    # Add location specific ads
+    if 'locations' in profile:
+        for location, count in profile['locations'].items():
+            if count > 0:
+                ads.append({
+                    'id': f'ad-location-{len(ads) + 1}',
+                    'title': f'Properties in {location.title()}',
+                    'description': f'Explore our exclusive listings in {location}.',
+                    'image': f'/static/img/ads/{location.lower().replace(" ", "-")}.jpg',
+                    'url': f'/properties?location={location}',
+                    'location': location,
+                    'cta': 'Explore Area'
+                })
+    
+    # Add price range specific ads
+    if 'price_range' in profile and profile['price_range']['count'] > 0:
+        min_price = profile['price_range']['min']
+        max_price = profile['price_range']['max']
+        
+        ads.append({
+            'id': f'ad-price-{len(ads) + 1}',
+            'title': 'Properties in Your Budget',
+            'description': f'Find properties in the {min_price} - {max_price} range.',
+            'image': '/static/img/ads/budget.jpg',
+            'url': f'/properties?min_price={min_price}&max_price={max_price}',
+            'price': (min_price + max_price) / 2,
+            'cta': 'View Listings'
+        })
+    
+    # If we don't have enough ads, add some generic ones
+    while len(ads) < 5:
+        ads.append(get_default_ads()[len(ads) % len(get_default_ads())])
+    
+    return ads
+
+def get_default_ads():
+    # Default ads when no profile exists
+    return [
+        {
+            'id': 'default-ad-1',
+            'title': 'Luxury Properties',
+            'description': 'Discover our exclusive collection of luxury properties.',
+            'image': '/static/img/ads/luxury.jpg',
+            'url': '/properties?category=luxury',
+            'cta': 'View Luxury Properties'
+        },
+        {
+            'id': 'default-ad-2',
+            'title': 'New Developments',
+            'description': 'Be the first to own in our newest developments.',
+            'image': '/static/img/ads/new-development.jpg',
+            'url': '/properties?category=new',
+            'cta': 'Explore New Homes'
+        },
+        {
+            'id': 'default-ad-3',
+            'title': 'Investment Opportunities',
+            'description': 'Find high-yield investment properties in prime locations.',
+            'image': '/static/img/ads/investment.jpg',
+            'url': '/properties?category=investment',
+            'cta': 'Invest Now'
+        }
+    ]
 
 # API configuration endpoints
 @app.route('/api/config', methods=['GET'])
