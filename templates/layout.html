@@ -45,8 +45,20 @@
         </div>
     </header>
 
-    <div class="container">
-        {% block content %}{% endblock %}
+    <div class="page-layout">
+        <div class="main-container">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="sidebar-right">
+            <div class="quick-search-container">
+                <h3>Quick Property Search</h3>
+                <div class="search-form">
+                    <input type="text" id="location-search" placeholder="Enter location...">
+                    <button id="search-button" class="search-button">Search</button>
+                </div>
+                <div id="map-container" class="map-container"></div>
+            </div>
+        </div>
     </div>
     
     <!-- Footer -->
