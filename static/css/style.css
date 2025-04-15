@@ -245,12 +245,26 @@ a:hover {
     margin-bottom: 15px;
 }
 
+.search-input-container {
+    position: relative;
+    flex: 1;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
 .search-form input {
     flex: 1;
-    padding: 10px;
+    padding: 10px 10px 10px 35px;
     border: 1px solid #ddd;
     border-radius: 4px 0 0 4px;
     font-size: 14px;
+    width: 100%;
 }
 
 .search-button {
@@ -260,6 +274,7 @@ a:hover {
     padding: 10px 15px;
     border-radius: 0 4px 4px 0;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .search-button:hover {
@@ -271,6 +286,80 @@ a:hover {
     border-radius: 4px;
     overflow: hidden;
     background-color: #f0f0f0;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.search-results {
+    margin-top: 15px;
+}
+
+.search-results h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.property-results-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+.property-result-item {
+    display: flex;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.property-result-item:hover {
+    background-color: #f9f9f9;
+}
+
+.property-result-item:last-child {
+    border-bottom: none;
+}
+
+.property-result-image {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.property-result-details {
+    flex: 1;
+}
+
+.property-result-details h5 {
+    margin: 0 0 5px;
+    font-size: 14px;
+}
+
+.property-result-details p {
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.property-result-price {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.no-results {
+    padding: 15px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
 }
 
 /* Property Cards */

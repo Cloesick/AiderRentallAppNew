@@ -9,6 +9,7 @@
     <script src="{{ url_for('static', filename='js/cookie-consent.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/quick-search-map.js') }}" defer></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block extra_js %}
     <script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
@@ -53,10 +54,19 @@
             <div class="quick-search-container">
                 <h3>Quick Property Search</h3>
                 <div class="search-form">
-                    <input type="text" id="location-search" placeholder="Enter location...">
+                    <div class="search-input-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="location-search" placeholder="Enter location...">
+                    </div>
                     <button id="search-button" class="search-button">Search</button>
                 </div>
                 <div id="map-container" class="map-container"></div>
+                <div class="search-results">
+                    <h4>Nearby Properties <span id="results-count">(0)</span></h4>
+                    <div id="property-results" class="property-results-list">
+                        <p class="no-results">Search for a location to see properties</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
