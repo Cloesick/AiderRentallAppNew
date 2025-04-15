@@ -1,71 +1,215 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Leasing - Real Estate App</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/real-estate.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Commercial Leasing Opportunities</h1>
+{% extends 'base.html' %}
+
+{% block title %}Leasing - Real Estate App{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Commercial Leasing Opportunities</h1>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
         
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <div class="flash-messages">
-              {% for message in messages %}
-                <p>{{ message }}</p>
-              {% endfor %}
+    <div class="calendar-container">
+        <h2>Schedule a Consultation</h2>
+        <form method="POST" action="#">
+            <div class="form-group">
+                <label for="lease-start">Lease Start Date:</label>
+                <div class="calendar-input-wrapper">
+                    <input type="text" id="lease-start" name="lease-start" class="date-picker" readonly required>
+                    <div class="calendar-popup" id="lease-start-calendar"></div>
+                </div>
             </div>
-          {% endif %}
-        {% endwith %}
+            <div class="form-group">
+                <label for="lease-term">Lease Term (months):</label>
+                <input type="number" id="lease-term" name="lease-term" min="6" max="120" value="12" class="date-picker" required>
+            </div>
+            <button type="submit" class="submit-button">Request Information</button>
+        </form>
+    </div>
         
-        <div class="calendar-container">
-            <h2>Schedule a Consultation</h2>
-            <form method="POST" action="#">
-                <div class="form-group">
-                    <label for="lease-start">Lease Start Date:</label>
-                    <input type="date" id="lease-start" name="lease-start" class="date-picker" required>
-                </div>
-                <div class="form-group">
-                    <label for="lease-term">Lease Term (months):</label>
-                    <input type="number" id="lease-term" name="lease-term" min="6" max="120" value="12" class="date-picker" required>
-                </div>
-                <button type="submit" class="submit-button">Request Information</button>
-            </form>
+    <div class="property-list">
+        <div class="property-card">
+            <img src="{{ get_property_image('Downtown') or url_for('static', filename='img/placeholder.jpg') }}" alt="Office Space">
+            <h3>Downtown Office Space</h3>
+            <p>2,500 sq ft</p>
+            <p>Prime location office space with modern amenities, conference rooms, and reception area.</p>
+            <p class="price">$35/sq ft per year</p>
         </div>
         
-        <div class="property-list">
-            <div class="property-card">
-                <img src="https://via.placeholder.com/300x200" alt="Office Space">
-                <h3>Downtown Office Space</h3>
-                <p>2,500 sq ft</p>
-                <p>Prime location office space with modern amenities, conference rooms, and reception area.</p>
-                <p class="price">$35/sq ft per year</p>
-            </div>
-            
-            <div class="property-card">
-                <img src="https://via.placeholder.com/300x200" alt="Retail Space">
-                <h3>High-Traffic Retail Space</h3>
-                <p>1,800 sq ft</p>
-                <p>Corner retail location with large display windows and high foot traffic.</p>
-                <p class="price">$28/sq ft per year</p>
-            </div>
-            
-            <div class="property-card">
-                <img src="https://via.placeholder.com/300x200" alt="Industrial Space">
-                <h3>Industrial Warehouse</h3>
-                <p>10,000 sq ft</p>
-                <p>Modern warehouse with loading docks, high ceilings, and office space included.</p>
-                <p class="price">$12/sq ft per year</p>
-            </div>
+        <div class="property-card">
+            <img src="{{ get_property_image('Retail') or url_for('static', filename='img/placeholder.jpg') }}" alt="Retail Space">
+            <h3>High-Traffic Retail Space</h3>
+            <p>1,800 sq ft</p>
+            <p>Corner retail location with large display windows and high foot traffic.</p>
+            <p class="price">$28/sq ft per year</p>
         </div>
         
-        <div class="navigation">
-            <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('rentals') }}">Rentals</a>
-            <a href="{{ url_for('purchase') }}">Purchase</a>
-            <a href="{{ url_for('visiting') }}">Schedule a Visit</a>
+        <div class="property-card">
+            <img src="{{ get_property_image('Industrial') or url_for('static', filename='img/placeholder.jpg') }}" alt="Industrial Space">
+            <h3>Industrial Warehouse</h3>
+            <p>10,000 sq ft</p>
+            <p>Modern warehouse with loading docks, high ceilings, and office space included.</p>
+            <p class="price">$12/sq ft per year</p>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize calendar for lease start date
+        const leaseStartInput = document.getElementById('lease-start');
+        const leaseStartCalendar = document.getElementById('lease-start-calendar');
+        
+        if (leaseStartInput && leaseStartCalendar) {
+            // Create calendar
+            const calendar = document.createElement('div');
+            calendar.className = 'calendar';
+            
+            // Add calendar header
+            const header = document.createElement('div');
+            header.className = 'calendar-header';
+            
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'calendar-nav prev-month';
+            prevBtn.innerHTML = '&lt;';
+            
+            const monthDisplay = document.createElement('span');
+            monthDisplay.className = 'current-month';
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'calendar-nav next-month';
+            nextBtn.innerHTML = '&gt;';
+            
+            header.appendChild(prevBtn);
+            header.appendChild(monthDisplay);
+            header.appendChild(nextBtn);
+            
+            // Add calendar body
+            const calendarBody = document.createElement('div');
+            calendarBody.className = 'calendar-body';
+            
+            // Add weekday headers
+            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const weekdaysRow = document.createElement('div');
+            weekdaysRow.className = 'weekdays';
+            
+            weekdays.forEach(day => {
+                const dayElem = document.createElement('div');
+                dayElem.className = 'weekday';
+                dayElem.textContent = day;
+                weekdaysRow.appendChild(dayElem);
+            });
+            
+            calendarBody.appendChild(weekdaysRow);
+            
+            // Add days grid
+            const daysGrid = document.createElement('div');
+            daysGrid.className = 'days';
+            calendarBody.appendChild(daysGrid);
+            
+            calendar.appendChild(header);
+            calendar.appendChild(calendarBody);
+            leaseStartCalendar.appendChild(calendar);
+            
+            // Calendar functionality
+            let currentDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+            
+            // Update calendar
+            function updateCalendar() {
+                // Update month display
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                monthDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+                
+                // Clear days grid
+                daysGrid.innerHTML = '';
+                
+                // Get first day of month and number of days
+                const firstDay = new Date(currentYear, currentMonth, 1);
+                const lastDay = new Date(currentYear, currentMonth + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDay = firstDay.getDay(); // 0 = Sunday
+                
+                // Add empty cells for days before the first of the month
+                for (let i = 0; i < startingDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.className = 'day empty';
+                    daysGrid.appendChild(emptyDay);
+                }
+                
+                // Add days of the month
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const day = document.createElement('div');
+                    day.className = 'day';
+                    day.textContent = i;
+                    
+                    // Check if this day is today
+                    const today = new Date();
+                    if (currentYear === today.getFullYear() && 
+                        currentMonth === today.getMonth() && 
+                        i === today.getDate()) {
+                        day.classList.add('today');
+                    }
+                    
+                    // Make days clickable
+                    day.addEventListener('click', function() {
+                        // Format date as YYYY-MM-DD
+                        const selectedDate = new Date(currentYear, currentMonth, i);
+                        const formattedDate = selectedDate.toISOString().split('T')[0];
+                        
+                        // Update input value
+                        leaseStartInput.value = formattedDate;
+                        
+                        // Hide calendar
+                        leaseStartCalendar.style.display = 'none';
+                    });
+                    
+                    daysGrid.appendChild(day);
+                }
+            }
+            
+            // Initialize calendar
+            updateCalendar();
+            
+            // Add event listeners for navigation
+            prevBtn.addEventListener('click', function() {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                updateCalendar();
+            });
+            
+            nextBtn.addEventListener('click', function() {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                updateCalendar();
+            });
+            
+            // Show/hide calendar on input click
+            leaseStartInput.addEventListener('click', function() {
+                leaseStartCalendar.style.display = leaseStartCalendar.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Hide calendar when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!leaseStartInput.contains(e.target) && !leaseStartCalendar.contains(e.target)) {
+                    leaseStartCalendar.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
