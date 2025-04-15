@@ -191,6 +191,24 @@ a:hover {
 }
 
 /* Page Layout */
+.page-layout {
+    display: flex;
+    width: 80%;
+    margin: auto;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.main-container {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-right {
+    width: 300px;
+    flex-shrink: 0;
+}
+
 .page-content {
     display: flex;
     flex-wrap: wrap;
@@ -205,6 +223,54 @@ a:hover {
 .main-content {
     flex: 1;
     min-width: 300px;
+}
+
+/* Quick Search and Map */
+.quick-search-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.quick-search-container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.search-form {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+}
+
+.search-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #45a049;
+}
+
+.map-container {
+    height: 300px;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #f0f0f0;
 }
 
 /* Property Cards */
@@ -671,8 +737,17 @@ input[type="time"].date-picker {
     .container,
     .header-container,
     .footer-container,
-    .footer-bottom {
+    .footer-bottom,
+    .page-layout {
         width: 90%;
+    }
+    
+    .page-layout {
+        flex-direction: column;
+    }
+    
+    .sidebar-right {
+        width: 100%;
     }
     
     .page-content {

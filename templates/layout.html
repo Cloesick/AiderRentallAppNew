@@ -7,6 +7,8 @@
     {% block extra_css %}{% endblock %}
     <script src="{{ url_for('static', filename='js/icon-customizer.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/cookie-consent.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/quick-search-map.js') }}" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block extra_js %}
     <script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
