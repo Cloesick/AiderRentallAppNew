@@ -205,18 +205,57 @@ def get_destination_images():
                 destinations[destination] = images
     return destinations
 
-# Helper function to get property image based on location
-def get_property_image(location):
-    # Try to find an image for the exact location
+# Helper function to get property image based on location or title
+def get_property_image(location_or_title):
+    if not location_or_title:
+        return None
+        
+    location_or_title = location_or_title.lower()
+    
+    # Keywords to match with specific property types
+    property_type_keywords = {
+        'office': ['office', 'workspace', 'commercial', 'business'],
+        'retail': ['retail', 'shop', 'store', 'mall'],
+        'industrial': ['industrial', 'warehouse', 'factory', 'manufacturing'],
+        'residential': ['house', 'home', 'apartment', 'condo', 'villa', 'penthouse'],
+        'luxury': ['luxury', 'premium', 'exclusive', 'high-end'],
+        'beachfront': ['beach', 'ocean', 'sea', 'coastal'],
+        'downtown': ['downtown', 'city center', 'urban', 'central'],
+        'suburban': ['suburban', 'quiet', 'family'],
+        'rural': ['rural', 'countryside', 'farm']
+    }
+    
+    # First try to find an image for the exact location
     for destination in os.listdir(DESTINATIONS_FOLDER):
-        if location.lower() in destination.lower():
+        if destination.lower() in location_or_title:
             dest_path = os.path.join(DESTINATIONS_FOLDER, destination)
             if os.path.isdir(dest_path):
                 images = [f for f in os.listdir(dest_path) if allowed_file(f)]
                 if images:
                     return os.path.join('uploads', 'destinations', destination, images[0])
     
-    # If no specific location image found, return a random property image
+    # Then try to match by property type keywords
+    for prop_type, keywords in property_type_keywords.items():
+        if any(keyword in location_or_title for keyword in keywords):
+            # Look for matching property type in destinations
+            for destination in os.listdir(DESTINATIONS_FOLDER):
+                dest_path = os.path.join(DESTINATIONS_FOLDER, destination)
+                if os.path.isdir(dest_path):
+                    # Try to find an image with the property type in its name
+                    matching_images = [f for f in os.listdir(dest_path) 
+                                      if allowed_file(f) and prop_type.lower() in f.lower()]
+                    if matching_images:
+                        return os.path.join('uploads', 'destinations', destination, matching_images[0])
+    
+    # If no specific match found, try to find any image in a matching destination
+    for destination in os.listdir(DESTINATIONS_FOLDER):
+        dest_path = os.path.join(DESTINATIONS_FOLDER, destination)
+        if os.path.isdir(dest_path):
+            images = [f for f in os.listdir(dest_path) if allowed_file(f)]
+            if images:
+                return os.path.join('uploads', 'destinations', destination, images[0])
+    
+    # If still no match, return a random property image
     property_images = []
     for root, dirs, files in os.walk(PROPERTY_IMAGES_FOLDER):
         for file in files:
@@ -332,11 +371,18 @@ def load_properties(category):
 def save_properties(category, properties):
     filename = get_properties_file(category)
     try:
-        # Ensure each property has an image based on its location
+        # Ensure each property has an image based on its title or location
         for prop in properties:
             if not prop.get('images') or len(prop.get('images', [])) == 0:
+                # Try to match image based on title first, then location details
+                title = prop.get('title', '') or prop.get('name', '')
                 location = prop.get('city', '') or prop.get('address', '') or prop.get('country', '')
-                image = get_property_image(location)
+                description = prop.get('description', '')
+                
+                # Combine all text fields for better matching
+                search_text = f"{title} {location} {description}"
+                
+                image = get_property_image(search_text)
                 if image:
                     prop['images'] = [image]
         
