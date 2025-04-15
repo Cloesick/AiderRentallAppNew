@@ -28,6 +28,7 @@ os.makedirs(CAROUSEL_FOLDER, exist_ok=True)
 os.makedirs(DESTINATIONS_FOLDER, exist_ok=True)
 os.makedirs(PROPERTY_IMAGES_FOLDER, exist_ok=True)
 os.makedirs(os.path.join('data'), exist_ok=True)
+os.makedirs(os.path.join('data', 'ad_profiles'), exist_ok=True)
 
 # Configure allowed file extensions
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'svg'}
