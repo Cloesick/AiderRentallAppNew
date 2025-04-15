@@ -78,6 +78,33 @@ function matchAdsToProfile(profile, availableAds) {
             score += priceScore;
         }
         
+        // Score based on interests
+        if (profile.interests && ad.tags) {
+            const interestMatches = ad.tags.filter(tag => 
+                profile.interests.some(interest => 
+                    interest.toLowerCase() === tag.toLowerCase()
+                )
+            ).length;
+            
+            score += interestMatches * 5; // Weight interests highly
+        }
+        
+        // Score based on recent visits
+        if (profile.visits && profile.visits.length > 0) {
+            // Give higher scores to ads that match recent page visits
+            const recentVisits = profile.visits.slice(0, 10); // Last 10 visits
+            
+            // Check if any recent visits match the ad's page
+            const visitMatch = recentVisits.some(visit => 
+                visit.page && ad.target_page && 
+                visit.page.includes(ad.target_page)
+            );
+            
+            if (visitMatch) {
+                score += 20; // Significant boost for matching recent visit
+            }
+        }
+        
         return {
             ad: ad,
             score: score
@@ -87,8 +114,40 @@ function matchAdsToProfile(profile, availableAds) {
     // Sort by score (highest first)
     scoredAds.sort((a, b) => b.score - a.score);
     
-    // Return top ads
-    return scoredAds.slice(0, 5).map(scoredAd => scoredAd.ad);
+    // Add some randomness to prevent always showing the same ads
+    // Take top 10 ads and randomly select 5 from them, with higher scored ads having higher probability
+    const topAds = scoredAds.slice(0, 10);
+    const selectedAds = [];
+    
+    // Select 5 ads or fewer if not enough available
+    const numToSelect = Math.min(5, topAds.length);
+    
+    for (let i = 0; i < numToSelect; i++) {
+        // Calculate total remaining score
+        const totalScore = topAds.reduce((sum, ad) => sum + ad.score, 0);
+        
+        if (totalScore <= 0) {
+            // If all scores are 0, select randomly
+            const randomIndex = Math.floor(Math.random() * topAds.length);
+            selectedAds.push(topAds[randomIndex].ad);
+            topAds.splice(randomIndex, 1);
+        } else {
+            // Select based on weighted probability
+            let random = Math.random() * totalScore;
+            let cumulativeScore = 0;
+            
+            for (let j = 0; j < topAds.length; j++) {
+                cumulativeScore += topAds[j].score;
+                if (random <= cumulativeScore) {
+                    selectedAds.push(topAds[j].ad);
+                    topAds.splice(j, 1);
+                    break;
+                }
+            }
+        }
+    }
+    
+    return selectedAds;
 }
 
 // Display an ad in a container

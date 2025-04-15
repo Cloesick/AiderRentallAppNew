@@ -274,6 +274,7 @@ function disablePreferenceCookies() {
 
 // Track visitor behavior for analytics and targeted ads
 function trackVisitorBehavior(action, data = {}) {
+    // Always track for commercial targeting regardless of analytics consent
     // Add timestamp
     data.timestamp = new Date().toISOString();
     
@@ -282,6 +283,20 @@ function trackVisitorBehavior(action, data = {}) {
     
     // Add interests based on page content
     data.interests = extractInterestsFromPage();
+    
+    // Add device info
+    data.device = {
+        screen_width: window.screen.width,
+        screen_height: window.screen.height,
+        viewport_width: window.innerWidth,
+        viewport_height: window.innerHeight,
+        user_agent: navigator.userAgent
+    };
+    
+    // Add referrer if available
+    if (document.referrer) {
+        data.referrer = document.referrer;
+    }
     
     // Send tracking data to server
     fetch('/api/track-visitor', {
@@ -297,37 +312,86 @@ function trackVisitorBehavior(action, data = {}) {
     }).catch(error => {
         console.error('Error tracking visitor behavior:', error);
     });
+    
+    // Log tracking in console during development
+    console.log(`Tracked: ${action}`, data);
 }
 
 // Extract potential interests from page content
 function extractInterestsFromPage() {
     const interests = [];
+    const pageContent = document.body.textContent.toLowerCase();
     
     // Check for property types
-    const propertyTypes = ['apartment', 'house', 'condo', 'villa', 'townhouse', 'office', 'retail', 'industrial'];
+    const propertyTypes = [
+        'apartment', 'house', 'condo', 'villa', 'townhouse', 
+        'office', 'retail', 'industrial', 'warehouse', 'commercial',
+        'residential', 'penthouse', 'studio', 'duplex', 'loft'
+    ];
     propertyTypes.forEach(type => {
-        if (document.body.innerHTML.toLowerCase().includes(type)) {
+        if (pageContent.includes(type)) {
             interests.push(type);
         }
     });
     
     // Check for locations
-    const locations = ['marbella', 'nice', 'malaga', 'paris', 'luxembourg', 'ibiza', 'downtown', 'beachfront', 'suburban'];
+    const locations = [
+        'marbella', 'nice', 'malaga', 'paris', 'luxembourg', 'ibiza', 
+        'downtown', 'beachfront', 'suburban', 'urban', 'rural',
+        'city center', 'waterfront', 'mountain', 'coastal'
+    ];
     locations.forEach(location => {
-        if (document.body.innerHTML.toLowerCase().includes(location)) {
+        if (pageContent.includes(location)) {
             interests.push(location);
         }
     });
     
     // Check for amenities
-    const amenities = ['pool', 'garden', 'balcony', 'parking', 'garage', 'gym', 'security', 'elevator'];
+    const amenities = [
+        'pool', 'garden', 'balcony', 'parking', 'garage', 'gym', 
+        'security', 'elevator', 'terrace', 'air conditioning', 
+        'heating', 'furnished', 'pet friendly', 'doorman', 'concierge'
+    ];
     amenities.forEach(amenity => {
-        if (document.body.innerHTML.toLowerCase().includes(amenity)) {
+        if (pageContent.includes(amenity)) {
             interests.push(amenity);
         }
     });
     
-    return interests;
+    // Check for price ranges
+    const priceRanges = [
+        'luxury', 'affordable', 'budget', 'premium', 'exclusive',
+        'high-end', 'mid-range', 'economic'
+    ];
+    priceRanges.forEach(range => {
+        if (pageContent.includes(range)) {
+            interests.push(range);
+        }
+    });
+    
+    // Check for property features
+    const features = [
+        'modern', 'traditional', 'renovated', 'new construction',
+        'historic', 'open floor plan', 'spacious', 'cozy', 'bright'
+    ];
+    features.forEach(feature => {
+        if (pageContent.includes(feature)) {
+            interests.push(feature);
+        }
+    });
+    
+    // Check for user intent
+    const intents = [
+        'buy', 'rent', 'lease', 'invest', 'sell', 'visit',
+        'schedule', 'tour', 'contact', 'information'
+    ];
+    intents.forEach(intent => {
+        if (pageContent.includes(intent)) {
+            interests.push(intent);
+        }
+    });
+    
+    return [...new Set(interests)]; // Remove duplicates
 }
 
 // Expose tracking function globally

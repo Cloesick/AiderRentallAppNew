@@ -44,6 +44,7 @@
                 <p class="property-size">2,500 sq ft</p>
                 <p class="property-description">Prime location office space with modern amenities, conference rooms, and reception area.</p>
                 <p class="price">$35/sq ft per year</p>
+                <button class="btn btn-primary mt-2 view-details-btn" onclick="trackPropertyView('Downtown Office', 'Office', 35000)">View Details</button>
             </div>
         </div>
         
@@ -56,6 +57,7 @@
                 <p class="property-size">1,800 sq ft</p>
                 <p class="property-description">Corner retail location with large display windows and high foot traffic.</p>
                 <p class="price">$28/sq ft per year</p>
+                <button class="btn btn-primary mt-2 view-details-btn" onclick="trackPropertyView('Retail Space', 'Retail', 28000)">View Details</button>
             </div>
         </div>
         
@@ -68,12 +70,27 @@
                 <p class="property-size">10,000 sq ft</p>
                 <p class="property-description">Modern warehouse with loading docks, high ceilings, and office space included.</p>
                 <p class="price">$12/sq ft per year</p>
+                <button class="btn btn-primary mt-2 view-details-btn" onclick="trackPropertyView('Industrial Warehouse', 'Industrial', 12000)">View Details</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    // Function to track property views for targeted ads
+    function trackPropertyView(location, propertyType, price) {
+        if (typeof trackVisitorBehavior === 'function') {
+            trackVisitorBehavior('property_view', {
+                location: location,
+                property_type: propertyType,
+                price: price
+            });
+        }
+        
+        // In a real app, this would navigate to the property details page
+        alert(`Viewing details for ${propertyType} property in ${location}`);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize calendar for lease start date
         const leaseStartInput = document.getElementById('lease-start');

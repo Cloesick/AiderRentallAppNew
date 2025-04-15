@@ -39,6 +39,7 @@
     margin-bottom: 20px;
     background-color: #fff;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
 }
 
 .property-card:hover {
@@ -65,6 +66,9 @@
 
 .property-details {
     padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 }
 
 .property-details h3 {
@@ -91,6 +95,19 @@
     color: #4CAF50;
     font-size: 1.2em;
     margin-top: auto;
+    margin-bottom: 10px;
+}
+
+.view-details-btn {
+    align-self: flex-start;
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    transition: background-color 0.3s;
+}
+
+.view-details-btn:hover {
+    background-color: #45a049;
+    border-color: #45a049;
 }
 
 /* Calendar styling */

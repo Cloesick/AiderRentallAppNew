@@ -67,22 +67,97 @@ def get_visitor_tracking_file():
 
 def save_visitor_tracking(tracking_data):
     filename = get_visitor_tracking_file()
+    visitors_db_file = 'data/visitors_db.json'
+    
     try:
         # Create directory if it doesn't exist
         os.makedirs('data', exist_ok=True)
         
-        # Load existing data
+        # Load existing tracking data
         existing_data = []
         if os.path.exists(filename):
             with open(filename, 'r') as f:
                 existing_data = json.load(f)
         
-        # Append new data
+        # Append new tracking data
         existing_data.append(tracking_data)
         
-        # Save updated data
+        # Save updated tracking data
         with open(filename, 'w') as f:
             json.dump(existing_data, f, indent=4)
+        
+        # Update visitors database
+        visitors_db = {
+            'visitors': [],
+            'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        
+        if os.path.exists(visitors_db_file):
+            try:
+                with open(visitors_db_file, 'r') as f:
+                    visitors_db = json.load(f)
+            except:
+                pass
+        
+        # Find or create visitor record
+        visitor_id = tracking_data.get('visitor_id')
+        visitor = next((v for v in visitors_db['visitors'] if v.get('visitor_id') == visitor_id), None)
+        
+        if not visitor:
+            visitor = {
+                'visitor_id': visitor_id,
+                'first_seen': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'last_seen': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'user_id': tracking_data.get('user_id'),
+                'page_views': 0,
+                'actions': [],
+                'interests': [],
+                'locations_viewed': [],
+                'property_types_viewed': []
+            }
+            visitors_db['visitors'].append(visitor)
+        else:
+            # Update existing visitor
+            visitor['last_seen'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            if tracking_data.get('user_id'):
+                visitor['user_id'] = tracking_data.get('user_id')
+        
+        # Update visitor stats
+        action = tracking_data.get('action')
+        if action == 'page_view':
+            visitor['page_views'] = visitor.get('page_views', 0) + 1
+        
+        # Add action to history (keep last 50)
+        visitor_action = {
+            'action': action,
+            'timestamp': tracking_data.get('timestamp'),
+            'data': tracking_data.get('data', {})
+        }
+        visitor['actions'] = [visitor_action] + visitor.get('actions', [])[:49]
+        
+        # Update interests
+        if 'interests' in tracking_data:
+            for interest in tracking_data.get('interests', []):
+                if interest not in visitor.get('interests', []):
+                    visitor.setdefault('interests', []).append(interest)
+        
+        # Update locations viewed
+        location = tracking_data.get('data', {}).get('location')
+        if location and location not in visitor.get('locations_viewed', []):
+            visitor.setdefault('locations_viewed', []).append(location)
+        
+        # Update property types viewed
+        prop_type = tracking_data.get('data', {}).get('property_type')
+        if prop_type and prop_type not in visitor.get('property_types_viewed', []):
+            visitor.setdefault('property_types_viewed', []).append(prop_type)
+        
+        # Update last updated timestamp
+        visitors_db['last_updated'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Save updated visitors database
+        with open(visitors_db_file, 'w') as f:
+            json.dump(visitors_db, f, indent=4)
+        
         return True
     except Exception as e:
         print(f"Error saving visitor tracking: {e}")
@@ -438,6 +513,17 @@ def account():
     if not session.get('logged_in'):
         flash('Please log in to access your account')
         return redirect(url_for('login'))
+    
+    # Track account page view
+    if 'visitor_id' in session:
+        tracking_data = {
+            'visitor_id': session['visitor_id'],
+            'user_id': session.get('user_id', None),
+            'action': 'account_view',
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
     return render_template('account.html')
 
 @app.route('/account/payment-methods')
