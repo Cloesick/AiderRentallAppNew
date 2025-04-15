@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage APIs{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>API Configuration Management</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Google Maps API</h5>
+                </div>
+                <div class="card-body">
+                    <form id="google-maps-form">
+                        <div class="form-group">
+                            <label for="google-maps-api-key">API Key</label>
+                            <input type="text" class="form-control" id="google-maps-api-key" 
+                                   value="{{ get_api_config().get('google_maps_api_key', '') }}" 
+                                   placeholder="Enter Google Maps API Key">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Add New API</h5>
+                </div>
+                <div class="card-body">
+                    <form id="new-api-form">
+                        <div class="form-group">
+                            <label for="api-name">API Name</label>
+                            <input type="text" class="form-control" id="api-name" placeholder="Enter API name">
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="api-key">API Key</label>
+                            <input type="text" class="form-control" id="api-key" placeholder="Enter API key">
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="api-url">API URL (optional)</label>
+                            <input type="text" class="form-control" id="api-url" placeholder="Enter API URL">
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="api-description">Description (optional)</label>
+                            <textarea class="form-control" id="api-description" rows="2" placeholder="Enter API description"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success mt-3">Add API</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Other APIs</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>API Name</th>
+                                    <th>API Key</th>
+                                    <th>URL</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="other-apis-table">
+                                {% for api in get_api_config().get('other_apis', []) %}
+                                <tr>
+                                    <td>{{ api.name }}</td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control api-key-field" value="{{ api.key }}" readonly>
+                                            <button class="btn btn-outline-secondary toggle-api-key" type="button">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>{{ api.url }}</td>
+                                    <td>{{ api.description }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger delete-api" data-api-name="{{ api.name }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% if not get_api_config().get('other_apis', []) %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No APIs configured</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Google Maps API Form
+        const googleMapsForm = document.getElementById('google-maps-form');
+        googleMapsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const apiKey = document.getElementById('google-maps-api-key').value.trim();
+            
+            fetch('/api/config/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    api_name: 'google_maps',
+                    api_key: apiKey
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Google Maps API key saved successfully');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the API key');
+            });
+        });
+        
+        // New API Form
+        const newApiForm = document.getElementById('new-api-form');
+        newApiForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const apiName = document.getElementById('api-name').value.trim();
+            const apiKey = document.getElementById('api-key').value.trim();
+            const apiUrl = document.getElementById('api-url').value.trim();
+            const apiDescription = document.getElementById('api-description').value.trim();
+            
+            if (!apiName || !apiKey) {
+                alert('API name and key are required');
+                return;
+            }
+            
+            fetch('/api/config/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    api_name: apiName,
+                    api_key: apiKey,
+                    api_url: apiUrl,
+                    description: apiDescription
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('API added successfully');
+                    // Reload the page to show the new API
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the API');
+            });
+        });
+        
+        // Toggle API Key Visibility
+        document.querySelectorAll('.toggle-api-key').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+        
+        // Delete API
+        document.querySelectorAll('.delete-api').forEach(button => {
+            button.addEventListener('click', function() {
+                const apiName = this.dataset.apiName;
+                
+                if (confirm(`Are you sure you want to delete the API "${apiName}"?`)) {
+                    // Get current config
+                    fetch('/api/config')
+                    .then(response => response.json())
+                    .then(config => {
+                        // Filter out the API to delete
+                        config.other_apis = config.other_apis.filter(api => api.name !== apiName);
+                        
+                        // Save updated config
+                        return fetch('/api/config', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(config)
+                        });
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('API deleted successfully');
+                            // Remove the row from the table
+                            this.closest('tr').remove();
+                            
+                            // If no APIs left, show "No APIs configured" message
+                            const tbody = document.getElementById('other-apis-table');
+                            if (tbody.children.length === 0) {
+                                tbody.innerHTML = `
+                                    <tr>
+                                        <td colspan="5" class="text-center">No APIs configured</td>
+                                    </tr>
+                                `;
+                            }
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while deleting the API');
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

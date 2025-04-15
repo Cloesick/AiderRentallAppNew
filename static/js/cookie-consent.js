@@ -3,11 +3,101 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check if user has already made a cookie choice
     if (!localStorage.getItem('cookieConsent')) {
         showCookieBanner();
+        // Block navigation until cookie preferences are set
+        blockNavigation();
     } else {
         // Apply saved cookie preferences
         applyCookiePreferences(JSON.parse(localStorage.getItem('cookieConsent')));
     }
 });
+
+// Block all navigation until cookie preferences are set
+function blockNavigation() {
+    // Create overlay to block interaction with the page
+    const overlay = document.createElement('div');
+    overlay.className = 'cookie-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.zIndex = '9998'; // Just below the cookie banner
+    document.body.appendChild(overlay);
+    
+    // Disable all links and buttons except those in the cookie banner
+    const links = document.querySelectorAll('a:not(.cookie-banner a)');
+    links.forEach(link => {
+        link.dataset.originalHref = link.href;
+        link.dataset.originalOnclick = link.onclick;
+        link.href = 'javascript:void(0)';
+        link.onclick = (e) => {
+            e.preventDefault();
+            alert('Please select your cookie preferences first.');
+        };
+    });
+    
+    const buttons = document.querySelectorAll('button:not(.cookie-button)');
+    buttons.forEach(button => {
+        button.dataset.originalOnclick = button.onclick;
+        button.onclick = (e) => {
+            e.preventDefault();
+            alert('Please select your cookie preferences first.');
+        };
+    });
+    
+    // Disable form submissions
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.dataset.originalOnsubmit = form.onsubmit;
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            alert('Please select your cookie preferences first.');
+        };
+    });
+}
+
+// Unblock navigation after cookie preferences are set
+function unblockNavigation() {
+    // Remove overlay
+    const overlay = document.querySelector('.cookie-overlay');
+    if (overlay) {
+        document.body.removeChild(overlay);
+    }
+    
+    // Re-enable links
+    const links = document.querySelectorAll('a');
+    links.forEach(link => {
+        if (link.dataset.originalHref) {
+            link.href = link.dataset.originalHref;
+            if (link.dataset.originalOnclick) {
+                link.onclick = link.dataset.originalOnclick;
+            } else {
+                link.onclick = null;
+            }
+        }
+    });
+    
+    // Re-enable buttons
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        if (button.dataset.originalOnclick) {
+            button.onclick = button.dataset.originalOnclick;
+        } else {
+            button.onclick = null;
+        }
+    });
+    
+    // Re-enable form submissions
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        if (form.dataset.originalOnsubmit) {
+            form.onsubmit = form.dataset.originalOnsubmit;
+        } else {
+            form.onsubmit = null;
+        }
+    });
+}
 
 function showCookieBanner() {
     // Create cookie banner
@@ -139,6 +229,8 @@ function removeCookieBanner() {
         banner.classList.add('hiding');
         setTimeout(() => {
             document.body.removeChild(banner);
+            // Unblock navigation after cookie preferences are set
+            unblockNavigation();
         }, 500); // Match the transition duration in CSS
     }
 }

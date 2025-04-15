@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Images{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Image Management</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Home Icon</h5>
+                </div>
+                <div class="card-body">
+                    <div id="home-icon-preview" class="text-center mb-3">
+                        {% if get_home_icon() %}
+                        <img src="{{ url_for('static', filename=get_home_icon()) }}" alt="Home Icon" style="max-height: 100px;">
+                        {% else %}
+                        <p>No home icon set</p>
+                        {% endif %}
+                    </div>
+                    <form id="home-icon-form" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="home-icon-file">Upload New Icon</label>
+                            <input type="file" class="form-control-file" id="home-icon-file" name="file" accept=".png,.jpg,.jpeg,.gif,.svg">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Homepage Carousel Images</h5>
+                </div>
+                <div class="card-body">
+                    <div id="carousel-images" class="row mb-3">
+                        {% for image in get_carousel_images() %}
+                        <div class="col-md-4 mb-3 carousel-image-container">
+                            <div class="position-relative">
+                                <img src="{{ url_for('static', filename=image) }}" alt="Carousel Image" class="img-fluid rounded">
+                                <button class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-carousel-image" 
+                                        data-filename="{{ image.split('/')[-1] }}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <form id="carousel-image-form" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="carousel-image-file">Upload New Carousel Image</label>
+                            <input type="file" class="form-control-file" id="carousel-image-file" name="file" accept=".png,.jpg,.jpeg,.gif">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Destination Images</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="destination-select">Select Destination</label>
+                                <select class="form-control" id="destination-select">
+                                    <option value="">-- Select Destination --</option>
+                                    <option value="Marbella">Marbella</option>
+                                    <option value="Nice">Nice</option>
+                                    <option value="Malaga">Malaga</option>
+                                    <option value="Paris">Paris</option>
+                                    <option value="Luxembourg">Luxembourg</option>
+                                    <option value="Ibiza">Ibiza</option>
+                                    <option value="new">+ Add New Destination</option>
+                                </select>
+                            </div>
+                            <div id="new-destination-container" class="form-group mt-3" style="display: none;">
+                                <label for="new-destination">New Destination Name</label>
+                                <input type="text" class="form-control" id="new-destination" placeholder="Enter destination name">
+                                <button id="add-destination-btn" class="btn btn-success mt-2">Add</button>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div id="destination-images-container" class="row">
+                                <div class="col-12 text-center">
+                                    <p>Select a destination to view images</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form id="destination-image-form" enctype="multipart/form-data" style="display: none;">
+                        <div class="form-group">
+                            <label for="destination-image-file">Upload New Image for <span id="selected-destination"></span></label>
+                            <input type="file" class="form-control-file" id="destination-image-file" name="file" accept=".png,.jpg,.jpeg,.gif">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Home Icon Upload
+        const homeIconForm = document.getElementById('home-icon-form');
+        homeIconForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(homeIconForm);
+            const fileInput = document.getElementById('home-icon-file');
+            
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload');
+                return;
+            }
+            
+            fetch('/api/upload/home-icon', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('home-icon-preview').innerHTML = 
+                        `<img src="${data.url}" alt="Home Icon" style="max-height: 100px;">`;
+                    homeIconForm.reset();
+                    alert('Home icon uploaded successfully');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while uploading the file');
+            });
+        });
+        
+        // Carousel Image Upload
+        const carouselImageForm = document.getElementById('carousel-image-form');
+        carouselImageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(carouselImageForm);
+            const fileInput = document.getElementById('carousel-image-file');
+            
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload');
+                return;
+            }
+            
+            fetch('/api/upload/carousel', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const carouselImages = document.getElementById('carousel-images');
+                    const newImageContainer = document.createElement('div');
+                    newImageContainer.className = 'col-md-4 mb-3 carousel-image-container';
+                    newImageContainer.innerHTML = `
+                        <div class="position-relative">
+                            <img src="${data.url}" alt="Carousel Image" class="img-fluid rounded">
+                            <button class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-carousel-image" 
+                                    data-filename="${data.filename}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    carouselImages.appendChild(newImageContainer);
+                    carouselImageForm.reset();
+                    
+                    // Add event listener to the new delete button
+                    const deleteBtn = newImageContainer.querySelector('.delete-carousel-image');
+                    deleteBtn.addEventListener('click', handleDeleteCarouselImage);
+                    
+                    alert('Carousel image uploaded successfully');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while uploading the file');
+            });
+        });
+        
+        // Delete Carousel Image
+        function handleDeleteCarouselImage(e) {
+            const filename = e.currentTarget.dataset.filename;
+            if (confirm(`Are you sure you want to delete this image?`)) {
+                fetch(`/api/delete/carousel/${filename}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        e.currentTarget.closest('.carousel-image-container').remove();
+                        alert('Image deleted successfully');
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the image');
+                });
+            }
+        }
+        
+        // Add event listeners to existing delete buttons
+        document.querySelectorAll('.delete-carousel-image').forEach(btn => {
+            btn.addEventListener('click', handleDeleteCarouselImage);
+        });
+        
+        // Destination Select
+        const destinationSelect = document.getElementById('destination-select');
+        destinationSelect.addEventListener('change', function() {
+            const selectedValue = this.value;
+            const newDestinationContainer = document.getElementById('new-destination-container');
+            const destinationImageForm = document.getElementById('destination-image-form');
+            const selectedDestinationSpan = document.getElementById('selected-destination');
+            
+            if (selectedValue === 'new') {
+                newDestinationContainer.style.display = 'block';
+                destinationImageForm.style.display = 'none';
+                document.getElementById('destination-images-container').innerHTML = '';
+            } else if (selectedValue) {
+                newDestinationContainer.style.display = 'none';
+                destinationImageForm.style.display = 'block';
+                selectedDestinationSpan.textContent = selectedValue;
+                
+                // Load destination images
+                loadDestinationImages(selectedValue);
+            } else {
+                newDestinationContainer.style.display = 'none';
+                destinationImageForm.style.display = 'none';
+                document.getElementById('destination-images-container').innerHTML = `
+                    <div class="col-12 text-center">
+                        <p>Select a destination to view images</p>
+                    </div>
+                `;
+            }
+        });
+        
+        // Add New Destination
+        document.getElementById('add-destination-btn').addEventListener('click', function() {
+            const newDestinationInput = document.getElementById('new-destination');
+            const newDestination = newDestinationInput.value.trim();
+            
+            if (!newDestination) {
+                alert('Please enter a destination name');
+                return;
+            }
+            
+            // Add new option to select
+            const option = document.createElement('option');
+            option.value = newDestination;
+            option.textContent = newDestination;
+            
+            // Insert before the "Add New" option
+            const newOption = destinationSelect.querySelector('option[value="new"]');
+            destinationSelect.insertBefore(option, newOption);
+            
+            // Select the new destination
+            destinationSelect.value = newDestination;
+            
+            // Trigger change event
+            const event = new Event('change');
+            destinationSelect.dispatchEvent(event);
+            
+            // Clear input
+            newDestinationInput.value = '';
+            document.getElementById('new-destination-container').style.display = 'none';
+        });
+        
+        // Destination Image Upload
+        const destinationImageForm = document.getElementById('destination-image-form');
+        destinationImageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const selectedDestination = destinationSelect.value;
+            if (!selectedDestination || selectedDestination === 'new') {
+                alert('Please select a valid destination');
+                return;
+            }
+            
+            const formData = new FormData(destinationImageForm);
+            const fileInput = document.getElementById('destination-image-file');
+            
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload');
+                return;
+            }
+            
+            fetch(`/api/upload/destination/${selectedDestination}`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reload destination images
+                    loadDestinationImages(selectedDestination);
+                    destinationImageForm.reset();
+                    alert('Destination image uploaded successfully');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while uploading the file');
+            });
+        });
+        
+        // Load Destination Images
+        function loadDestinationImages(destination) {
+            const container = document.getElementById('destination-images-container');
+            container.innerHTML = '<div class="col-12 text-center"><p>Loading images...</p></div>';
+            
+            fetch('/api/destinations')
+            .then(response => response.json())
+            .then(destinations => {
+                const selectedDest = destinations.find(d => d.name === destination);
+                
+                if (selectedDest && selectedDest.images.length > 0) {
+                    container.innerHTML = '';
+                    
+                    selectedDest.images.forEach(image => {
+                        const filename = image.split('/').pop();
+                        const imageContainer = document.createElement('div');
+                        imageContainer.className = 'col-md-4 mb-3 destination-image-container';
+                        imageContainer.innerHTML = `
+                            <div class="position-relative">
+                                <img src="${image.startsWith('/') ? image : '/' + image}" alt="${destination}" class="img-fluid rounded">
+                                <button class="btn btn-sm btn-danger position-absolute top-0 end-0 delete-destination-image" 
+                                        data-destination="${destination}" data-filename="${filename}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `;
+                        container.appendChild(imageContainer);
+                    });
+                    
+                    // Add event listeners to delete buttons
+                    document.querySelectorAll('.delete-destination-image').forEach(btn => {
+                        btn.addEventListener('click', handleDeleteDestinationImage);
+                    });
+                } else {
+                    container.innerHTML = `
+                        <div class="col-12 text-center">
+                            <p>No images found for ${destination}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                container.innerHTML = `
+                    <div class="col-12 text-center">
+                        <p>Error loading images</p>
+                    </div>
+                `;
+            });
+        }
+        
+        // Delete Destination Image
+        function handleDeleteDestinationImage(e) {
+            const destination = e.currentTarget.dataset.destination;
+            const filename = e.currentTarget.dataset.filename;
+            
+            if (confirm(`Are you sure you want to delete this image from ${destination}?`)) {
+                fetch(`/api/delete/destination/${destination}/${filename}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        e.currentTarget.closest('.destination-image-container').remove();
+                        alert('Image deleted successfully');
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the image');
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}
