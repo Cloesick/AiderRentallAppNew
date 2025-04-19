@@ -1,0 +1,47 @@
+[
+    {
+        "id": "40001918-b7c6-402c-b1d5-aa96c8224613",
+        "first_name": "Test",
+        "last_name": "Visitor",
+        "email": "visitor@example.com",
+        "phone": "+1 234 567 8900",
+        "password": "password",
+        "gender": "X",
+        "address": "123 Test Street",
+        "city": "Test City",
+        "country": "Test Country",
+        "vat": "",
+        "user_type": "visitor",
+        "created_at": "2025-04-15 09:54:40"
+    },
+    {
+        "id": "3d82fe9d-7c3b-402b-a002-20f650202445",
+        "first_name": "FN1",
+        "last_name": "LN1",
+        "email": "testfn1ln1@gmail.com",
+        "phone": "+3345555555",
+        "password": "testfn1",
+        "gender": "M",
+        "address": "Begijnengracht 25",
+        "city": "Rotterdam",
+        "country": "Netherlands",
+        "vat": "",
+        "user_type": "visitor",
+        "created_at": "2025-04-15 11:30:43"
+    },
+    {
+        "id": "3e005e7b-705a-4767-be6e-84558b1beeff",
+        "first_name": "Admin",
+        "last_name": "User",
+        "email": "admin@realestate.com",
+        "phone": "+1 234 567 8901",
+        "password": "admin123",
+        "gender": "X",
+        "address": "456 Admin Street",
+        "city": "Admin City",
+        "country": "Admin Country",
+        "vat": "",
+        "user_type": "admin",
+        "created_at": "2025-04-15 11:34:14"
+    }
+]

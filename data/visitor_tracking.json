@@ -1,0 +1,24 @@
+[
+    {
+        "visitor_id": "6f51f140-820c-427f-8078-7ea11a377cde",
+        "action": "cookie_preferences",
+        "preferences": {
+            "essential": true,
+            "analytics": false,
+            "marketing": false,
+            "preference": false
+        },
+        "timestamp": "2025-04-15 09:55:43"
+    },
+    {
+        "visitor_id": "c0bac7fe-5560-4044-a9cf-e779394d9c6a",
+        "action": "cookie_preferences",
+        "preferences": {
+            "essential": true,
+            "analytics": false,
+            "marketing": false,
+            "preference": false
+        },
+        "timestamp": "2025-04-15 11:11:41"
+    }
+]
