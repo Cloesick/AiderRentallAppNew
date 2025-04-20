@@ -2,7 +2,12 @@
 
 {% block title %}Login - Real Estate App{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
 {% block extra_js %}
+<script src="{{ url_for('static', filename='js/captcha.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const loginForm = document.getElementById('login-form');
@@ -14,10 +19,14 @@
                 registrationForm.style.display = 'none';
                 loginForm.style.display = 'block';
                 toggleFormBtn.textContent = 'New user? Register here';
+                // Regenerate captcha when switching to login form
+                generateCaptcha();
             } else {
                 registrationForm.style.display = 'block';
                 loginForm.style.display = 'none';
                 toggleFormBtn.textContent = 'Already have an account? Login here';
+                // Regenerate captcha when switching to registration form
+                generateCaptcha();
             }
         });
     });
@@ -48,10 +57,27 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
+            <div class="form-group captcha-container">
+                <label for="captcha-input">Security Check:</label>
+                <div class="captcha-wrapper">
+                    <canvas id="captcha-canvas" width="200" height="70"></canvas>
+                    <button id="refresh-captcha" class="refresh-captcha" title="Refresh Captcha">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="captcha-text" name="captcha_text">
+                <input type="text" id="captcha-input" name="captcha_input" placeholder="Enter the code shown above" required>
+            </div>
+            <div class="form-group remember-me">
+                <label>
+                    <input type="checkbox" id="remember-me" name="remember_me">
+                    Remember my username
+                </label>
+            </div>
             <button type="submit" class="submit-button">Login</button>
         </form>
         
-        <form method="POST" action="{{ url_for('register') }}" id="registration-form" class="registration-form">
+        <form method="POST" action="{{ url_for('register') }}" id="registration-form" class="registration-form" style="display: none;">
             <h2>Create an Account</h2>
             
             <div class="form-row">
@@ -122,6 +148,18 @@
             <div class="form-group">
                 <label for="vat">VAT Number (optional):</label>
                 <input type="text" id="vat" name="vat">
+            </div>
+            
+            <div class="form-group captcha-container">
+                <label for="reg-captcha-input">Security Check:</label>
+                <div class="captcha-wrapper">
+                    <canvas id="reg-captcha-canvas" width="200" height="70" class="captcha-canvas"></canvas>
+                    <button id="reg-refresh-captcha" class="refresh-captcha" title="Refresh Captcha">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="reg-captcha-text" name="captcha_text">
+                <input type="text" id="reg-captcha-input" name="captcha_input" placeholder="Enter the code shown above" required>
             </div>
             
             <div class="form-group">

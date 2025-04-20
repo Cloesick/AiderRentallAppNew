@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, send_from_directory, make_response
 import webbrowser
 import threading
 import time
@@ -7,7 +7,7 @@ import json
 import uuid
 import base64
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import wraps
 from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
@@ -409,6 +409,14 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        captcha_text = request.form['captcha_text']
+        captcha_input = request.form['captcha_input']
+        remember_me = 'remember_me' in request.form
+        
+        # Verify captcha
+        if captcha_input.lower() != captcha_text.lower():
+            flash('Invalid security code. Please try again.')
+            return render_template('login.html')
         
         # Load users
         users = load_users()
@@ -440,12 +448,24 @@ def login():
                     'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 }
                 save_visitor_tracking(tracking_data)
+            
+            # Set remember me cookie if requested
+            response = make_response(redirect(url_for('home')))
+            if remember_me:
+                # Create a cookie that expires in 30 days
+                response.set_cookie('remembered_email', email, max_age=30*24*60*60)
+            else:
+                # Remove the cookie if it exists
+                response.delete_cookie('remembered_email')
                 
-            return redirect(url_for('home'))
+            return response
         else:
             flash('Invalid credentials')
     
-    return render_template('login.html')
+    # Check for remembered email
+    remembered_email = request.cookies.get('remembered_email')
+    
+    return render_template('login.html', remembered_email=remembered_email)
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -461,6 +481,13 @@ def register():
     city = request.form['city']
     country = request.form['country']
     vat = request.form.get('vat', '')
+    captcha_text = request.form['captcha_text']
+    captcha_input = request.form['captcha_input']
+    
+    # Verify captcha
+    if captcha_input.lower() != captcha_text.lower():
+        flash('Invalid security code. Please try again.')
+        return redirect(url_for('login'))
     
     # Validate data
     if password != confirm_password:
