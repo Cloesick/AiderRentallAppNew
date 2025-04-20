@@ -413,8 +413,37 @@ def login():
         captcha_input = request.form['captcha_input']
         remember_me = 'remember_me' in request.form
         
-        # Verify captcha
+        # Check for too many failed login attempts from this IP
+        ip_address = request.remote_addr
+        failed_attempts = session.get('failed_login_attempts', {})
+        
+        # Get current time
+        current_time = datetime.now()
+        
+        # Check if this IP is currently locked out
+        if ip_address in failed_attempts:
+            last_attempt_time = datetime.strptime(failed_attempts[ip_address]['timestamp'], '%Y-%m-%d %H:%M:%S')
+            attempt_count = failed_attempts[ip_address]['count']
+            
+            # If more than 5 failed attempts in the last 15 minutes, lock out for 15 minutes
+            if attempt_count >= 5 and (current_time - last_attempt_time).total_seconds() < 900:  # 15 minutes
+                flash('Too many failed login attempts. Please try again later.')
+                return render_template('login.html')
+            
+            # Reset counter if it's been more than 15 minutes
+            if (current_time - last_attempt_time).total_seconds() >= 900:
+                failed_attempts[ip_address] = {'count': 0, 'timestamp': current_time.strftime('%Y-%m-%d %H:%M:%S')}
+        
+        # Verify captcha (case-insensitive comparison)
         if captcha_input.lower() != captcha_text.lower():
+            # Increment failed attempts for captcha failures too
+            if ip_address in failed_attempts:
+                failed_attempts[ip_address]['count'] += 1
+                failed_attempts[ip_address]['timestamp'] = current_time.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                failed_attempts[ip_address] = {'count': 1, 'timestamp': current_time.strftime('%Y-%m-%d %H:%M:%S')}
+            
+            session['failed_login_attempts'] = failed_attempts
             flash('Invalid security code. Please try again.')
             return render_template('login.html')
         
@@ -425,10 +454,21 @@ def login():
         user = next((u for u in users if u['email'] == email), None)
         
         if user and user['password'] == password:  # In a real app, use password hashing
+            # Reset failed attempts on successful login
+            if ip_address in failed_attempts:
+                failed_attempts[ip_address]['count'] = 0
+            session['failed_login_attempts'] = failed_attempts
+            
+            # Set session variables
             session['logged_in'] = True
             session['user_id'] = user['id']
             session['username'] = user['first_name']
             session['email'] = user['email']
+            session['login_time'] = current_time.strftime('%Y-%m-%d %H:%M:%S')
+            
+            # Set session expiry (30 minutes of inactivity)
+            session.permanent = True
+            app.permanent_session_lifetime = timedelta(minutes=30)
             
             # Check if user is admin (email contains @realestate.com)
             if '@realestate.com' in email:
@@ -445,25 +485,53 @@ def login():
                     'visitor_id': session['visitor_id'],
                     'user_id': user['id'],
                     'action': 'login',
-                    'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    'timestamp': current_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    'ip_address': ip_address,
+                    'user_agent': request.headers.get('User-Agent', '')
                 }
                 save_visitor_tracking(tracking_data)
             
             # Set remember me cookie if requested
             response = make_response(redirect(url_for('home')))
             if remember_me:
-                # Create a cookie that expires in 30 days
-                response.set_cookie('remembered_email', email, max_age=30*24*60*60)
+                # Create a secure cookie that expires in 30 days
+                # In production, encrypt this value
+                secure_value = base64.b64encode(email.encode()).decode()
+                response.set_cookie(
+                    'remembered_email', 
+                    secure_value, 
+                    max_age=30*24*60*60,
+                    httponly=True,  # Not accessible via JavaScript
+                    samesite='Strict'  # Prevents CSRF
+                )
             else:
                 # Remove the cookie if it exists
                 response.delete_cookie('remembered_email')
                 
             return response
         else:
+            # Increment failed attempts
+            if ip_address in failed_attempts:
+                failed_attempts[ip_address]['count'] += 1
+                failed_attempts[ip_address]['timestamp'] = current_time.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                failed_attempts[ip_address] = {'count': 1, 'timestamp': current_time.strftime('%Y-%m-%d %H:%M:%S')}
+            
+            session['failed_login_attempts'] = failed_attempts
             flash('Invalid credentials')
     
     # Check for remembered email
     remembered_email = request.cookies.get('remembered_email')
+    if remembered_email:
+        try:
+            # Decrypt the email (in this case, just base64 decode)
+            remembered_email = base64.b64decode(remembered_email.encode()).decode()
+        except:
+            # If decoding fails, clear the cookie
+            remembered_email = None
+            response = make_response(render_template('login.html'))
+            response.delete_cookie('remembered_email')
+            return response
     
     return render_template('login.html', remembered_email=remembered_email)
 
@@ -484,9 +552,48 @@ def register():
     captcha_text = request.form['captcha_text']
     captcha_input = request.form['captcha_input']
     
-    # Verify captcha
+    # Check for registration rate limiting
+    ip_address = request.remote_addr
+    reg_attempts = session.get('registration_attempts', {})
+    
+    # Get current time
+    current_time = datetime.now()
+    
+    # Check if this IP has made too many registration attempts
+    if ip_address in reg_attempts:
+        last_attempt_time = datetime.strptime(reg_attempts[ip_address]['timestamp'], '%Y-%m-%d %H:%M:%S')
+        attempt_count = reg_attempts[ip_address]['count']
+        
+        # If more than 3 registration attempts in the last hour, block for an hour
+        if attempt_count >= 3 and (current_time - last_attempt_time).total_seconds() < 3600:  # 1 hour
+            flash('Too many registration attempts. Please try again later.')
+            return redirect(url_for('login'))
+        
+        # Reset counter if it's been more than an hour
+        if (current_time - last_attempt_time).total_seconds() >= 3600:
+            reg_attempts[ip_address] = {'count': 0, 'timestamp': current_time.strftime('%Y-%m-%d %H:%M:%S')}
+    
+    # Verify captcha (case-insensitive comparison)
     if captcha_input.lower() != captcha_text.lower():
+        # Track failed captcha attempt
+        if ip_address in reg_attempts:
+            reg_attempts[ip_address]['count'] += 1
+            reg_attempts[ip_address]['timestamp'] = current_time.strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            reg_attempts[ip_address] = {'count': 1, 'timestamp': current_time.strftime('%Y-%m-%d %H:%M:%S')}
+        
+        session['registration_attempts'] = reg_attempts
         flash('Invalid security code. Please try again.')
+        return redirect(url_for('login'))
+    
+    # Validate password strength
+    if len(password) < 8:
+        flash('Password must be at least 8 characters long.')
+        return redirect(url_for('login'))
+    
+    # Check for at least one number and one special character
+    if not any(c.isdigit() for c in password) or not any(not c.isalnum() for c in password):
+        flash('Password must contain at least one number and one special character.')
         return redirect(url_for('login'))
     
     # Validate data
@@ -516,7 +623,11 @@ def register():
         'country': country,
         'vat': vat,
         'user_type': 'visitor',
-        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'last_login': None,
+        'login_count': 0,
+        'account_status': 'active',
+        'registration_ip': request.remote_addr
     }
     
     # Add user to list
@@ -524,6 +635,22 @@ def register():
     
     # Save updated users
     if save_users(users):
+        # Reset registration attempts on successful registration
+        if ip_address in reg_attempts:
+            reg_attempts[ip_address]['count'] = 0
+        session['registration_attempts'] = reg_attempts
+        
+        # Track successful registration
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': new_user['id'],
+            'action': 'registration',
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'ip_address': request.remote_addr,
+            'user_agent': request.headers.get('User-Agent', '')
+        }
+        save_visitor_tracking(tracking_data)
+        
         flash('Registration successful! Please log in.')
     else:
         flash('Error during registration. Please try again.')
@@ -532,10 +659,46 @@ def register():
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
-    session.pop('username', None)
-    flash('You were logged out')
-    return redirect(url_for('home'))
+    # Track logout
+    if 'visitor_id' in session and 'user_id' in session:
+        tracking_data = {
+            'visitor_id': session['visitor_id'],
+            'user_id': session['user_id'],
+            'action': 'logout',
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'ip_address': request.remote_addr
+        }
+        save_visitor_tracking(tracking_data)
+    
+    # Clear all session data
+    session.clear()
+    flash('You were logged out successfully')
+    
+    # Redirect with a response that also clears cookies
+    response = make_response(redirect(url_for('home')))
+    response.delete_cookie('remembered_email')
+    return response
+
+@app.route('/api/check-session', methods=['GET'])
+def check_session():
+    """API endpoint to check if the user's session is still valid"""
+    if not session.get('logged_in'):
+        return jsonify({'valid': False, 'message': 'Session expired'})
+    
+    # Check if session has expired (30 minutes of inactivity)
+    if 'login_time' in session:
+        login_time = datetime.strptime(session['login_time'], '%Y-%m-%d %H:%M:%S')
+        current_time = datetime.now()
+        
+        # If more than 30 minutes have passed, invalidate session
+        if (current_time - login_time).total_seconds() > 1800:  # 30 minutes
+            session.clear()
+            return jsonify({'valid': False, 'message': 'Session expired due to inactivity'})
+        
+        # Update login time to extend session
+        session['login_time'] = current_time.strftime('%Y-%m-%d %H:%M:%S')
+    
+    return jsonify({'valid': True})
 
 @app.route('/rentals')
 def rentals():

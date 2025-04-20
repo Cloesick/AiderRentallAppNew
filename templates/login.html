@@ -66,14 +66,17 @@
                     </button>
                 </div>
                 <input type="hidden" id="captcha-text" name="captcha_text">
-                <input type="text" id="captcha-input" name="captcha_input" placeholder="Enter the code shown above" required>
+                <input type="text" id="captcha-input" name="captcha_input" placeholder="Enter the code shown above" required autocomplete="off">
+                <small class="captcha-help">Can't read the code? Click the refresh button to get a new one.</small>
             </div>
             <div class="form-group remember-me">
                 <label>
                     <input type="checkbox" id="remember-me" name="remember_me">
                     Remember my username
                 </label>
+                <small class="remember-help">Your username will be stored securely for 30 days.</small>
             </div>
+            <div id="login-error" class="error-message" style="display: none;"></div>
             <button type="submit" class="submit-button">Login</button>
         </form>
         
@@ -159,8 +162,10 @@
                     </button>
                 </div>
                 <input type="hidden" id="reg-captcha-text" name="captcha_text">
-                <input type="text" id="reg-captcha-input" name="captcha_input" placeholder="Enter the code shown above" required>
+                <input type="text" id="reg-captcha-input" name="captcha_input" placeholder="Enter the code shown above" required autocomplete="off">
+                <small class="captcha-help">Can't read the code? Click the refresh button to get a new one.</small>
             </div>
+            <div id="register-error" class="error-message" style="display: none;"></div>
             
             <div class="form-group">
                 <label>
