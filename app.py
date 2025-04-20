@@ -10,6 +10,9 @@ import shutil
 from datetime import datetime
 from functools import wraps
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+load_dotenv()
+
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
