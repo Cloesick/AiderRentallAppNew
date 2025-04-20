@@ -80,19 +80,12 @@ class ChangeHandler(FileSystemEventHandler):
             url = f'http://localhost:{PORT}/'
             print(f"Opening browser to {url}")
             
-            # Use the default browser with specific handling for Windows
-            if os.name == 'nt':  # Windows
-                try:
-                    # Use cmd.exe's start command directly
-                    os.system(f'cmd /c start {url}')
-                except Exception as e:
-                    print(f"Error opening browser with cmd: {e}")
-                    # Fall back to webbrowser module
-                    import webbrowser
-                    webbrowser.open(url, new=2)
-            else:
-                import webbrowser
+            # Use the webbrowser module which is cross-platform
+            import webbrowser
+            try:
                 webbrowser.open(url, new=2)
+            except Exception as e:
+                print(f"Error opening browser: {e}")
                 
         threading.Thread(target=_open_browser).start()
 
