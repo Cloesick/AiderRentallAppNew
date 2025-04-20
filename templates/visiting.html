@@ -139,7 +139,7 @@
                                     {% endif %}
                                 </div>
                             {% else %}
-                                <img src="https://via.placeholder.com/300x200" alt="{{ property.name }}">
+                                <img src="{{ get_property_image(property.name + ' ' + property.description|default('', true), property.property_type, property.price, property.bedrooms) or url_for('static', filename='img/placeholders/property.jpg') }}" alt="{{ property.name }}">
                             {% endif %}
                             <h3>{{ property.name }}</h3>
                             <p>{{ property.bedrooms }} bed, {{ property.bathrooms }} bath, {{ property.squareMeters }} sq m</p>

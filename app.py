@@ -56,6 +56,7 @@ os.makedirs(app.config['DESTINATIONS_FOLDER'], exist_ok=True)
 os.makedirs(app.config['PROPERTY_IMAGES_FOLDER'], exist_ok=True)
 os.makedirs(os.path.join('data'), exist_ok=True)
 os.makedirs(os.path.join('data', 'ad_profiles'), exist_ok=True)
+os.makedirs(os.path.join('static', 'img', 'placeholders'), exist_ok=True)
 
 # User data storage
 def get_users_file():
@@ -297,7 +298,32 @@ def get_property_image(location_or_title, property_type=None, price=None, bedroo
         import random
         return random.choice(property_images)
     
-    return None
+    # If no local images found, use placeholder images based on property type
+    placeholder_images = {
+        'office': 'static/img/placeholders/office.jpg',
+        'retail': 'static/img/placeholders/retail.jpg',
+        'industrial': 'static/img/placeholders/industrial.jpg',
+        'warehouse': 'static/img/placeholders/warehouse.jpg',
+        'apartment': 'static/img/placeholders/apartment.jpg',
+        'house': 'static/img/placeholders/house.jpg',
+        'condo': 'static/img/placeholders/condo.jpg',
+        'villa': 'static/img/placeholders/villa.jpg',
+        'luxury': 'static/img/placeholders/luxury.jpg',
+        'studio': 'static/img/placeholders/studio.jpg',
+        'townhouse': 'static/img/placeholders/townhouse.jpg',
+    }
+    
+    # Try to find a matching placeholder based on property type
+    if property_type and property_type.lower() in placeholder_images:
+        return placeholder_images[property_type.lower()]
+    
+    # Try to find a matching placeholder based on keywords in description
+    for prop_type, image_path in placeholder_images.items():
+        if prop_type in location_or_title:
+            return image_path
+    
+    # Default placeholder if nothing else matches
+    return 'static/img/placeholders/property.jpg'
 
 # API configuration functions
 def get_api_config():
@@ -314,7 +340,7 @@ def save_api_config(config):
         json.dump(config, f, indent=4)
     return True
 
-# Create default users if none exist
+# Create default users and ensure placeholder images exist
 first_run = True  # Flag outside the function
 
 @app.before_request
@@ -322,7 +348,59 @@ def run_once():
     global first_run
     if first_run:
         create_default_users()
+        ensure_placeholder_images()
         first_run = False
+
+def ensure_placeholder_images():
+    """Ensure placeholder images exist for all property types"""
+    placeholder_dir = os.path.join('static', 'img', 'placeholders')
+    os.makedirs(placeholder_dir, exist_ok=True)
+    
+    # List of property types that need placeholder images
+    property_types = [
+        'property', 'office', 'retail', 'industrial', 'warehouse', 
+        'apartment', 'house', 'condo', 'villa', 'luxury', 'studio', 
+        'townhouse', 'rentals', 'purchase', 'leasing', 'visiting'
+    ]
+    
+    # Check if each placeholder exists, create if not
+    for prop_type in property_types:
+        placeholder_path = os.path.join(placeholder_dir, f'{prop_type}.jpg')
+        if not os.path.exists(placeholder_path):
+            # Create a simple colored rectangle as placeholder
+            try:
+                from PIL import Image, ImageDraw, ImageFont
+                
+                # Create a new image with a colored background
+                img = Image.new('RGB', (800, 600), color=(245, 245, 245))
+                draw = ImageDraw.Draw(img)
+                
+                # Add property type text
+                try:
+                    font = ImageFont.truetype("arial.ttf", 40)
+                except:
+                    # Fallback to default font if arial not available
+                    font = ImageFont.load_default()
+                
+                text = f"{prop_type.title()} Property"
+                text_width = draw.textlength(text, font=font)
+                position = ((800 - text_width) / 2, 280)
+                
+                draw.text(
+                    position, 
+                    text,
+                    fill=(80, 80, 80),
+                    font=font
+                )
+                
+                # Save the image
+                img.save(placeholder_path)
+                print(f"Created placeholder image for {prop_type}")
+            except Exception as e:
+                print(f"Error creating placeholder image for {prop_type}: {e}")
+                # Create an empty file as fallback
+                with open(placeholder_path, 'wb') as f:
+                    f.write(b'')
 
 def create_default_users():
     users = load_users()  # <-- THIS LINE IS ESSENTIAL
@@ -423,8 +501,12 @@ def save_properties(category, properties):
                 
                 # Get image that matches the property characteristics
                 image = get_property_image(search_text, property_type, price, bedrooms)
+                # Always ensure we have an image
                 if image:
                     prop['images'] = [image]
+                else:
+                    # Use a default placeholder based on category
+                    prop['images'] = [f'static/img/placeholders/{category}.jpg']
                     
                 # Add category-specific tag to help with image matching
                 if 'tags' not in prop:
