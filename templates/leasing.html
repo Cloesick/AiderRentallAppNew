@@ -185,7 +185,7 @@
                     {% endfor %}
                 {% else %}
                     <div class="property-card">
-                        <img src="{{ get_property_image('Downtown Office Space with modern amenities', 'office') or url_for('static', filename='img/placeholder.jpg') }}" alt="Office Space">
+                        <img src="{{ get_property_image('Downtown Office Space with modern amenities conference rooms reception area prime location', 'office', 35, 0) or url_for('static', filename='img/placeholder.jpg') }}" alt="Office Space">
                         <h3>Downtown Office Space</h3>
                         <p class="property-type">Office Space</p>
                         <p class="property-size">2,500 sq ft</p>
@@ -195,7 +195,7 @@
                     </div>
                     
                     <div class="property-card">
-                        <img src="{{ get_property_image('High-Traffic Retail Space with display windows', 'retail') or url_for('static', filename='img/placeholder.jpg') }}" alt="Retail Space">
+                        <img src="{{ get_property_image('High-Traffic Retail Space with display windows corner location foot traffic', 'retail', 28, 0) or url_for('static', filename='img/placeholder.jpg') }}" alt="Retail Space">
                         <h3>High-Traffic Retail Space</h3>
                         <p class="property-type">Retail Space</p>
                         <p class="property-size">1,800 sq ft</p>
@@ -205,7 +205,7 @@
                     </div>
                     
                     <div class="property-card">
-                        <img src="{{ get_property_image('Industrial Warehouse with loading docks', 'industrial') or url_for('static', filename='img/placeholder.jpg') }}" alt="Industrial Space">
+                        <img src="{{ get_property_image('Industrial Warehouse with loading docks high ceilings office space logistics', 'industrial', 12, 0) or url_for('static', filename='img/placeholder.jpg') }}" alt="Industrial Space">
                         <h3>Industrial Warehouse</h3>
                         <p class="property-type">Industrial Space</p>
                         <p class="property-size">10,000 sq ft</p>

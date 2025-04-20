@@ -150,14 +150,14 @@
                     {% endfor %}
                 {% else %}
                     <div class="property-card">
-                        <img src="https://via.placeholder.com/300x200" alt="Featured Property">
+                        <img src="{{ get_property_image('Featured Property Tours with experienced agents luxury homes', 'residential', 0, 0) or url_for('static', filename='img/placeholder.jpg') }}" alt="Featured Property">
                         <h3>Featured Property Tours</h3>
                         <p>We offer guided tours of our featured properties with our experienced agents.</p>
                         <button class="submit-button">Request Tour</button>
                     </div>
                     
                     <div class="property-card">
-                        <img src="https://via.placeholder.com/300x200" alt="Virtual Tours">
+                        <img src="{{ get_property_image('Virtual Tours Available remote viewing 3D walkthrough', 'residential', 0, 0) or url_for('static', filename='img/placeholder.jpg') }}" alt="Virtual Tours">
                         <h3>Virtual Tours Available</h3>
                         <p>Can't visit in person? Ask about our virtual tour options for remote viewing.</p>
                         <button class="submit-button">Request Virtual Tour</button>

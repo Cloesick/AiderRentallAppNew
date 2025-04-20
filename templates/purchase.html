@@ -143,7 +143,7 @@
                     {% endfor %}
                 {% else %}
                     <div class="property-card">
-                        <img src="https://via.placeholder.com/300x200" alt="Luxury Home">
+                        <img src="{{ get_property_image('Luxury Waterfront Estate with private dock gourmet kitchen home theater', 'luxury', 1250000, 5) or url_for('static', filename='img/placeholder.jpg') }}" alt="Luxury Home">
                         <h3>Luxury Waterfront Estate</h3>
                         <p>5 bed, 4.5 bath, 4,500 sq ft</p>
                         <p>Stunning waterfront property with private dock, gourmet kitchen, and home theater.</p>
@@ -151,7 +151,7 @@
                     </div>
                     
                     <div class="property-card">
-                        <img src="https://via.placeholder.com/300x200" alt="Townhouse">
+                        <img src="{{ get_property_image('Modern Townhouse with rooftop terrace open floor plan smart home', 'townhouse', 450000, 3) or url_for('static', filename='img/placeholder.jpg') }}" alt="Townhouse">
                         <h3>Modern Townhouse</h3>
                         <p>3 bed, 2.5 bath, 1,800 sq ft</p>
                         <p>Contemporary townhouse with rooftop terrace, open floor plan, and smart home features.</p>
@@ -159,7 +159,7 @@
                     </div>
                     
                     <div class="property-card">
-                        <img src="https://via.placeholder.com/300x200" alt="Condo">
+                        <img src="{{ get_property_image('Downtown Luxury Condo with floor-to-ceiling windows concierge fitness center', 'condo', 650000, 2) or url_for('static', filename='img/placeholder.jpg') }}" alt="Condo">
                         <h3>Downtown Luxury Condo</h3>
                         <p>2 bed, 2 bath, 1,200 sq ft</p>
                         <p>High-rise condo with floor-to-ceiling windows, concierge service, and fitness center.</p>

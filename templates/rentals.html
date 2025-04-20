@@ -161,7 +161,7 @@
                     {% endfor %}
                 {% else %}
                     <div class="property-card">
-                        <img src="https://via.placeholder.com/300x200" alt="Luxury Apartment">
+                        <img src="{{ get_property_image('Luxury Downtown Apartment with city views granite countertops hardwood floors', 'apartment', 2500, 2) or url_for('static', filename='img/placeholder.jpg') }}" alt="Luxury Apartment">
                         <h3>Luxury Downtown Apartment</h3>
                         <p>2 bed, 2 bath, 1,200 sq ft</p>
                         <p>Modern apartment with stunning city views, granite countertops, and hardwood floors.</p>
@@ -169,7 +169,7 @@
                     </div>
                     
                     <div class="property-card">
-                        <img src="https://via.placeholder.com/300x200" alt="Suburban Home">
+                        <img src="{{ get_property_image('Spacious Suburban Home with large backyard updated kitchen two-car garage', 'house', 3200, 4) or url_for('static', filename='img/placeholder.jpg') }}" alt="Suburban Home">
                         <h3>Spacious Suburban Home</h3>
                         <p>4 bed, 3 bath, 2,500 sq ft</p>
                         <p>Family home with large backyard, updated kitchen, and two-car garage.</p>
@@ -177,7 +177,7 @@
                     </div>
                     
                     <div class="property-card">
-                        <img src="https://via.placeholder.com/300x200" alt="Studio Apartment">
+                        <img src="{{ get_property_image('Cozy Studio Apartment with modern amenities great location', 'studio', 1100, 0) or url_for('static', filename='img/placeholder.jpg') }}" alt="Studio Apartment">
                         <h3>Cozy Studio Apartment</h3>
                         <p>Studio, 1 bath, 550 sq ft</p>
                         <p>Perfect starter apartment with modern amenities and great location.</p>
