@@ -287,13 +287,20 @@ def save_api_config(config):
     return True
 
 # Create default users if none exist
-@app.before_first_request
+first_run = True  # Flag outside the function
+
+@app.before_request
+def run_once():
+    global first_run
+    if first_run:
+        create_default_users()
+        first_run = False
+
 def create_default_users():
-    users = load_users()
-    
+    users = load_users()  # <-- THIS LINE IS ESSENTIAL
+
     # Check if we have a visitor user
     if not any(u.get('user_type') == 'visitor' for u in users):
-        # Create a default visitor user
         default_visitor = {
             'id': str(uuid.uuid4()),
             'first_name': 'Test',
@@ -309,13 +316,11 @@ def create_default_users():
             'user_type': 'visitor',
             'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
-        
         users.append(default_visitor)
         print("Created default visitor user: visitor@example.com / password")
-    
+
     # Check if we have an admin user
     if not any(u.get('email') == 'admin@realestate.com' for u in users):
-        # Create a default admin user
         default_admin = {
             'id': str(uuid.uuid4()),
             'first_name': 'Admin',
@@ -331,11 +336,11 @@ def create_default_users():
             'user_type': 'admin',
             'created_at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
-        
         users.append(default_admin)
         print("Created default admin user: admin@realestate.com / admin123")
-    
+
     save_users(users)
+
 
 # Admin check decorator
 def admin_required(f):
