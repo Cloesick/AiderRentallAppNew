@@ -1,10 +1,18 @@
-{% extends 'base.html' %}
+{% extends "layout.html" %}
 
-{% block title %}Leasing - Real Estate App{% endblock %}
+{% block title %}Commercial Leasing - Real Estate App{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/real-estate.css') }}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/calendar.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Commercial Leasing Opportunities</h1>
+    <h1>Commercial Leasing Properties</h1>
     
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -15,230 +23,198 @@
         </div>
       {% endif %}
     {% endwith %}
+    
+    {% if destination_search %}
+        <div class="destination-search-results">
+            <h2>Commercial Properties in {{ location }}</h2>
+            {% if properties|length > 0 %}
+                <p>We found {{ properties|length }} properties matching your destination.</p>
+            {% else %}
+                <p>No commercial properties found for this destination. Please try another location or browse all our listings below.</p>
+            {% endif %}
+        </div>
         
-    <div class="calendar-container">
-        <h2>Schedule a Consultation</h2>
-        <form method="POST" action="#">
-            <div class="form-group">
-                <label for="lease-start">Lease Start Date:</label>
-                <div class="calendar-input-wrapper">
-                    <input type="text" id="lease-start" name="lease-start" class="date-picker" readonly required>
-                    <div class="calendar-popup" id="lease-start-calendar"></div>
-                </div>
+        <div class="back-to-all">
+            <a href="{{ url_for('leasing') }}" class="option-button">View All Commercial Properties</a>
+        </div>
+    {% endif %}
+    
+    <div class="page-content">
+        <!-- Sidebar with Filters -->
+        <div class="sidebar">
+            <div class="filter-container">
+                <h2>Filter Properties</h2>
+                <form>
+                    <div class="filter-section">
+                        <h3>Price Range (per sq ft/year)</h3>
+                        <div class="price-range">
+                            <input type="number" id="min-price" placeholder="Min Price" min="0">
+                            <span>to</span>
+                            <input type="number" id="max-price" placeholder="Max Price" min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h3>Property Type</h3>
+                        <select id="property-type">
+                            <option value="">All Types</option>
+                            <option value="office">Office Space</option>
+                            <option value="retail">Retail Space</option>
+                            <option value="industrial">Industrial</option>
+                            <option value="warehouse">Warehouse</option>
+                            <option value="mixed-use">Mixed-Use</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h3>Square Footage</h3>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="radio" name="sqft" value="1000"> Under 1,000 sq ft
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="radio" name="sqft" value="5000"> 1,000 - 5,000 sq ft
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="radio" name="sqft" value="10000"> 5,000 - 10,000 sq ft
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="radio" name="sqft" value="20000"> Over 10,000 sq ft
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h3>Lease Terms</h3>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="short-term"> Short Term (< 1 year)
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="medium-term"> Medium Term (1-3 years)
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="long-term"> Long Term (3+ years)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-section">
+                        <h3>Amenities</h3>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="parking"> Parking
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="loading-dock"> Loading Dock
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="elevator"> Elevator
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="24-hour-access"> 24-Hour Access
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" id="security"> Security System
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="filter-button">Apply Filters</button>
+                    <button type="button" class="filter-button filter-reset">Reset</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="lease-term">Lease Term (months):</label>
-                <input type="number" id="lease-term" name="lease-term" min="6" max="120" value="12" class="date-picker" required>
+            
+            <!-- Calendar Section (without clock) -->
+            <div class="calendar-container">
+                <h2>Schedule a Consultation</h2>
+                <form method="POST" action="#">
+                    <!-- Hidden inputs for actual form submission -->
+                    <input type="date" id="consultation-date" name="consultation-date" class="date-picker" required>
+                    
+                    <!-- Visual calendar -->
+                    <div class="calendar-wrapper"></div>
+                    
+                    <div class="form-group">
+                        <label for="lease-term">Lease Term (months):</label>
+                        <input type="number" id="lease-term" name="lease-term" min="6" max="120" value="12" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="space-needed">Space Needed (sq ft):</label>
+                        <input type="number" id="space-needed" name="space-needed" min="100" max="100000" value="1000" required>
+                    </div>
+                    
+                    <button type="submit" class="submit-button">Request Consultation</button>
+                </form>
             </div>
-            <button type="submit" class="submit-button">Request Information</button>
-        </form>
+        </div>
+        
+        <!-- Main Content with Property Listings -->
+        <div class="main-content">
+            <div class="property-list" id="leasing-properties">
+                <!-- Properties will be loaded dynamically -->
+                {% if properties %}
+                    {% for property in properties %}
+                        <div class="property-card">
+                            {% if property.images is defined and property.images is not none and property.images is iterable and property.images|length > 0 %}
+                                <div class="property-image-slider">
+                                    {% for image in property.images %}
+                                        <img src="{{ image }}" alt="{{ property.name }}" class="property-image {% if loop.index == 1 %}active{% endif %}">
+                                    {% endfor %}
+                                    {% if property.images|length > 1 %}
+                                        <button class="image-nav prev">&lt;</button>
+                                        <button class="image-nav next">&gt;</button>
+                                        <div class="image-dots">
+                                            {% for image in property.images %}
+                                                <span class="image-dot {% if loop.index == 1 %}active{% endif %}" data-index="{{ loop.index0 }}"></span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <img src="{{ get_property_image('Commercial ' + property.property_type|default('Office', true) + ' Space', property.property_type, property.price) or url_for('static', filename='img/placeholder.jpg') }}" alt="{{ property.name }}">
+                            {% endif %}
+                            <h3>{{ property.name }}</h3>
+                            <p class="property-type">{{ property.property_type|default('Commercial', true) }} Space</p>
+                            <p class="property-size">{{ property.squareMeters|default(property.sqft, true) }} sq ft</p>
+                            <p>{{ property.description }}</p>
+                            <p class="price">${{ property.price }}/sq ft per year</p>
+                            <button class="submit-button">Schedule Viewing</button>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="property-card">
+                        <img src="{{ get_property_image('Downtown Office Space with modern amenities', 'office') or url_for('static', filename='img/placeholder.jpg') }}" alt="Office Space">
+                        <h3>Downtown Office Space</h3>
+                        <p class="property-type">Office Space</p>
+                        <p class="property-size">2,500 sq ft</p>
+                        <p>Prime location office space with modern amenities, conference rooms, and reception area.</p>
+                        <p class="price">$35/sq ft per year</p>
+                        <button class="submit-button">Schedule Viewing</button>
+                    </div>
+                    
+                    <div class="property-card">
+                        <img src="{{ get_property_image('High-Traffic Retail Space with display windows', 'retail') or url_for('static', filename='img/placeholder.jpg') }}" alt="Retail Space">
+                        <h3>High-Traffic Retail Space</h3>
+                        <p class="property-type">Retail Space</p>
+                        <p class="property-size">1,800 sq ft</p>
+                        <p>Corner retail location with large display windows and high foot traffic.</p>
+                        <p class="price">$28/sq ft per year</p>
+                        <button class="submit-button">Schedule Viewing</button>
+                    </div>
+                    
+                    <div class="property-card">
+                        <img src="{{ get_property_image('Industrial Warehouse with loading docks', 'industrial') or url_for('static', filename='img/placeholder.jpg') }}" alt="Industrial Space">
+                        <h3>Industrial Warehouse</h3>
+                        <p class="property-type">Industrial Space</p>
+                        <p class="property-size">10,000 sq ft</p>
+                        <p>Modern warehouse with loading docks, high ceilings, and office space included.</p>
+                        <p class="price">$12/sq ft per year</p>
+                        <button class="submit-button">Schedule Viewing</button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-        
-    <div class="property-list">
-        <div class="property-card">
-            <div class="property-image-container">
-                <img src="{{ get_property_image('Downtown Office Space with modern amenities') or url_for('static', filename='img/placeholder.jpg') }}" alt="Office Space" class="property-image">
-            </div>
-            <div class="property-details">
-                <h3>Downtown Office Space</h3>
-                <p class="property-size">2,500 sq ft</p>
-                <p class="property-description">Prime location office space with modern amenities, conference rooms, and reception area.</p>
-                <p class="price">$35/sq ft per year</p>
-                <button class="btn btn-primary mt-2 view-details-btn" onclick="trackPropertyView('Downtown Office', 'Office', 35000)">View Details</button>
-            </div>
-        </div>
-        
-        <div class="property-card">
-            <div class="property-image-container">
-                <img src="{{ get_property_image('High-Traffic Retail Space with display windows') or url_for('static', filename='img/placeholder.jpg') }}" alt="Retail Space" class="property-image">
-            </div>
-            <div class="property-details">
-                <h3>High-Traffic Retail Space</h3>
-                <p class="property-size">1,800 sq ft</p>
-                <p class="property-description">Corner retail location with large display windows and high foot traffic.</p>
-                <p class="price">$28/sq ft per year</p>
-                <button class="btn btn-primary mt-2 view-details-btn" onclick="trackPropertyView('Retail Space', 'Retail', 28000)">View Details</button>
-            </div>
-        </div>
-        
-        <div class="property-card">
-            <div class="property-image-container">
-                <img src="{{ get_property_image('Industrial Warehouse with loading docks') or url_for('static', filename='img/placeholder.jpg') }}" alt="Industrial Space" class="property-image">
-            </div>
-            <div class="property-details">
-                <h3>Industrial Warehouse</h3>
-                <p class="property-size">10,000 sq ft</p>
-                <p class="property-description">Modern warehouse with loading docks, high ceilings, and office space included.</p>
-                <p class="price">$12/sq ft per year</p>
-                <button class="btn btn-primary mt-2 view-details-btn" onclick="trackPropertyView('Industrial Warehouse', 'Industrial', 12000)">View Details</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Function to track property views for targeted ads
-    function trackPropertyView(location, propertyType, price) {
-        if (typeof trackVisitorBehavior === 'function') {
-            trackVisitorBehavior('property_view', {
-                location: location,
-                property_type: propertyType,
-                price: price
-            });
-        }
-        
-        // In a real app, this would navigate to the property details page
-        alert(`Viewing details for ${propertyType} property in ${location}`);
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize calendar for lease start date
-        const leaseStartInput = document.getElementById('lease-start');
-        const leaseStartCalendar = document.getElementById('lease-start-calendar');
-        
-        if (leaseStartInput && leaseStartCalendar) {
-            // Create calendar
-            const calendar = document.createElement('div');
-            calendar.className = 'calendar';
-            
-            // Add calendar header
-            const header = document.createElement('div');
-            header.className = 'calendar-header';
-            
-            const prevBtn = document.createElement('button');
-            prevBtn.className = 'calendar-nav prev-month';
-            prevBtn.innerHTML = '&lt;';
-            
-            const monthDisplay = document.createElement('span');
-            monthDisplay.className = 'current-month';
-            
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'calendar-nav next-month';
-            nextBtn.innerHTML = '&gt;';
-            
-            header.appendChild(prevBtn);
-            header.appendChild(monthDisplay);
-            header.appendChild(nextBtn);
-            
-            // Add calendar body
-            const calendarBody = document.createElement('div');
-            calendarBody.className = 'calendar-body';
-            
-            // Add weekday headers
-            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            const weekdaysRow = document.createElement('div');
-            weekdaysRow.className = 'weekdays';
-            
-            weekdays.forEach(day => {
-                const dayElem = document.createElement('div');
-                dayElem.className = 'weekday';
-                dayElem.textContent = day;
-                weekdaysRow.appendChild(dayElem);
-            });
-            
-            calendarBody.appendChild(weekdaysRow);
-            
-            // Add days grid
-            const daysGrid = document.createElement('div');
-            daysGrid.className = 'days';
-            calendarBody.appendChild(daysGrid);
-            
-            calendar.appendChild(header);
-            calendar.appendChild(calendarBody);
-            leaseStartCalendar.appendChild(calendar);
-            
-            // Calendar functionality
-            let currentDate = new Date();
-            let currentMonth = currentDate.getMonth();
-            let currentYear = currentDate.getFullYear();
-            
-            // Update calendar
-            function updateCalendar() {
-                // Update month display
-                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                monthDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-                
-                // Clear days grid
-                daysGrid.innerHTML = '';
-                
-                // Get first day of month and number of days
-                const firstDay = new Date(currentYear, currentMonth, 1);
-                const lastDay = new Date(currentYear, currentMonth + 1, 0);
-                const daysInMonth = lastDay.getDate();
-                const startingDay = firstDay.getDay(); // 0 = Sunday
-                
-                // Add empty cells for days before the first of the month
-                for (let i = 0; i < startingDay; i++) {
-                    const emptyDay = document.createElement('div');
-                    emptyDay.className = 'day empty';
-                    daysGrid.appendChild(emptyDay);
-                }
-                
-                // Add days of the month
-                for (let i = 1; i <= daysInMonth; i++) {
-                    const day = document.createElement('div');
-                    day.className = 'day';
-                    day.textContent = i;
-                    
-                    // Check if this day is today
-                    const today = new Date();
-                    if (currentYear === today.getFullYear() && 
-                        currentMonth === today.getMonth() && 
-                        i === today.getDate()) {
-                        day.classList.add('today');
-                    }
-                    
-                    // Make days clickable
-                    day.addEventListener('click', function() {
-                        // Format date as YYYY-MM-DD
-                        const selectedDate = new Date(currentYear, currentMonth, i);
-                        const formattedDate = selectedDate.toISOString().split('T')[0];
-                        
-                        // Update input value
-                        leaseStartInput.value = formattedDate;
-                        
-                        // Hide calendar
-                        leaseStartCalendar.style.display = 'none';
-                    });
-                    
-                    daysGrid.appendChild(day);
-                }
-            }
-            
-            // Initialize calendar
-            updateCalendar();
-            
-            // Add event listeners for navigation
-            prevBtn.addEventListener('click', function() {
-                currentMonth--;
-                if (currentMonth < 0) {
-                    currentMonth = 11;
-                    currentYear--;
-                }
-                updateCalendar();
-            });
-            
-            nextBtn.addEventListener('click', function() {
-                currentMonth++;
-                if (currentMonth > 11) {
-                    currentMonth = 0;
-                    currentYear++;
-                }
-                updateCalendar();
-            });
-            
-            // Show/hide calendar on input click
-            leaseStartInput.addEventListener('click', function() {
-                leaseStartCalendar.style.display = leaseStartCalendar.style.display === 'block' ? 'none' : 'block';
-            });
-            
-            // Hide calendar when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!leaseStartInput.contains(e.target) && !leaseStartCalendar.contains(e.target)) {
-                    leaseStartCalendar.style.display = 'none';
-                }
-            });
-        }
-    });
-</script>
 {% endblock %}

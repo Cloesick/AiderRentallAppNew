@@ -230,7 +230,7 @@ def get_destination_images():
     return destinations
 
 # Helper function to get property image based on location or title
-def get_property_image(location_or_title):
+def get_property_image(location_or_title, property_type=None, price=None, bedrooms=None):
     if not location_or_title:
         return None
         
@@ -238,16 +238,23 @@ def get_property_image(location_or_title):
     
     # Keywords to match with specific property types
     property_type_keywords = {
-        'office': ['office', 'workspace', 'commercial', 'business'],
-        'retail': ['retail', 'shop', 'store', 'mall'],
-        'industrial': ['industrial', 'warehouse', 'factory', 'manufacturing'],
-        'residential': ['house', 'home', 'apartment', 'condo', 'villa', 'penthouse'],
-        'luxury': ['luxury', 'premium', 'exclusive', 'high-end'],
-        'beachfront': ['beach', 'ocean', 'sea', 'coastal'],
-        'downtown': ['downtown', 'city center', 'urban', 'central'],
-        'suburban': ['suburban', 'quiet', 'family'],
-        'rural': ['rural', 'countryside', 'farm']
+        'office': ['office', 'workspace', 'commercial', 'business', 'corporate'],
+        'retail': ['retail', 'shop', 'store', 'mall', 'shopping'],
+        'industrial': ['industrial', 'warehouse', 'factory', 'manufacturing', 'logistics'],
+        'residential': ['house', 'home', 'apartment', 'condo', 'villa', 'penthouse', 'residential'],
+        'luxury': ['luxury', 'premium', 'exclusive', 'high-end', 'upscale', 'elegant'],
+        'beachfront': ['beach', 'ocean', 'sea', 'coastal', 'waterfront', 'seaside'],
+        'downtown': ['downtown', 'city center', 'urban', 'central', 'metropolitan'],
+        'suburban': ['suburban', 'quiet', 'family', 'neighborhood', 'community'],
+        'rural': ['rural', 'countryside', 'farm', 'ranch', 'estate'],
+        'lease': ['lease', 'leasing', 'commercial lease', 'office lease', 'retail lease'],
+        'rental': ['rental', 'rent', 'apartment', 'short-term', 'vacation'],
+        'purchase': ['purchase', 'buy', 'own', 'sale', 'investment']
     }
+    
+    # If property_type is provided, add it to the search criteria
+    if property_type:
+        location_or_title += f" {property_type}"
     
     # First try to find an image for the exact location
     for destination in os.listdir(app.config['DESTINATIONS_FOLDER']):
@@ -400,20 +407,30 @@ def load_properties(category):
 def save_properties(category, properties):
     filename = get_properties_file(category)
     try:
-        # Ensure each property has an image based on its title or location
+        # Ensure each property has an image based on its characteristics
         for prop in properties:
             if not prop.get('images') or len(prop.get('images', [])) == 0:
-                # Try to match image based on title first, then location details
+                # Extract all relevant property details for better matching
                 title = prop.get('title', '') or prop.get('name', '')
                 location = prop.get('city', '') or prop.get('address', '') or prop.get('country', '')
                 description = prop.get('description', '')
+                property_type = prop.get('property_type', '') or prop.get('type', '')
+                price = prop.get('price', 0)
+                bedrooms = prop.get('bedrooms', None)
                 
                 # Combine all text fields for better matching
-                search_text = f"{title} {location} {description}"
+                search_text = f"{title} {location} {description} {property_type}"
                 
-                image = get_property_image(search_text)
+                # Get image that matches the property characteristics
+                image = get_property_image(search_text, property_type, price, bedrooms)
                 if image:
                     prop['images'] = [image]
+                    
+                # Add category-specific tag to help with image matching
+                if 'tags' not in prop:
+                    prop['tags'] = []
+                if category not in prop['tags']:
+                    prop['tags'].append(category)
         
         with open(filename, 'w') as f:
             json.dump(properties, f, indent=4)
@@ -750,7 +767,7 @@ def rentals_by_destination(location):
             'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
             'user_id': session.get('user_id', None),
             'action': 'destination_search',
-            'data': {'location': location},
+            'data': {'location': location, 'category': 'rentals'},
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         }
         save_visitor_tracking(tracking_data)
@@ -762,17 +779,155 @@ def rentals_by_destination(location):
         properties=matching_properties
     )
 
+@app.route('/leasing/destination/<location>')
+def leasing_by_destination(location):
+    # Load all leasing properties
+    properties = load_properties('leasing')
+    
+    # Filter properties by location (case-insensitive partial match)
+    location_lower = location.lower()
+    matching_properties = [
+        p for p in properties 
+        if location_lower in p.get('address', '').lower() or 
+           location_lower in p.get('city', '').lower() or
+           location_lower in p.get('country', '').lower()
+    ]
+    
+    # Track this search if analytics is enabled
+    if session.get('cookie_preferences', {}).get('analytics', False):
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': session.get('user_id', None),
+            'action': 'destination_search',
+            'data': {'location': location, 'category': 'leasing'},
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
+    return render_template(
+        'leasing.html', 
+        destination_search=True,
+        location=location,
+        properties=matching_properties
+    )
+
 @app.route('/purchase')
 def purchase():
-    return render_template('purchase.html')
+    # Load purchase properties
+    properties = load_properties('purchase')
+    
+    # Track page view if analytics is enabled
+    if session.get('cookie_preferences', {}).get('analytics', False):
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': session.get('user_id', None),
+            'action': 'page_view',
+            'data': {'page': 'purchase'},
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
+    return render_template('purchase.html', properties=properties)
+
+@app.route('/purchase/destination/<location>')
+def purchase_by_destination(location):
+    # Load all purchase properties
+    properties = load_properties('purchase')
+    
+    # Filter properties by location (case-insensitive partial match)
+    location_lower = location.lower()
+    matching_properties = [
+        p for p in properties 
+        if location_lower in p.get('address', '').lower() or 
+           location_lower in p.get('city', '').lower() or
+           location_lower in p.get('country', '').lower()
+    ]
+    
+    # Track this search if analytics is enabled
+    if session.get('cookie_preferences', {}).get('analytics', False):
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': session.get('user_id', None),
+            'action': 'destination_search',
+            'data': {'location': location, 'category': 'purchase'},
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
+    return render_template(
+        'purchase.html', 
+        destination_search=True,
+        location=location,
+        properties=matching_properties
+    )
 
 @app.route('/leasing')
 def leasing():
-    return render_template('leasing.html')
+    # Load leasing properties
+    properties = load_properties('leasing')
+    
+    # Track page view if analytics is enabled
+    if session.get('cookie_preferences', {}).get('analytics', False):
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': session.get('user_id', None),
+            'action': 'page_view',
+            'data': {'page': 'leasing'},
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
+    return render_template('leasing.html', properties=properties)
 
 @app.route('/visiting')
 def visiting():
-    return render_template('visiting.html')
+    # Load visiting properties
+    properties = load_properties('visiting')
+    
+    # Track page view if analytics is enabled
+    if session.get('cookie_preferences', {}).get('analytics', False):
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': session.get('user_id', None),
+            'action': 'page_view',
+            'data': {'page': 'visiting'},
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
+    return render_template('visiting.html', properties=properties)
+
+@app.route('/visiting/destination/<location>')
+def visiting_by_destination(location):
+    # Load all visiting properties
+    properties = load_properties('visiting')
+    
+    # Filter properties by location (case-insensitive partial match)
+    location_lower = location.lower()
+    matching_properties = [
+        p for p in properties 
+        if location_lower in p.get('address', '').lower() or 
+           location_lower in p.get('city', '').lower() or
+           location_lower in p.get('country', '').lower()
+    ]
+    
+    # Track this search if analytics is enabled
+    if session.get('cookie_preferences', {}).get('analytics', False):
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': session.get('user_id', None),
+            'action': 'destination_search',
+            'data': {'location': location, 'category': 'visiting'},
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
+    return render_template(
+        'visiting.html', 
+        destination_search=True,
+        location=location,
+        properties=matching_properties
+    )
 
 @app.route('/account')
 def account():
