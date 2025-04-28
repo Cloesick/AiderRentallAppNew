@@ -25,8 +25,7 @@ function generateCaptchaOnCanvas(canvas, textFieldId) {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Add minimal noise (background) - reduced for better readability
-    addNoise(ctx, canvas.width, canvas.height);
+    // No noise in background for maximum readability
     
     // Use a consistent, readable font
     const font = 'Arial';
@@ -35,32 +34,33 @@ function generateCaptchaOnCanvas(canvas, textFieldId) {
     const charWidth = canvas.width / (captchaText.length + 1);
     const baseY = canvas.height / 2 + 5;
     
-    // Draw each character with minimal rotation for better readability
+    // Draw each character with no rotation for maximum readability
     for (let i = 0; i < captchaText.length; i++) {
         const charX = (i + 0.5) * charWidth;
-        const charY = baseY + (Math.random() * 6 - 3); // Less vertical variation
+        const charY = baseY; // No vertical variation
         
-        // Darker colors for better visibility
-        const r = Math.floor(Math.random() * 80);
-        const g = Math.floor(Math.random() * 80);
-        const b = Math.floor(Math.random() * 80);
+        // High contrast colors for better visibility
+        const colors = [
+            '#000000', // Black
+            '#0000CC', // Dark Blue
+            '#006600', // Dark Green
+            '#660000', // Dark Red
+            '#4B0082'  // Indigo
+        ];
+        const colorIndex = Math.floor(Math.random() * colors.length);
         
         ctx.save();
         ctx.translate(charX, charY);
-        // Reduced rotation angle for better readability
-        ctx.rotate((Math.random() * 10 - 5) * Math.PI / 180);
-        // Larger, bolder font
-        ctx.font = `bold ${26 + Math.floor(Math.random() * 4)}px ${font}`;
-        ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        // No rotation for maximum readability
+        // Larger, bolder font with consistent size
+        ctx.font = `bold 32px ${font}`;
+        ctx.fillStyle = colors[colorIndex];
         ctx.fillText(captchaText[i], 0, 0);
         ctx.restore();
     }
     
-    // Add fewer lines for noise - just enough for security
-    addLines(ctx, canvas.width, canvas.height);
-    
-    // Add fewer dots for noise
-    addDots(ctx, canvas.width, canvas.height, 30); // Reduced number of dots
+    // Add minimal visual distinction without affecting readability
+    addLines(ctx, canvas.width, canvas.height, 2); // Just 2 light lines
 }
 
 function generateRandomString(length) {
@@ -86,44 +86,22 @@ function generateRandomString(length) {
     return result;
 }
 
-function addNoise(ctx, width, height) {
-    // Add minimal background noise - significantly reduced for readability
-    for (let i = 0; i < width * height * 0.05; i++) {
-        const x = Math.floor(Math.random() * width);
-        const y = Math.floor(Math.random() * height);
-        // Very light noise that won't interfere with text
-        ctx.fillStyle = `rgba(200, 200, 200, 0.1)`;
-        ctx.fillRect(x, y, 1, 1);
-    }
-}
-
-function addLines(ctx, width, height) {
-    // Add fewer random lines - just 3 instead of 6
-    for (let i = 0; i < 3; i++) {
+function addLines(ctx, width, height, count = 2) {
+    // Add just a couple of very light lines for minimal visual distinction
+    for (let i = 0; i < count; i++) {
         ctx.beginPath();
-        ctx.moveTo(Math.random() * width, Math.random() * height);
-        ctx.lineTo(Math.random() * width, Math.random() * height);
-        // Lighter lines that don't interfere with text
-        ctx.strokeStyle = `rgba(150, 150, 150, 0.3)`;
+        // Horizontal lines only for better readability
+        const y = (i + 1) * (height / (count + 1));
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        // Very light lines that don't interfere with text
+        ctx.strokeStyle = `rgba(200, 200, 200, 0.2)`;
         ctx.lineWidth = 1;
         ctx.stroke();
     }
 }
 
-function addDots(ctx, width, height, count = 20) {
-    // Add fewer random dots - reduced from 50
-    for (let i = 0; i < count; i++) {
-        const x = Math.floor(Math.random() * width);
-        const y = Math.floor(Math.random() * height);
-        const radius = 0.5 + Math.random() * 1; // Smaller dots
-        
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        // Lighter dots that don't interfere with text
-        ctx.fillStyle = `rgba(150, 150, 150, 0.3)`;
-        ctx.fill();
-    }
-}
+// Remove the addDots function as we're not using it anymore
 
 // Enhanced remember me functionality with encryption
 function handleRememberMe() {
