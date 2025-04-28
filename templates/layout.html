@@ -4,14 +4,61 @@
     <title>{% block title %}Real Estate App{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fix.css') }}">
     {% block extra_css %}{% endblock %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="{{ url_for('static', filename='js/icon-customizer.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/cookie-consent.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/quick-search-map.js') }}" defer></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Additional responsive styles */
+        @media (max-width: 768px) {
+            .page-layout {
+                flex-direction: column;
+            }
+            
+            .main-container {
+                width: 100%;
+                padding: 10px;
+            }
+            
+            .sidebar-right {
+                width: 100%;
+                padding: 10px;
+                margin-top: 20px;
+            }
+            
+            .header-container {
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .main-nav ul {
+                flex-direction: column;
+                padding: 0;
+            }
+            
+            .main-nav li {
+                margin: 5px 0;
+            }
+            
+            .footer-container {
+                flex-direction: column;
+            }
+            
+            .footer-section {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .property-card {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
     {% block extra_js %}
     <script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/destination-slideshow.js') }}" defer></script>

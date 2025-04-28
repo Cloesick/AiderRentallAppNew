@@ -31,16 +31,16 @@ def print_server_urls(port=5000):
     
     # Print header
     print("\n" + "=" * 70)
-    print(" 🏠 REAL ESTATE APP SERVER RUNNING".center(70))
+    print(" REAL ESTATE APP SERVER RUNNING ".center(70, "="))
     print("=" * 70)
     
-    # Print URLs
-    print("\n 🌐 Access the application at:")
-    print(f"\n   📌 Local:   \033[1;36mhttp://localhost:{port}/\033[0m")
-    print(f"   📌 Network: \033[1;36mhttp://{local_ip}:{port}/\033[0m")
+    # Print URLs without using color codes or emojis (which may not work in all terminals)
+    print("\nAccess the application at:")
+    print(f"\n   Local:   http://localhost:{port}/")
+    print(f"   Network: http://{local_ip}:{port}/")
     
     # Print instructions
-    print("\n 🛠️  Press CTRL+C to stop the server")
+    print("\nPress CTRL+C to stop the server")
     print("\n" + "=" * 70 + "\n")
     
     # Return the local URL

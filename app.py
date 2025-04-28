@@ -831,6 +831,40 @@ def rentals():
     # Load rental properties
     properties = load_properties('rentals')
     
+    # Create default properties if none exist
+    if not properties:
+        properties = [
+            {
+                "id": "rental1",
+                "title": "Cozy Downtown Apartment",
+                "address": "123 Main St",
+                "city": "New York",
+                "country": "USA",
+                "price": 2500,
+                "property_type": "apartment",
+                "bedrooms": 2,
+                "bathrooms": 1,
+                "size": 850,
+                "description": "Beautiful apartment in the heart of the city",
+                "images": ["static/img/placeholders/apartment.jpg"]
+            },
+            {
+                "id": "rental2",
+                "title": "Spacious Family Home",
+                "address": "456 Oak Ave",
+                "city": "Los Angeles",
+                "country": "USA",
+                "price": 3800,
+                "property_type": "house",
+                "bedrooms": 4,
+                "bathrooms": 3,
+                "size": 2200,
+                "description": "Perfect home for a family in a quiet neighborhood",
+                "images": ["static/img/placeholders/house.jpg"]
+            }
+        ]
+        save_properties('rentals', properties)
+    
     # Track page view if analytics is enabled
     if session.get('cookie_preferences', {}).get('analytics', False):
         tracking_data = {
@@ -913,6 +947,40 @@ def purchase():
     # Load purchase properties
     properties = load_properties('purchase')
     
+    # Create default properties if none exist
+    if not properties:
+        properties = [
+            {
+                "id": "purchase1",
+                "title": "Luxury Villa with Pool",
+                "address": "789 Oceanview Dr",
+                "city": "Miami",
+                "country": "USA",
+                "price": 1200000,
+                "property_type": "villa",
+                "bedrooms": 5,
+                "bathrooms": 4,
+                "size": 4200,
+                "description": "Stunning luxury villa with ocean views and private pool",
+                "images": ["static/img/placeholders/villa.jpg"]
+            },
+            {
+                "id": "purchase2",
+                "title": "Modern Downtown Condo",
+                "address": "101 City Center",
+                "city": "Chicago",
+                "country": "USA",
+                "price": 450000,
+                "property_type": "condo",
+                "bedrooms": 2,
+                "bathrooms": 2,
+                "size": 1200,
+                "description": "Contemporary condo in the heart of downtown",
+                "images": ["static/img/placeholders/condo.jpg"]
+            }
+        ]
+        save_properties('purchase', properties)
+    
     # Track page view if analytics is enabled
     if session.get('cookie_preferences', {}).get('analytics', False):
         tracking_data = {
@@ -963,6 +1031,36 @@ def leasing():
     # Load leasing properties
     properties = load_properties('leasing')
     
+    # Create default properties if none exist
+    if not properties:
+        properties = [
+            {
+                "id": "lease1",
+                "title": "Downtown Office Space",
+                "address": "123 Business Ave",
+                "city": "New York",
+                "country": "USA",
+                "price": 5000,
+                "property_type": "office",
+                "size": 2500,
+                "description": "Prime office space in downtown location",
+                "images": ["static/img/placeholders/office.jpg"]
+            },
+            {
+                "id": "lease2",
+                "title": "Retail Space in Mall",
+                "address": "456 Shopping Center",
+                "city": "Los Angeles",
+                "country": "USA",
+                "price": 8000,
+                "property_type": "retail",
+                "size": 1800,
+                "description": "High-traffic retail space in popular mall",
+                "images": ["static/img/placeholders/retail.jpg"]
+            }
+        ]
+        save_properties('leasing', properties)
+    
     # Track page view if analytics is enabled
     if session.get('cookie_preferences', {}).get('analytics', False):
         tracking_data = {
@@ -980,6 +1078,42 @@ def leasing():
 def visiting():
     # Load visiting properties
     properties = load_properties('visiting')
+    
+    # Create default properties if none exist
+    if not properties:
+        properties = [
+            {
+                "id": "visit1",
+                "title": "Luxury Beachfront Villa",
+                "address": "789 Beach Rd",
+                "city": "Malibu",
+                "country": "USA",
+                "price": 5000000,
+                "property_type": "villa",
+                "bedrooms": 6,
+                "bathrooms": 5,
+                "size": 5500,
+                "description": "Stunning beachfront property with panoramic ocean views",
+                "images": ["static/img/placeholders/luxury.jpg"],
+                "available_times": ["9:00 AM", "11:00 AM", "2:00 PM", "4:00 PM"]
+            },
+            {
+                "id": "visit2",
+                "title": "Historic Townhouse",
+                "address": "101 Heritage St",
+                "city": "Boston",
+                "country": "USA",
+                "price": 1800000,
+                "property_type": "townhouse",
+                "bedrooms": 3,
+                "bathrooms": 2.5,
+                "size": 2800,
+                "description": "Beautifully restored historic townhouse in prime location",
+                "images": ["static/img/placeholders/townhouse.jpg"],
+                "available_times": ["10:00 AM", "1:00 PM", "3:00 PM", "5:00 PM"]
+            }
+        ]
+        save_properties('visiting', properties)
     
     # Track page view if analytics is enabled
     if session.get('cookie_preferences', {}).get('analytics', False):
