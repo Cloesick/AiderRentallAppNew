@@ -4,6 +4,29 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/real-estate.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fix.css') }}">
+<style>
+    /* Additional responsive styles for leasing page */
+    @media (max-width: 768px) {
+        .property-card {
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .property-image-slider {
+            height: auto;
+        }
+        
+        .property-image {
+            height: auto;
+            max-height: 250px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block extra_js %}

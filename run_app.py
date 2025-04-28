@@ -23,11 +23,7 @@ def print_server_urls(port=5000):
     """Print the server URLs in a visually appealing way"""
     local_ip = get_ip()
     
-    # Clear terminal - use cls directly on Windows
-    if os.name == 'nt':
-        os.system('cls')
-    else:
-        os.system('clear')
+    # Don't try to clear the terminal as it might cause issues
     
     # Print header
     print("\n" + "=" * 70)
