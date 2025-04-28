@@ -107,7 +107,7 @@ function showCookieBanner() {
         <div class="cookie-content">
             <h3>Cookie Consent</h3>
             <p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. 
-            By clicking "Accept All", you consent to our use of cookies.</p>
+            Please select one of the options below to continue to the site.</p>
             
             <div class="cookie-types">
                 <div class="cookie-type">
@@ -136,10 +136,11 @@ function showCookieBanner() {
             </div>
             
             <div class="cookie-buttons">
-                <button id="accept-all-cookies" class="cookie-button accept-all">Accept All</button>
-                <button id="reject-all-cookies" class="cookie-button reject-all">Reject All</button>
-                <button id="save-preferences-cookies" class="cookie-button save-preferences">Save Preferences</button>
+                <button id="accept-all-cookies" class="cookie-button accept-all highlight-button">Accept All</button>
+                <button id="reject-all-cookies" class="cookie-button reject-all highlight-button">Reject All</button>
+                <button id="save-preferences-cookies" class="cookie-button save-preferences highlight-button">Save Preferences</button>
             </div>
+            <p class="cookie-notice">You must select one option to continue to the site.</p>
         </div>
     `;
     
@@ -232,6 +233,33 @@ function removeCookieBanner() {
             // Unblock navigation after cookie preferences are set
             unblockNavigation();
         }, 500); // Match the transition duration in CSS
+        
+        // Add a small notification that preferences have been saved
+        const notification = document.createElement('div');
+        notification.className = 'cookie-notification';
+        notification.textContent = 'Cookie preferences saved!';
+        notification.style.position = 'fixed';
+        notification.style.bottom = '20px';
+        notification.style.right = '20px';
+        notification.style.padding = '10px 15px';
+        notification.style.backgroundColor = '#4CAF50';
+        notification.style.color = 'white';
+        notification.style.borderRadius = '4px';
+        notification.style.zIndex = '9999';
+        notification.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        
+        document.body.appendChild(notification);
+        
+        // Remove notification after 3 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+            }, 500);
+        }, 3000);
     }
 }
 
@@ -274,7 +302,15 @@ function disablePreferenceCookies() {
 
 // Track visitor behavior for analytics and targeted ads
 function trackVisitorBehavior(action, data = {}) {
-    // Always track for commercial targeting regardless of analytics consent
+    // Check if analytics is enabled before tracking
+    const cookieConsent = JSON.parse(localStorage.getItem('cookieConsent') || '{"essential":true}');
+    
+    // Only track if analytics cookies are enabled or if it's essential tracking
+    if (!cookieConsent.analytics && action !== 'essential_tracking') {
+        console.log('Analytics tracking disabled by user preferences');
+        return;
+    }
+    
     // Add timestamp
     data.timestamp = new Date().toISOString();
     
@@ -399,10 +435,48 @@ window.trackVisitorBehavior = trackVisitorBehavior;
 
 // Track page view on load
 document.addEventListener('DOMContentLoaded', function() {
-    if (window.analyticsEnabled) {
+    // Check if cookie consent exists and analytics is enabled
+    const cookieConsent = JSON.parse(localStorage.getItem('cookieConsent') || '{}');
+    if (cookieConsent.analytics) {
         trackVisitorBehavior('page_view', {
             page: window.location.pathname,
             referrer: document.referrer
         });
+    }
+    
+    // Add a small floating button to manage cookie preferences
+    if (localStorage.getItem('cookieConsent')) {
+        const manageButton = document.createElement('button');
+        manageButton.textContent = 'Cookie Settings';
+        manageButton.className = 'cookie-manage-button';
+        manageButton.style.position = 'fixed';
+        manageButton.style.bottom = '20px';
+        manageButton.style.left = '20px';
+        manageButton.style.padding = '8px 12px';
+        manageButton.style.backgroundColor = '#f0f0f0';
+        manageButton.style.border = '1px solid #ccc';
+        manageButton.style.borderRadius = '4px';
+        manageButton.style.cursor = 'pointer';
+        manageButton.style.fontSize = '12px';
+        manageButton.style.zIndex = '9990';
+        
+        manageButton.addEventListener('click', function() {
+            // Remove existing cookie consent from localStorage
+            // but keep a backup to restore if user cancels
+            const currentPreferences = localStorage.getItem('cookieConsent');
+            localStorage.setItem('cookieConsentBackup', currentPreferences);
+            localStorage.removeItem('cookieConsent');
+            
+            // Show cookie banner again
+            showCookieBanner();
+            blockNavigation();
+            
+            // Remove the manage button
+            if (manageButton.parentNode) {
+                document.body.removeChild(manageButton);
+            }
+        });
+        
+        document.body.appendChild(manageButton);
     }
 });
