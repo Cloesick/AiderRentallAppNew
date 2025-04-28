@@ -23,9 +23,7 @@ def print_server_urls(port=5000):
     """Print the server URLs in a visually appealing way"""
     local_ip = get_ip()
     
-    # Don't try to clear the terminal as it might cause issues
-    
-    # Print header
+    # Print header without clearing terminal
     print("\n" + "=" * 70)
     print(" REAL ESTATE APP SERVER RUNNING ".center(70, "="))
     print("=" * 70)
