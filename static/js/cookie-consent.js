@@ -13,30 +13,99 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Block all navigation until cookie preferences are set
 function blockNavigation() {
-    // Show the cookie banner prominently without blocking interaction
+    // Show the cookie banner prominently
     const cookieBanner = document.querySelector('.cookie-banner');
     if (cookieBanner) {
         cookieBanner.style.zIndex = '9999';
         cookieBanner.style.position = 'fixed';
-        cookieBanner.style.bottom = '20px';
-        cookieBanner.style.right = '20px';
-        cookieBanner.style.maxWidth = '400px';
-        cookieBanner.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.3)';
+        cookieBanner.style.top = '50%';
+        cookieBanner.style.left = '50%';
+        cookieBanner.style.transform = 'translate(-50%, -50%)';
+        cookieBanner.style.maxWidth = '500px';
+        cookieBanner.style.width = '90%';
+        cookieBanner.style.boxShadow = '0 0 20px rgba(0, 0, 0, 0.5)';
     }
     
+    // Create overlay to block interaction with the rest of the page
+    const overlay = document.createElement('div');
+    overlay.id = 'cookie-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    overlay.style.zIndex = '9998';
+    document.body.appendChild(overlay);
+    
+    // Disable all links on the page
+    const links = document.querySelectorAll('a');
+    links.forEach(link => {
+        link.dataset.originalHref = link.getAttribute('href');
+        link.setAttribute('href', 'javascript:void(0)');
+        link.dataset.cookieBlocked = 'true';
+        link.addEventListener('click', preventNavigation);
+    });
+    
+    // Disable all forms
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.dataset.originalOnsubmit = form.onsubmit;
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            alert('Please set your cookie preferences to continue.');
+            return false;
+        };
+    });
+    
     // Log that cookie preferences are needed
-    console.log('Cookie preferences needed - banner displayed');
+    console.log('Cookie preferences needed - navigation blocked');
+}
+
+// Prevent navigation and show message
+function preventNavigation(e) {
+    e.preventDefault();
+    alert('Please set your cookie preferences to continue.');
+    return false;
 }
 
 // Unblock navigation after cookie preferences are set
 function unblockNavigation() {
-    // Simply hide the cookie banner
+    // Hide the cookie banner
     const cookieBanner = document.querySelector('.cookie-banner');
     if (cookieBanner) {
         cookieBanner.style.display = 'none';
     }
     
-    console.log('Cookie preferences set - banner removed');
+    // Remove overlay
+    const overlay = document.getElementById('cookie-overlay');
+    if (overlay) {
+        document.body.removeChild(overlay);
+    }
+    
+    // Re-enable all links
+    const links = document.querySelectorAll('a[data-cookie-blocked="true"]');
+    links.forEach(link => {
+        if (link.dataset.originalHref) {
+            link.setAttribute('href', link.dataset.originalHref);
+            link.removeAttribute('data-original-href');
+        }
+        link.removeAttribute('data-cookie-blocked');
+        link.removeEventListener('click', preventNavigation);
+    });
+    
+    // Re-enable all forms
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        if (form.dataset.originalOnsubmit) {
+            form.onsubmit = form.dataset.originalOnsubmit;
+            form.removeAttribute('data-original-onsubmit');
+        } else {
+            form.onsubmit = null;
+        }
+    });
+    
+    console.log('Cookie preferences set - navigation unblocked');
 }
 
 function showCookieBanner() {
@@ -45,7 +114,8 @@ function showCookieBanner() {
     banner.className = 'cookie-banner';
     banner.innerHTML = `
         <div class="cookie-content">
-            <h3>Cookie Consent</h3>
+            <h3>Cookie Consent Required</h3>
+            <p><strong>You must select your cookie preferences to continue.</strong></p>
             <p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. 
             Please select one of the options below to continue to the site.</p>
             

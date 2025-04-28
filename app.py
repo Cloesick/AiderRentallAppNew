@@ -18,7 +18,8 @@ from flask import (
     session, 
     jsonify, 
     send_from_directory, 
-    make_response
+    make_response,
+    g
 )
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -48,6 +49,17 @@ class Config:
 # Initialize Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
+
+# Middleware to check for cookie consent
+@app.before_request
+def check_cookie_consent():
+    # Skip for static files and API endpoints
+    if request.path.startswith('/static/') or request.path.startswith('/api/'):
+        return
+    
+    # Set a flag in g to indicate if cookie consent is required
+    # This will be used in templates to enforce cookie consent
+    g.require_cookie_consent = True
 
 # Create necessary directories at startup
 os.makedirs(app.config['HOME_ICON_FOLDER'], exist_ok=True)
@@ -199,7 +211,8 @@ def inject_context():
         'get_home_icon': get_home_icon,
         'get_carousel_images': get_carousel_images,
         'get_destination_images': get_destination_images,
-        'get_api_config': get_api_config
+        'get_api_config': get_api_config,
+        'require_cookie_consent': getattr(g, 'require_cookie_consent', True)
     }
 
 # Helper function to check if file extension is allowed
@@ -523,8 +536,8 @@ def save_properties(category, properties):
 
 @app.route('/')
 def home():
-    # Add pointer-events: none to homepage
-    return render_template('index.html', homepage=True)
+    # Set a flag to check for cookie consent in the template
+    return render_template('index.html', homepage=True, require_cookie_consent=True)
 
 @app.route('/about')
 def about():
