@@ -86,11 +86,12 @@ class ChangeHandler(FileSystemEventHandler):
                 # Use the default browser on the system
                 webbrowser.open(url, new=2)
             except Exception as e:
-                print(f"Error opening browser: {e}")
+                print(f"Error opening browser with webbrowser module: {e}")
                 # Fallback to direct command if webbrowser module fails
                 try:
                     if os.name == 'nt':  # Windows
-                        os.system(f'start {url}')
+                        # Use cmd's start command directly without powershell
+                        os.system(f'start "" "{url}"')
                     elif os.name == 'posix':  # macOS or Linux
                         os.system(f'open {url}' if sys.platform == 'darwin' else f'xdg-open {url}')
                 except Exception as e2:
