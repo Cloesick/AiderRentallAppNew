@@ -91,11 +91,13 @@ class ChangeHandler(FileSystemEventHandler):
                 try:
                     if os.name == 'nt':  # Windows
                         # Use cmd's start command directly without powershell
+                        # The empty string is needed for titles with spaces
                         os.system(f'start "" "{url}"')
                     elif os.name == 'posix':  # macOS or Linux
                         os.system(f'open {url}' if sys.platform == 'darwin' else f'xdg-open {url}')
                 except Exception as e2:
                     print(f"Failed to open browser with fallback method: {e2}")
+                    print("Please manually open your browser to: " + url)
                 
         threading.Thread(target=_open_browser).start()
 
