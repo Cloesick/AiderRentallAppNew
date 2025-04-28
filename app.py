@@ -828,7 +828,21 @@ def check_session():
 
 @app.route('/rentals')
 def rentals():
-    return render_template('rentals.html')
+    # Load rental properties
+    properties = load_properties('rentals')
+    
+    # Track page view if analytics is enabled
+    if session.get('cookie_preferences', {}).get('analytics', False):
+        tracking_data = {
+            'visitor_id': session.get('visitor_id', str(uuid.uuid4())),
+            'user_id': session.get('user_id', None),
+            'action': 'page_view',
+            'data': {'page': 'rentals'},
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+        save_visitor_tracking(tracking_data)
+    
+    return render_template('rentals.html', properties=properties)
 
 @app.route('/rentals/destination/<location>')
 def rentals_by_destination(location):
