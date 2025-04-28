@@ -21,46 +21,46 @@ function generateCaptchaOnCanvas(canvas, textFieldId) {
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Add gradient background
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#f9f9f9');
-    gradient.addColorStop(1, '#e9e9e9');
-    ctx.fillStyle = gradient;
+    // Add solid light background for better contrast
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Add noise (background)
+    // Add minimal noise (background) - reduced for better readability
     addNoise(ctx, canvas.width, canvas.height);
     
-    // Draw the captcha text with varying colors and fonts
-    const fonts = ['Arial', 'Verdana', 'Courier New', 'Georgia', 'Tahoma'];
+    // Use a consistent, readable font
+    const font = 'Arial';
     
-    // Draw each character with slight rotation for added security
-    const textWidth = ctx.measureText(captchaText).width;
-    const startX = (canvas.width - textWidth) / 2;
+    // Calculate better spacing for characters
+    const charWidth = canvas.width / (captchaText.length + 1);
+    const baseY = canvas.height / 2 + 5;
     
+    // Draw each character with minimal rotation for better readability
     for (let i = 0; i < captchaText.length; i++) {
-        const charX = startX + i * (textWidth / captchaText.length) + 10;
-        const charY = canvas.height / 2 + (Math.random() * 10 - 5);
+        const charX = (i + 0.5) * charWidth;
+        const charY = baseY + (Math.random() * 6 - 3); // Less vertical variation
         
-        // Random color for each character
-        const r = Math.floor(Math.random() * 100);
-        const g = Math.floor(Math.random() * 100);
-        const b = Math.floor(Math.random() * 100);
+        // Darker colors for better visibility
+        const r = Math.floor(Math.random() * 80);
+        const g = Math.floor(Math.random() * 80);
+        const b = Math.floor(Math.random() * 80);
         
         ctx.save();
         ctx.translate(charX, charY);
-        ctx.rotate((Math.random() * 30 - 15) * Math.PI / 180);
-        ctx.font = `bold ${20 + Math.floor(Math.random() * 8)}px ${fonts[Math.floor(Math.random() * fonts.length)]}`;
+        // Reduced rotation angle for better readability
+        ctx.rotate((Math.random() * 10 - 5) * Math.PI / 180);
+        // Larger, bolder font
+        ctx.font = `bold ${26 + Math.floor(Math.random() * 4)}px ${font}`;
         ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
         ctx.fillText(captchaText[i], 0, 0);
         ctx.restore();
     }
     
-    // Add some lines for noise
+    // Add fewer lines for noise - just enough for security
     addLines(ctx, canvas.width, canvas.height);
     
-    // Add some dots for noise
-    addDots(ctx, canvas.width, canvas.height);
+    // Add fewer dots for noise
+    addDots(ctx, canvas.width, canvas.height, 30); // Reduced number of dots
 }
 
 function generateRandomString(length) {
@@ -87,37 +87,40 @@ function generateRandomString(length) {
 }
 
 function addNoise(ctx, width, height) {
-    // Add background noise
-    for (let i = 0; i < width * height * 0.15; i++) {
+    // Add minimal background noise - significantly reduced for readability
+    for (let i = 0; i < width * height * 0.05; i++) {
         const x = Math.floor(Math.random() * width);
         const y = Math.floor(Math.random() * height);
-        ctx.fillStyle = `rgba(${Math.floor(Math.random() * 100)}, ${Math.floor(Math.random() * 100)}, ${Math.floor(Math.random() * 100)}, 0.1)`;
-        ctx.fillRect(x, y, 2, 2);
+        // Very light noise that won't interfere with text
+        ctx.fillStyle = `rgba(200, 200, 200, 0.1)`;
+        ctx.fillRect(x, y, 1, 1);
     }
 }
 
 function addLines(ctx, width, height) {
-    // Add random lines
-    for (let i = 0; i < 6; i++) {
+    // Add fewer random lines - just 3 instead of 6
+    for (let i = 0; i < 3; i++) {
         ctx.beginPath();
         ctx.moveTo(Math.random() * width, Math.random() * height);
         ctx.lineTo(Math.random() * width, Math.random() * height);
-        ctx.strokeStyle = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
-        ctx.lineWidth = 1 + Math.random() * 2;
+        // Lighter lines that don't interfere with text
+        ctx.strokeStyle = `rgba(150, 150, 150, 0.3)`;
+        ctx.lineWidth = 1;
         ctx.stroke();
     }
 }
 
-function addDots(ctx, width, height) {
-    // Add random dots
-    for (let i = 0; i < 50; i++) {
+function addDots(ctx, width, height, count = 20) {
+    // Add fewer random dots - reduced from 50
+    for (let i = 0; i < count; i++) {
         const x = Math.floor(Math.random() * width);
         const y = Math.floor(Math.random() * height);
-        const radius = 1 + Math.random() * 2;
+        const radius = 0.5 + Math.random() * 1; // Smaller dots
         
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
+        // Lighter dots that don't interfere with text
+        ctx.fillStyle = `rgba(150, 150, 150, 0.3)`;
         ctx.fill();
     }
 }
