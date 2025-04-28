@@ -523,7 +523,8 @@ def save_properties(category, properties):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    # Add pointer-events: none to homepage
+    return render_template('index.html', homepage=True)
 
 @app.route('/about')
 def about():

@@ -1,0 +1,14 @@
+/* Apply pointer-events: none to homepage elements */
+.homepage-content * {
+    pointer-events: none;
+}
+
+/* Exception for interactive elements that need to remain clickable */
+.homepage-content a,
+.homepage-content button,
+.homepage-content input,
+.homepage-content select,
+.homepage-content textarea,
+.homepage-content .clickable {
+    pointer-events: auto;
+}
