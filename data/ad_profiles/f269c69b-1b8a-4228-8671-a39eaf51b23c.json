@@ -1,0 +1,62 @@
+{
+    "interests": {},
+    "locations": {},
+    "property_types": {},
+    "price_range": {
+        "min": 0,
+        "max": 0,
+        "count": 0
+    },
+    "visits": [
+        {
+            "timestamp": "2025-04-28 15:58:11",
+            "action": "page_view",
+            "page": "/rentals"
+        },
+        {
+            "timestamp": "2025-04-28 15:58:12",
+            "action": "page_view",
+            "page": "/purchase"
+        },
+        {
+            "timestamp": "2025-04-28 15:58:13",
+            "action": "page_view",
+            "page": "/leasing"
+        },
+        {
+            "timestamp": "2025-04-28 15:58:15",
+            "action": "page_view",
+            "page": "/visiting"
+        },
+        {
+            "timestamp": "2025-04-28 15:58:16",
+            "action": "page_view",
+            "page": "/leasing"
+        },
+        {
+            "timestamp": "2025-04-28 15:58:17",
+            "action": "page_view",
+            "page": "/login"
+        },
+        {
+            "timestamp": "2025-04-28 15:58:24",
+            "action": "page_view",
+            "page": "/rentals"
+        },
+        {
+            "timestamp": "2025-04-28 15:58:26",
+            "action": "page_view",
+            "page": "/"
+        },
+        {
+            "timestamp": "2025-04-28 16:01:21",
+            "action": "page_view",
+            "page": "/"
+        },
+        {
+            "timestamp": "2025-04-28 16:01:49",
+            "action": "page_view",
+            "page": "/purchase"
+        }
+    ]
+}

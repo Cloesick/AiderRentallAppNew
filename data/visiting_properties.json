@@ -1,0 +1,46 @@
+[
+    {
+        "id": "visit1",
+        "title": "Luxury Beachfront Villa",
+        "address": "789 Beach Rd",
+        "city": "Malibu",
+        "country": "USA",
+        "price": 5000000,
+        "property_type": "villa",
+        "bedrooms": 6,
+        "bathrooms": 5,
+        "size": 5500,
+        "description": "Stunning beachfront property with panoramic ocean views",
+        "images": [
+            "static/img/placeholders/luxury.jpg"
+        ],
+        "available_times": [
+            "9:00 AM",
+            "11:00 AM",
+            "2:00 PM",
+            "4:00 PM"
+        ]
+    },
+    {
+        "id": "visit2",
+        "title": "Historic Townhouse",
+        "address": "101 Heritage St",
+        "city": "Boston",
+        "country": "USA",
+        "price": 1800000,
+        "property_type": "townhouse",
+        "bedrooms": 3,
+        "bathrooms": 2.5,
+        "size": 2800,
+        "description": "Beautifully restored historic townhouse in prime location",
+        "images": [
+            "static/img/placeholders/townhouse.jpg"
+        ],
+        "available_times": [
+            "10:00 AM",
+            "1:00 PM",
+            "3:00 PM",
+            "5:00 PM"
+        ]
+    }
+]

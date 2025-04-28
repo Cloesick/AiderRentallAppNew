@@ -1,27 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>About - My Flask App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Real Estate App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>About This App</h1>
-        <p>This is a simple Flask application that demonstrates how to use aider to create web apps.</p>
-        
-        <div class="navigation">
-            <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('rentals') }}">Rentals</a>
-            <a href="{{ url_for('purchase') }}">Purchase</a>
-            <a href="{{ url_for('leasing') }}">Leasing</a>
-            <a href="{{ url_for('visiting') }}">Schedule a Visit</a>
-            {% if session.get('logged_in') %}
-                <span>Welcome, {{ session.get('username') }}!</span>
-                <a href="{{ url_for('logout') }}">Logout</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-            {% endif %}
-        </div>
+        <header class="site-header">
+            <div class="header-container">
+                <div class="logo">
+                    <a href="{{ url_for('home') }}" class="home-icon" id="home-icon">
+                        <img src="{{ url_for('static', filename='images/home-icon.svg') }}" alt="Home" id="home-icon-img">
+                    </a>
+                    <h1>Real Estate App</h1>
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        {% for item in nav_items %}
+                            {% if item.endpoint in current_app.view_functions %}
+                                <li>
+                                    <a href="{{ url_for(item.endpoint) }}"
+                                       {% if request.endpoint == item.endpoint %}class="active"{% endif %}>
+                                        {{ item.label }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if session.get('logged_in') %}
+                            <li><a href="{{ url_for('logout') }}">Logout ({{ session.get('username') }})</a></li>
+                        {% else %}
+                            <li><a href="{{ url_for('login') }}">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <h1>About This App</h1>
+            <p>This is a simple Flask application that demonstrates how to use Aider to create structured, professional web apps efficiently.</p>
+        </main>
     </div>
 </body>
 </html>

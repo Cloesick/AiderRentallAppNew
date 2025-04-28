@@ -1,154 +1,34 @@
 [
     {
-        "name": "el andaluz",
-        "address": "marbella, calle del espirito sante, New York, NY, USA",
-        "description": "test",
-        "price": "490",
-        "squareMeters": "55",
-        "bedrooms": "2",
-        "bathrooms": "1",
-        "kitchens": "1",
-        "beds": "2",
-        "amenities": {
-            "parking": true,
-            "wifi": true,
-            "laundry": false,
-            "tv": true,
-            "hdmi": true,
-            "terrace": false,
-            "barbecue": false,
-            "oven": true,
-            "microwave": false,
-            "freezer": false,
-            "fridge": false
-        },
-        "id": "1744640153",
-        "created_at": "2025-04-14 16:15:53",
-        "category": "rentals",
-        "images": []
-    },
-    {
-        "name": "Cadiz",
-        "address": "cadiz, New York, NY, USA",
-        "description": "Lovely condoo in Cadiz, spain",
-        "price": "450",
-        "squareMeters": "55",
-        "bedrooms": "2",
-        "bathrooms": "1",
-        "kitchens": "3",
-        "beds": "2",
-        "amenities": {
-            "parking": true,
-            "wifi": true,
-            "laundry": false,
-            "tv": false,
-            "hdmi": true,
-            "terrace": false,
-            "barbecue": false,
-            "oven": true,
-            "microwave": false,
-            "freezer": false,
-            "fridge": false
-        },
-        "id": "1744644823",
-        "created_at": "2025-04-14 17:33:43",
-        "category": "rentals",
-        "images": []
-    }
-][
-    {
-        "id": "1681234567",
-        "name": "Luxury Apartment in Paris",
-        "address": "15 Rue de Rivoli, Paris, France",
-        "city": "Paris",
-        "country": "France",
-        "description": "Beautiful apartment with a view of the Eiffel Tower",
-        "price": "€250 per night",
+        "id": "rental1",
+        "title": "Cozy Downtown Apartment",
+        "address": "123 Main St",
+        "city": "New York",
+        "country": "USA",
+        "price": 2500,
+        "property_type": "apartment",
         "bedrooms": 2,
         "bathrooms": 1,
-        "squareMeters": 90,
-        "amenities": ["WiFi", "Air Conditioning", "Kitchen", "Washer"],
+        "size": 850,
+        "description": "Beautiful apartment in the heart of the city",
         "images": [
-            "https://images.unsplash.com/photo-1549638441-b787d2e11f14?w=800&h=600&q=80",
-            "https://images.unsplash.com/photo-1550581190-9c1c48d21d6c?w=800&h=600&q=80"
-        ],
-        "category": "rentals",
-        "created_at": "2023-04-10 12:00:00"
+            "static/img/placeholders/apartment.jpg"
+        ]
     },
     {
-        "id": "1681234568",
-        "name": "Cozy Studio in Barcelona",
-        "address": "123 La Rambla, Barcelona, Spain",
-        "city": "Barcelona",
-        "country": "Spain",
-        "description": "Charming studio in the heart of Barcelona",
-        "price": "€120 per night",
-        "bedrooms": 1,
-        "bathrooms": 1,
-        "squareMeters": 45,
-        "amenities": ["WiFi", "Kitchen", "Balcony"],
+        "id": "rental2",
+        "title": "Spacious Family Home",
+        "address": "456 Oak Ave",
+        "city": "Los Angeles",
+        "country": "USA",
+        "price": 3800,
+        "property_type": "house",
+        "bedrooms": 4,
+        "bathrooms": 3,
+        "size": 2200,
+        "description": "Perfect home for a family in a quiet neighborhood",
         "images": [
-            "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&h=600&q=80",
-            "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&q=80"
-        ],
-        "category": "rentals",
-        "created_at": "2023-04-11 14:30:00"
-    },
-    {
-        "id": "1681234569",
-        "name": "Historic Apartment in Rome",
-        "address": "45 Via del Corso, Rome, Italy",
-        "city": "Rome",
-        "country": "Italy",
-        "description": "Elegant apartment near the Colosseum",
-        "price": "€180 per night",
-        "bedrooms": 2,
-        "bathrooms": 1,
-        "squareMeters": 85,
-        "amenities": ["WiFi", "Air Conditioning", "Kitchen", "Washer"],
-        "images": [
-            "https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=800&h=600&q=80",
-            "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?w=800&h=600&q=80"
-        ],
-        "category": "rentals",
-        "created_at": "2023-04-12 10:15:00"
-    },
-    {
-        "id": "1681234570",
-        "name": "Canal View Apartment in Amsterdam",
-        "address": "78 Prinsengracht, Amsterdam, Netherlands",
-        "city": "Amsterdam",
-        "country": "Netherlands",
-        "description": "Charming apartment overlooking the canals",
-        "price": "€200 per night",
-        "bedrooms": 1,
-        "bathrooms": 1,
-        "squareMeters": 70,
-        "amenities": ["WiFi", "Kitchen", "Washer", "Balcony"],
-        "images": [
-            "https://images.unsplash.com/photo-1576924542622-772281b13aa8?w=800&h=600&q=80",
-            "https://images.unsplash.com/photo-1614267157481-ca2b81ac6fcc?w=800&h=600&q=80"
-        ],
-        "category": "rentals",
-        "created_at": "2023-04-13 16:45:00"
-    },
-    {
-        "id": "1681234571",
-        "name": "Santorini Villa with Pool",
-        "address": "25 Oia Street, Santorini, Greece",
-        "city": "Santorini",
-        "country": "Greece",
-        "description": "Stunning villa with private pool and sea views",
-        "price": "€350 per night",
-        "bedrooms": 3,
-        "bathrooms": 2,
-        "squareMeters": 150,
-        "amenities": ["WiFi", "Air Conditioning", "Kitchen", "Pool", "Terrace"],
-        "images": [
-            "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800&h=600&q=80",
-            "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800&h=600&q=80"
-        ],
-        "category": "rentals",
-        "created_at": "2023-04-14 09:30:00"
+            "static/img/placeholders/house.jpg"
+        ]
     }
 ]

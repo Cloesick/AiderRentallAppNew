@@ -28,6 +28,61 @@
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/calendar.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
+<script>
+    // Google Maps initialization
+    function initMap() {
+        // Default map center (Europe)
+        const mapCenter = { lat: 48.8566, lng: 2.3522 }; // Paris coordinates
+        
+        // Create map
+        const map = new google.maps.Map(document.getElementById("map-container"), {
+            zoom: 5,
+            center: mapCenter,
+        });
+        
+        // Create search functionality
+        const searchButton = document.getElementById("map-search-button");
+        const searchInput = document.getElementById("map-search-input");
+        
+        searchButton.addEventListener("click", function() {
+            const geocoder = new google.maps.Geocoder();
+            const address = searchInput.value;
+            
+            geocoder.geocode({ address: address }, function(results, status) {
+                if (status === "OK") {
+                    map.setCenter(results[0].geometry.location);
+                    map.setZoom(12);
+                    
+                    // Create marker at the location
+                    new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location,
+                    });
+                } else {
+                    alert("Geocode was not successful for the following reason: " + status);
+                }
+            });
+        });
+        
+        // Allow search on Enter key
+        searchInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                searchButton.click();
+            }
+        });
+    }
+    
+    // Load Google Maps API
+    document.addEventListener("DOMContentLoaded", function() {
+        // Create script element for Google Maps API
+        const script = document.createElement("script");
+        script.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap";
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    });
+</script>
 {% endblock %}
 
 {% block content %}
@@ -46,7 +101,7 @@
     {% if destination_search %}
         <div class="destination-search-results">
             <h2>Rental Properties in {{ location }}</h2>
-            {% if properties|length > 0 %}
+            {% if properties %}
                 <p>We found {{ properties|length }} properties matching your destination.</p>
             {% else %}
                 <p>No properties found for this destination. Please try another location or browse all our rentals below.</p>
@@ -154,12 +209,12 @@
                 {% if properties %}
                     {% for property in properties %}
                         <div class="property-card">
-                            {% if property.images is defined and property.images is not none and property.images is iterable and property.images|length > 0 %}
+                            {% if property.images is defined and property.images %}
                                 <div class="property-image-slider">
                                     {% for image in property.images %}
                                         <img src="{{ image }}" alt="{{ property.name }}" class="property-image {% if loop.index == 1 %}active{% endif %}">
                                     {% endfor %}
-                                    {% if property.images|length > 1 %}
+                                    {% if property.images|default([])|length > 1 %}
                                         <button class="image-nav prev">&lt;</button>
                                         <button class="image-nav next">&gt;</button>
                                         <div class="image-dots">
@@ -175,7 +230,7 @@
                             <h3>{{ property.name }}</h3>
                             <p>{{ property.bedrooms }} bed, {{ property.bathrooms }} bath, {{ property.squareMeters }} sq m</p>
                             <p>{{ property.description }}</p>
-                            <p class="price">{{ property.price }}</p>
+                            <p class="price">€{{ property.price }}</p>
                         </div>
                     {% endfor %}
                 {% else %}
@@ -184,7 +239,7 @@
                         <h3>Luxury Downtown Apartment</h3>
                         <p>2 bed, 2 bath, 1,200 sq ft</p>
                         <p>Modern apartment with stunning city views, granite countertops, and hardwood floors.</p>
-                        <p class="price">$2,500/month</p>
+                        <p class="price">€2,500/month</p>
                     </div>
                     
                     <div class="property-card">
@@ -192,7 +247,7 @@
                         <h3>Spacious Suburban Home</h3>
                         <p>4 bed, 3 bath, 2,500 sq ft</p>
                         <p>Family home with large backyard, updated kitchen, and two-car garage.</p>
-                        <p class="price">$3,200/month</p>
+                        <p class="price">€3,200/month</p>
                     </div>
                     
                     <div class="property-card">
@@ -200,7 +255,7 @@
                         <h3>Cozy Studio Apartment</h3>
                         <p>Studio, 1 bath, 550 sq ft</p>
                         <p>Perfect starter apartment with modern amenities and great location.</p>
-                        <p class="price">$1,100/month</p>
+                        <p class="price">€1,100/month</p>
                     </div>
                 {% endif %}
             </div>

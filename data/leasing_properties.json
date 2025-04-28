@@ -1,0 +1,30 @@
+[
+    {
+        "id": "lease1",
+        "title": "Downtown Office Space",
+        "address": "123 Business Ave",
+        "city": "New York",
+        "country": "USA",
+        "price": 5000,
+        "property_type": "office",
+        "size": 2500,
+        "description": "Prime office space in downtown location",
+        "images": [
+            "static/img/placeholders/office.jpg"
+        ]
+    },
+    {
+        "id": "lease2",
+        "title": "Retail Space in Mall",
+        "address": "456 Shopping Center",
+        "city": "Los Angeles",
+        "country": "USA",
+        "price": 8000,
+        "property_type": "retail",
+        "size": 1800,
+        "description": "High-traffic retail space in popular mall",
+        "images": [
+            "static/img/placeholders/retail.jpg"
+        ]
+    }
+]

@@ -33,15 +33,86 @@
             box-sizing: border-box;
         }
     }
+    
+    /* Google Maps Search Styles */
+    .map-search-section {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .map-search-container {
+        display: flex;
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    #map-search-input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ced4da;
+        border-radius: 4px 0 0 4px;
+        font-size: 16px;
+        min-width: 0; /* Prevents input from overflowing */
+    }
+    
+    .map-search-btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color 0.3s;
+    }
+    
+    .map-search-btn:hover {
+        background-color: #0056b3;
+    }
+    
+    #map-container {
+        height: 300px;
+        width: 100%;
+        background-color: #e9ecef;
+        border-radius: 4px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .map-search-container {
+            flex-direction: column;
+        }
+        
+        #map-search-input {
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .map-search-btn {
+            border-radius: 4px;
+            width: 100%;
+        }
+        
+        #map-container {
+            height: 250px;
+        }
+    }
 </style>
 {% endblock %}
 
-{% block extra_js %}
-<script src="{{ url_for('static', filename='js/calendar.js') }}" defer></script>
-<script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
-{% endblock %}
-
 {% block content %}
+    <!-- Google Maps Search Section -->
+    <section class="map-search-section">
+        <h2>Find Properties by Location</h2>
+        <div class="map-search-container">
+            <input type="text" id="map-search-input" placeholder="Enter a location...">
+            <button id="map-search-button" class="map-search-btn">Search</button>
+        </div>
+        <div id="map-container"></div>
+    </section>
+
     <h1>Schedule a Property Visit</h1>
     
     {% with messages = get_flashed_messages() %}
@@ -153,12 +224,12 @@
                 {% if properties %}
                     {% for property in properties %}
                         <div class="property-card">
-                            {% if property.images is defined and property.images is not none and property.images is iterable and property.images|length > 0 %}
+                            {% if property.images is defined and property.images %}
                                 <div class="property-image-slider">
                                     {% for image in property.images %}
                                         <img src="{{ image }}" alt="{{ property.name }}" class="property-image {% if loop.index == 1 %}active{% endif %}">
                                     {% endfor %}
-                                    {% if property.images|length > 1 %}
+                                    {% if property.images|default([]) | length > 1 %}
                                         <button class="image-nav prev">&lt;</button>
                                         <button class="image-nav next">&gt;</button>
                                         <div class="image-dots">
@@ -174,7 +245,7 @@
                             <h3>{{ property.name }}</h3>
                             <p>{{ property.bedrooms }} bed, {{ property.bathrooms }} bath, {{ property.squareMeters }} sq m</p>
                             <p>{{ property.description }}</p>
-                            <p class="price">{{ property.price }}</p>
+                            <p class="price">€{{ property.price }}</p>
                             <button class="submit-button">Schedule Viewing</button>
                         </div>
                     {% endfor %}

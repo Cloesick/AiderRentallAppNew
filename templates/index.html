@@ -3,8 +3,10 @@
 {% block title %}Home - Real Estate App{% endblock %}
 
 {% block content %}
-    <h1>Welcome to My Flask App</h1>
-    
+<div class="container">
+
+    <h1>Welcome to the Real Estate App</h1>
+
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <div class="flash-messages">
@@ -14,68 +16,45 @@
         </div>
       {% endif %}
     {% endwith %}
-    
+
     <p>This is a simple real estate application to help you find your dream property.</p>
-    
+
     <!-- Popular European Destinations Slideshow -->
-    <div class="welcome-section">
+    <section class="welcome-section">
         <h2>Popular European Destinations</h2>
         <p>Explore these amazing locations and find your perfect rental property.</p>
-        
+
         <div class="destination-slideshow">
-            <div class="destination-slide" data-location="Paris, France">
-                <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=800&q=80" alt="Paris, France">
-                <div class="destination-info">
-                    <h3>Paris, France</h3>
-                    <p>Experience the romance and charm of the City of Light.</p>
-                    <a href="/rentals/destination/Paris,%20France" class="view-rentals-btn">View Rentals</a>
-                </div>
-            </div>
+            {% set destinations = [
+                {"location": "Paris, France", "img": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1200&h=800&q=80", "desc": "Experience the romance and charm of the City of Light."},
+                {"location": "Barcelona, Spain", "img": "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1200&h=800&q=80", "desc": "Discover the unique architecture and vibrant culture."},
+                {"location": "Rome, Italy", "img": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&h=800&q=80", "desc": "Walk through history in the Eternal City."},
+                {"location": "Amsterdam, Netherlands", "img": "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=1200&h=800&q=80", "desc": "Explore the beautiful canals and historic buildings."},
+                {"location": "Santorini, Greece", "img": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1200&h=800&q=80", "desc": "Relax in the stunning white and blue paradise."}
+            ] %}
             
-            <div class="destination-slide" data-location="Barcelona, Spain">
-                <img src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1200&h=800&q=80" alt="Barcelona, Spain">
+            {% for dest in destinations %}
+            <div class="destination-slide" data-location="{{ dest.location }}">
+                <img src="{{ dest.img }}" alt="{{ dest.location }}">
                 <div class="destination-info">
-                    <h3>Barcelona, Spain</h3>
-                    <p>Discover the unique architecture and vibrant culture.</p>
-                    <a href="/rentals/destination/Barcelona,%20Spain" class="view-rentals-btn">View Rentals</a>
+                    <h3>{{ dest.location }}</h3>
+                    <p>{{ dest.desc }}</p>
+                    <a href="{{ url_for('rentals_by_destination', location=dest.location|replace(' ', '%20')) }}" class="view-rentals-btn">View Rentals</a>
                 </div>
             </div>
-            
-            <div class="destination-slide" data-location="Rome, Italy">
-                <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=1200&h=800&q=80" alt="Rome, Italy">
-                <div class="destination-info">
-                    <h3>Rome, Italy</h3>
-                    <p>Walk through history in the Eternal City.</p>
-                    <a href="/rentals/destination/Rome,%20Italy" class="view-rentals-btn">View Rentals</a>
-                </div>
-            </div>
-            
-            <div class="destination-slide" data-location="Amsterdam, Netherlands">
-                <img src="https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=1200&h=800&q=80" alt="Amsterdam, Netherlands">
-                <div class="destination-info">
-                    <h3>Amsterdam, Netherlands</h3>
-                    <p>Explore the beautiful canals and historic buildings.</p>
-                    <a href="/rentals/destination/Amsterdam,%20Netherlands" class="view-rentals-btn">View Rentals</a>
-                </div>
-            </div>
-            
-            <div class="destination-slide" data-location="Santorini, Greece">
-                <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=1200&h=800&q=80" alt="Santorini, Greece">
-                <div class="destination-info">
-                    <h3>Santorini, Greece</h3>
-                    <p>Relax in the stunning white and blue paradise.</p>
-                    <a href="/rentals/destination/Santorini,%20Greece" class="view-rentals-btn">View Rentals</a>
-                </div>
-            </div>
+            {% endfor %}
         </div>
-    </div>
-    
-    <div class="welcome-section">
+    </section>
+
+    <!-- Services Section -->
+    <section class="welcome-section">
         <h2>Explore Our Services</h2>
         <p>Use the navigation menu above to browse our available properties and services.</p>
-    </div>
-    
+    </section>
+
     {% if session.get('logged_in') %}
-        <p>Welcome, {{ session.get('username') }}!</p>
+        <p class="welcome-user">Welcome, {{ session.get('username') }}!</p>
     {% endif %}
+
+</div>
 {% endblock %}

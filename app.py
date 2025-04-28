@@ -12,6 +12,7 @@ from flask import (
     Flask, 
     render_template, 
     request, 
+    current_app,
     redirect, 
     url_for, 
     flash, 
@@ -28,6 +29,29 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# 🔥 You must initialize Flask app BEFORE decorators like @app.context_processor
+app = Flask(__name__)
+@app.context_processor
+def inject_current_app():
+    return dict(current_app=current_app)
+@app.context_processor
+def inject_navigation():
+    try:
+        nav_items = [
+            {"endpoint": "rentals", "label": "Rentals"},
+            {"endpoint": "purchase", "label": "Purchase"},
+            {"endpoint": "leasing", "label": "Leasing"},
+            {"endpoint": "visiting", "label": "Schedule a Visit"},
+        ]
+        if session.get('logged_in'):
+            nav_items.append({"endpoint": "payment_methods", "label": "Payment Methods"})
+            if session.get('is_admin'):
+                nav_items.append({"endpoint": "manage_properties", "label": "Manage Properties"})
+        return dict(nav_items=nav_items)
+    except Exception as e:
+        print(f"🔴 Error in inject_navigation: {e}")
+        return {}
 
 
 # Application configuration
@@ -47,7 +71,6 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
 
 # Initialize Flask app
-app = Flask(__name__)
 app.config.from_object(Config)
 
 # Middleware to check for cookie consent
@@ -204,16 +227,24 @@ def save_visitor_tracking(tracking_data):
 # Make request and property functions available to templates
 @app.context_processor
 def inject_context():
-    return {
-        'request': request,
-        'load_properties': load_properties,
-        'session': session,
-        'get_home_icon': get_home_icon,
-        'get_carousel_images': get_carousel_images,
-        'get_destination_images': get_destination_images,
-        'get_api_config': get_api_config,
-        'require_cookie_consent': getattr(g, 'require_cookie_consent', True)
-    }
+    try:
+        return {
+            'request': request,
+            'load_properties': load_properties,
+            'session': session,
+            'get_home_icon': get_home_icon,
+            'get_carousel_images': get_carousel_images,
+            'get_destination_images': get_destination_images,
+            'get_api_config': get_api_config,
+            'current_app': current_app,  # <-- ADD THIS
+            'require_cookie_consent': getattr(g, 'require_cookie_consent', True)
+        }
+    except Exception as e:
+        print(f"🔴 Error in inject_context: {e}")
+        return {}
+
+
+
 
 # Helper function to check if file extension is allowed
 def allowed_file(filename):

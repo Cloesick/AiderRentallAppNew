@@ -154,7 +154,7 @@ function initializeAddressAutocomplete() {
     // Load Google Maps API script if not already loaded
     if (!window.google || !window.google.maps) {
         const script = document.createElement('script');
-        script.src = 'https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initGoogleMapsAutocomplete';
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDYxMiSF9xPTldtBvT26mKngUoBIgDNiUc&libraries=places&callback=initGoogleMapsAutocomplete';
         script.async = true;
         script.defer = true;
         document.head.appendChild(script);

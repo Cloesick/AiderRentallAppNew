@@ -1,90 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Real Estate App{% endblock %}</title>
+
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/calendar.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive-fix.css') }}">
     {% block extra_css %}{% endblock %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Scripts -->
     <script src="{{ url_for('static', filename='js/icon-customizer.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/cookie-consent.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/quick-search-map.js') }}" defer></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        /* Additional responsive styles */
-        @media (max-width: 768px) {
-            .page-layout {
-                flex-direction: column;
-            }
-            
-            .main-container {
-                width: 100%;
-                padding: 10px;
-            }
-            
-            .sidebar-right {
-                width: 100%;
-                padding: 10px;
-                margin-top: 20px;
-            }
-            
-            .header-container {
-                flex-direction: column;
-                padding: 10px;
-            }
-            
-            .main-nav ul {
-                flex-direction: column;
-                padding: 0;
-            }
-            
-            .main-nav li {
-                margin: 5px 0;
-            }
-            
-            .footer-container {
-                flex-direction: column;
-            }
-            
-            .footer-section {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-            
-            .property-card {
-                width: 100%;
-                max-width: 100%;
-            }
-        }
-    </style>
+
     {% block extra_js %}
     <script src="{{ url_for('static', filename='js/property-slider.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/destination-slideshow.js') }}" defer></script>
     {% endblock %}
+
+    <style>
+        @media (max-width: 768px) {
+            .page-layout {
+                flex-direction: column;
+            }
+            .main-container,
+            .sidebar-right,
+            .footer-section {
+                width: 100%;
+                padding: 10px;
+            }
+            .header-container,
+            .main-nav ul,
+            .footer-container {
+                flex-direction: column;
+            }
+            .main-nav li {
+                margin: 5px 0;
+            }
+            .property-card {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
+
     <!-- Header -->
     <header class="site-header">
         <div class="header-container">
             <div class="logo">
-                <a href="{{ url_for('home') }}" class="home-icon" id="home-icon">
+                <a href="{{ url_for('home') }}" id="home-icon">
                     <img src="{{ url_for('static', filename='images/home-icon.svg') }}" alt="Home" id="home-icon-img">
                 </a>
                 <h1>Real Estate App</h1>
             </div>
+
             <nav class="main-nav">
                 <ul>
-                    <li><a href="{{ url_for('rentals') if 'rentals' in (app.view_functions|string) else '#' }}" {% if request.path == url_for('rentals') %}class="active"{% endif %}>Rentals</a></li>
-                    <li><a href="{{ url_for('purchase') if 'purchase' in (app.view_functions|string) else '#' }}" {% if request.path == url_for('purchase') %}class="active"{% endif %}>Purchase</a></li>
-                    <li><a href="{{ url_for('leasing') if 'leasing' in (app.view_functions|string) else '#' }}" {% if request.path == url_for('leasing') %}class="active"{% endif %}>Leasing</a></li>
-                    <li><a href="{{ url_for('visiting') if 'visiting' in (app.view_functions|string) else '#' }}" {% if request.path == url_for('visiting') %}class="active"{% endif %}>Schedule a Visit</a></li>
-                    {% if session.get('logged_in') %}
-                        {% if session.get('is_admin') %}
-                            <li><a href="{{ url_for('manage_properties') if 'manage_properties' in (app.view_functions|string) else '#' }}" {% if request.path == url_for('manage_properties', _external=True) %}class="active"{% endif %}>Manage Properties</a></li>
+                    {% for item in nav_items %}
+                        {% if item.endpoint in current_app.view_functions %}
+                            <li>
+                                <a href="{{ url_for(item.endpoint) }}"
+                                   {% if request.endpoint == item.endpoint %}class="active"{% endif %}>
+                                    {{ item.label }}
+                                </a>
+                            </li>
                         {% endif %}
-                        <li><a href="{{ url_for('payment_methods') if 'payment_methods' in (app.view_functions|string) else '#' }}" {% if request.path == url_for('payment_methods', _external=True) %}class="active"{% endif %}>Payment Methods</a></li>
+                    {% endfor %}
+
+                    {% if session.get('logged_in') %}
                         <li><a href="{{ url_for('logout') }}">Logout ({{ session.get('username') }})</a></li>
                     {% else %}
                         <li><a href="{{ url_for('login') }}">Login</a></li>
@@ -94,11 +84,13 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <div class="page-layout">
-        <div class="main-container">
+        <main class="main-container">
             {% block content %}{% endblock %}
-        </div>
-        <div class="sidebar-right">
+        </main>
+
+        <aside class="sidebar-right">
             <div class="quick-search-container">
                 <h3>Quick Property Search</h3>
                 <div class="search-form">
@@ -112,13 +104,13 @@
                 <div class="search-results">
                     <h4>Nearby Properties <span id="results-count">(0)</span></h4>
                     <div id="property-results" class="property-results-list">
-                        <p class="no-results">Search for a location to see properties</p>
+                        <p class="no-results">Search for a location to see properties.</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
     </div>
-    
+
     <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-container">
@@ -137,7 +129,7 @@
                 <h3>Follow Us</h3>
                 <div class="social-links">
                     <a href="https://twitter.com/realestate" target="_blank" class="social-icon">
-                        <img src="{{ url_for('static', filename='images/twitter-icon.svg') }}" alt="X (Twitter)">
+                        <img src="{{ url_for('static', filename='images/twitter-icon.svg') }}" alt="Twitter">
                     </a>
                     <a href="https://facebook.com/realestate" target="_blank" class="social-icon">
                         <img src="{{ url_for('static', filename='images/facebook-icon.svg') }}" alt="Facebook">
@@ -155,5 +147,6 @@
             <p>&copy; 2025 Real Estate App. All rights reserved.</p>
         </div>
     </footer>
+
 </body>
 </html>

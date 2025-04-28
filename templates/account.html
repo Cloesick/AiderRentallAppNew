@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5">
     <h1>My Account</h1>
-    
+
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <div class="flash-messages">
@@ -15,19 +15,31 @@
         </div>
       {% endif %}
     {% endwith %}
-    
+
     <div class="row mt-4">
         <div class="col-md-3">
             <div class="list-group">
-                <a href="{{ url_for('account') }}" class="list-group-item list-group-item-action active">Account Overview</a>
-                <a href="{{ url_for('payment_methods') }}" class="list-group-item list-group-item-action">Payment Methods</a>
-                <a href="#" class="list-group-item list-group-item-action">Saved Properties</a>
-                <a href="#" class="list-group-item list-group-item-action">Notifications</a>
-                <a href="#" class="list-group-item list-group-item-action">Privacy Settings</a>
+                {% set sidebar_links = [
+                    {"endpoint": "account", "label": "Account Overview"},
+                    {"endpoint": "payment_methods", "label": "Payment Methods"},
+                    {"endpoint": "saved_properties", "label": "Saved Properties"},
+                    {"endpoint": "notifications", "label": "Notifications"},
+                    {"endpoint": "privacy_settings", "label": "Privacy Settings"}
+                ] %}
+                
+                {% for link in sidebar_links %}
+                    {% if link.endpoint in current_app.view_functions %}
+                        <a href="{{ url_for(link.endpoint) }}"
+                           class="list-group-item list-group-item-action {% if request.endpoint == link.endpoint %}active{% endif %}">
+                            {{ link.label }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
-        
+
         <div class="col-md-9">
+            <!-- Account Information Card -->
             <div class="card">
                 <div class="card-header">
                     <h5>Account Information</h5>
@@ -48,22 +60,22 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="form-group mb-3">
                             <label for="email">Email Address</label>
                             <input type="email" class="form-control" id="email" value="{{ session.get('email', '') }}" readonly>
                         </div>
-                        
+
                         <div class="form-group mb-3">
                             <label for="phone">Phone Number</label>
                             <input type="tel" class="form-control" id="phone" value="{{ session.get('phone', '') }}">
                         </div>
-                        
+
                         <div class="form-group mb-3">
                             <label for="address">Address</label>
                             <input type="text" class="form-control" id="address" value="{{ session.get('address', '') }}">
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
@@ -78,12 +90,13 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary">Update Information</button>
                     </form>
                 </div>
             </div>
-            
+
+            <!-- Change Password Card -->
             <div class="card mt-4">
                 <div class="card-header">
                     <h5>Change Password</h5>
@@ -94,22 +107,23 @@
                             <label for="current-password">Current Password</label>
                             <input type="password" class="form-control" id="current-password">
                         </div>
-                        
+
                         <div class="form-group mb-3">
                             <label for="new-password">New Password</label>
                             <input type="password" class="form-control" id="new-password">
                         </div>
-                        
+
                         <div class="form-group mb-3">
                             <label for="confirm-password">Confirm New Password</label>
                             <input type="password" class="form-control" id="confirm-password">
                         </div>
-                        
+
                         <button type="submit" class="btn btn-primary">Change Password</button>
                     </form>
                 </div>
             </div>
-            
+
+            <!-- Recent Activity Card -->
             <div class="card mt-4">
                 <div class="card-header">
                     <h5>Recent Activity</h5>
@@ -125,22 +139,23 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ datetime.now().strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ datetime.utcnow().strftime('%Y-%m-%d') }}</td>
                                     <td>Account login</td>
                                 </tr>
-                                <!-- More activities would be populated dynamically -->
+                                <!-- Future dynamic rows here -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Account Info Form
+        // Handle Account Info Form
         const accountInfoForm = document.getElementById('account-info-form');
         if (accountInfoForm) {
             accountInfoForm.addEventListener('submit', function(e) {
@@ -155,13 +170,12 @@
                     country: document.getElementById('country').value
                 };
                 
-                // In a real app, you would send this data to the server
                 console.log('Updating account info:', formData);
                 alert('Account information updated successfully!');
             });
         }
-        
-        // Change Password Form
+
+        // Handle Change Password Form
         const changePasswordForm = document.getElementById('change-password-form');
         if (changePasswordForm) {
             changePasswordForm.addEventListener('submit', function(e) {
@@ -172,20 +186,17 @@
                 const confirmPassword = document.getElementById('confirm-password').value;
                 
                 if (!currentPassword || !newPassword || !confirmPassword) {
-                    alert('Please fill in all password fields');
+                    alert('Please fill in all password fields.');
                     return;
                 }
                 
                 if (newPassword !== confirmPassword) {
-                    alert('New passwords do not match');
+                    alert('New passwords do not match.');
                     return;
                 }
                 
-                // In a real app, you would send this data to the server
                 console.log('Changing password');
                 alert('Password changed successfully!');
-                
-                // Clear form
                 changePasswordForm.reset();
             });
         }

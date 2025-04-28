@@ -1,0 +1,22 @@
+{
+    "interests": {},
+    "locations": {},
+    "property_types": {},
+    "price_range": {
+        "min": 0,
+        "max": 0,
+        "count": 0
+    },
+    "visits": [
+        {
+            "timestamp": "2025-04-28 13:54:21",
+            "action": "page_view",
+            "page": "/login"
+        },
+        {
+            "timestamp": "2025-04-28 13:58:50",
+            "action": "page_view",
+            "page": "/login"
+        }
+    ]
+}

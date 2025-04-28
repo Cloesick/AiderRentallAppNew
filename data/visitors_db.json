@@ -1,4 +1,1233 @@
 {
-    "visitors": [],
-    "last_updated": ""
+    "visitors": [
+        {
+            "visitor_id": "0c8f4818-a77e-4b87-ad2f-66f936591081",
+            "first_seen": "2025-04-28 12:29:50",
+            "last_seen": "2025-04-28 12:29:59",
+            "user_id": null,
+            "page_views": 4,
+            "actions": [
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 12:29:59",
+                    "data": {
+                        "page": "/login",
+                        "referrer": "http://127.0.0.1:5000/",
+                        "timestamp": "2025-04-28T10:29:59.131Z",
+                        "interests": [
+                            "security",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 12:29:57",
+                    "data": {
+                        "page": "visiting"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 12:29:55",
+                    "data": {
+                        "page": "leasing"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 12:29:52",
+                    "data": {
+                        "page": "purchase"
+                    }
+                },
+                {
+                    "action": "cookie_preferences",
+                    "timestamp": "2025-04-28 12:29:50",
+                    "data": {}
+                }
+            ],
+            "interests": [
+                "security",
+                "rent",
+                "visit",
+                "schedule",
+                "contact"
+            ],
+            "locations_viewed": [],
+            "property_types_viewed": []
+        },
+        {
+            "visitor_id": "0676f29e-e520-45da-bad6-ece9dd238bac",
+            "first_seen": "2025-04-28 13:11:46",
+            "last_seen": "2025-04-28 13:16:58",
+            "user_id": null,
+            "page_views": 4,
+            "actions": [
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:16:58",
+                    "data": {
+                        "page": "/",
+                        "referrer": "",
+                        "timestamp": "2025-04-28T11:16:58.205Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:15:10",
+                    "data": {
+                        "page": "/",
+                        "referrer": "",
+                        "timestamp": "2025-04-28T11:15:10.247Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:15:07",
+                    "data": {
+                        "page": "/",
+                        "referrer": "",
+                        "timestamp": "2025-04-28T11:15:07.910Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:11:46",
+                    "data": {
+                        "page": "/",
+                        "referrer": "",
+                        "timestamp": "2025-04-28T11:11:46.197Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                }
+            ],
+            "interests": [
+                "paris",
+                "historic",
+                "rent",
+                "visit",
+                "schedule",
+                "contact"
+            ],
+            "locations_viewed": [],
+            "property_types_viewed": []
+        },
+        {
+            "visitor_id": "ca70c3e0-1b2b-408b-986d-bfa3b6cec199",
+            "first_seen": "2025-04-28 13:52:23",
+            "last_seen": "2025-04-28 13:52:55",
+            "user_id": null,
+            "page_views": 3,
+            "actions": [
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:52:55",
+                    "data": {
+                        "page": "/login",
+                        "referrer": "http://127.0.0.1:5000/login",
+                        "timestamp": "2025-04-28T11:52:55.755Z",
+                        "interests": [
+                            "security",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:52:30",
+                    "data": {
+                        "page": "/login",
+                        "referrer": "http://127.0.0.1:5000/",
+                        "timestamp": "2025-04-28T11:52:30.161Z",
+                        "interests": [
+                            "security",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:52:23",
+                    "data": {
+                        "page": "/",
+                        "referrer": "",
+                        "timestamp": "2025-04-28T11:52:23.059Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                }
+            ],
+            "interests": [
+                "paris",
+                "historic",
+                "rent",
+                "visit",
+                "schedule",
+                "contact",
+                "security"
+            ],
+            "locations_viewed": [],
+            "property_types_viewed": []
+        },
+        {
+            "visitor_id": "8073a0c7-4dfa-4e26-8844-d76a45cdd7fb",
+            "first_seen": "2025-04-28 13:54:10",
+            "last_seen": "2025-04-28 13:58:50",
+            "user_id": null,
+            "page_views": 5,
+            "actions": [
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:58:50",
+                    "data": {
+                        "page": "/login",
+                        "referrer": "http://10.252.0.166:5000/",
+                        "timestamp": "2025-04-28T11:58:50.461Z",
+                        "interests": [
+                            "security",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:54:21",
+                    "data": {
+                        "page": "/login",
+                        "referrer": "http://10.252.0.166:5000/",
+                        "timestamp": "2025-04-28T11:54:21.526Z",
+                        "interests": [
+                            "security",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:54:19",
+                    "data": {
+                        "page": "visiting"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:54:18",
+                    "data": {
+                        "page": "leasing"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 13:54:17",
+                    "data": {
+                        "page": "purchase"
+                    }
+                },
+                {
+                    "action": "cookie_preferences",
+                    "timestamp": "2025-04-28 13:54:10",
+                    "data": {}
+                }
+            ],
+            "interests": [
+                "security",
+                "rent",
+                "visit",
+                "schedule",
+                "contact"
+            ],
+            "locations_viewed": [],
+            "property_types_viewed": []
+        },
+        {
+            "visitor_id": "8013bdf8-6620-4bfc-8207-c16db3718dc5",
+            "first_seen": "2025-04-28 15:25:15",
+            "last_seen": "2025-04-28 15:51:50",
+            "user_id": null,
+            "page_views": 21,
+            "actions": [
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:51:50",
+                    "data": {
+                        "page": "/",
+                        "referrer": "",
+                        "timestamp": "2025-04-28T13:51:50.302Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:26:12",
+                    "data": {
+                        "page": "/",
+                        "referrer": "http://127.0.0.1:5000/login",
+                        "timestamp": "2025-04-28T13:26:12.712Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:26:11",
+                    "data": {
+                        "page": "/",
+                        "referrer": "http://127.0.0.1:5000/login",
+                        "timestamp": "2025-04-28T13:26:11.344Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:26:05",
+                    "data": {
+                        "page": "/",
+                        "referrer": "http://127.0.0.1:5000/login",
+                        "timestamp": "2025-04-28T13:26:05.586Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:36",
+                    "data": {
+                        "page": "/login",
+                        "referrer": "http://127.0.0.1:5000/visiting",
+                        "timestamp": "2025-04-28T13:25:36.125Z",
+                        "interests": [
+                            "security",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:35",
+                    "data": {
+                        "page": "/visiting",
+                        "referrer": "http://127.0.0.1:5000/leasing",
+                        "timestamp": "2025-04-28T13:25:35.005Z",
+                        "interests": [
+                            "house",
+                            "townhouse",
+                            "industrial",
+                            "commercial",
+                            "residential",
+                            "beachfront",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:34",
+                    "data": {
+                        "page": "visiting"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:28",
+                    "data": {
+                        "page": "/leasing",
+                        "referrer": "http://127.0.0.1:5000/purchase",
+                        "timestamp": "2025-04-28T13:25:28.145Z",
+                        "interests": [
+                            "house",
+                            "office",
+                            "retail",
+                            "industrial",
+                            "warehouse",
+                            "commercial",
+                            "downtown",
+                            "parking",
+                            "security",
+                            "elevator",
+                            "rent",
+                            "lease",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:28",
+                    "data": {
+                        "page": "leasing"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:27",
+                    "data": {
+                        "page": "/purchase",
+                        "referrer": "http://127.0.0.1:5000/rentals",
+                        "timestamp": "2025-04-28T13:25:27.659Z",
+                        "interests": [
+                            "house",
+                            "condo",
+                            "villa",
+                            "townhouse",
+                            "downtown",
+                            "pool",
+                            "parking",
+                            "elevator",
+                            "terrace",
+                            "luxury",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:27",
+                    "data": {
+                        "page": "purchase"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:27",
+                    "data": {
+                        "page": "/rentals",
+                        "referrer": "http://127.0.0.1:5000/visiting",
+                        "timestamp": "2025-04-28T13:25:27.010Z",
+                        "interests": [
+                            "apartment",
+                            "house",
+                            "condo",
+                            "studio",
+                            "parking",
+                            "elevator",
+                            "terrace",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:26",
+                    "data": {
+                        "page": "rentals"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:25",
+                    "data": {
+                        "page": "/visiting",
+                        "referrer": "http://127.0.0.1:5000/leasing",
+                        "timestamp": "2025-04-28T13:25:25.149Z",
+                        "interests": [
+                            "house",
+                            "townhouse",
+                            "industrial",
+                            "commercial",
+                            "residential",
+                            "beachfront",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:25",
+                    "data": {
+                        "page": "visiting"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:24",
+                    "data": {
+                        "page": "/leasing",
+                        "referrer": "http://127.0.0.1:5000/purchase",
+                        "timestamp": "2025-04-28T13:25:24.284Z",
+                        "interests": [
+                            "house",
+                            "office",
+                            "retail",
+                            "industrial",
+                            "warehouse",
+                            "commercial",
+                            "downtown",
+                            "parking",
+                            "security",
+                            "elevator",
+                            "rent",
+                            "lease",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:24",
+                    "data": {
+                        "page": "leasing"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:23",
+                    "data": {
+                        "page": "/purchase",
+                        "referrer": "http://127.0.0.1:5000/rentals",
+                        "timestamp": "2025-04-28T13:25:23.378Z",
+                        "interests": [
+                            "house",
+                            "condo",
+                            "villa",
+                            "townhouse",
+                            "downtown",
+                            "pool",
+                            "parking",
+                            "elevator",
+                            "terrace",
+                            "luxury",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:23",
+                    "data": {
+                        "page": "purchase"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:18",
+                    "data": {
+                        "page": "/rentals",
+                        "referrer": "http://127.0.0.1:5000/",
+                        "timestamp": "2025-04-28T13:25:18.029Z",
+                        "interests": [
+                            "apartment",
+                            "house",
+                            "condo",
+                            "studio",
+                            "parking",
+                            "elevator",
+                            "terrace",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 988,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:25:17",
+                    "data": {
+                        "page": "rentals"
+                    }
+                },
+                {
+                    "action": "cookie_preferences",
+                    "timestamp": "2025-04-28 15:25:15",
+                    "data": {}
+                }
+            ],
+            "interests": [
+                "apartment",
+                "house",
+                "condo",
+                "studio",
+                "parking",
+                "elevator",
+                "terrace",
+                "rent",
+                "visit",
+                "schedule",
+                "contact",
+                "villa",
+                "townhouse",
+                "downtown",
+                "pool",
+                "luxury",
+                "office",
+                "retail",
+                "industrial",
+                "warehouse",
+                "commercial",
+                "security",
+                "lease",
+                "residential",
+                "beachfront",
+                "historic",
+                "paris"
+            ],
+            "locations_viewed": [],
+            "property_types_viewed": []
+        },
+        {
+            "visitor_id": "f18b6fa5-aa6d-4f99-87c0-b33fc5a008d1",
+            "first_seen": "2025-04-28 15:26:26",
+            "last_seen": "2025-04-28 15:26:26",
+            "user_id": null,
+            "page_views": 0,
+            "actions": [
+                {
+                    "action": "cookie_preferences",
+                    "timestamp": "2025-04-28 15:26:26",
+                    "data": {}
+                }
+            ],
+            "interests": [],
+            "locations_viewed": [],
+            "property_types_viewed": []
+        },
+        {
+            "visitor_id": "f269c69b-1b8a-4228-8671-a39eaf51b23c",
+            "first_seen": "2025-04-28 15:58:11",
+            "last_seen": "2025-04-28 16:01:49",
+            "user_id": null,
+            "page_views": 11,
+            "actions": [
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 16:01:49",
+                    "data": {
+                        "page": "/purchase",
+                        "referrer": "http://127.0.0.1:5000/",
+                        "timestamp": "2025-04-28T14:01:49.791Z",
+                        "interests": [
+                            "house",
+                            "condo",
+                            "villa",
+                            "townhouse",
+                            "downtown",
+                            "pool",
+                            "parking",
+                            "elevator",
+                            "terrace",
+                            "luxury",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 16:01:49",
+                    "data": {
+                        "page": "purchase"
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 16:01:21",
+                    "data": {
+                        "page": "/",
+                        "referrer": "http://127.0.0.1:5000/rentals",
+                        "timestamp": "2025-04-28T14:01:21.526Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "cookie_preferences",
+                    "timestamp": "2025-04-28 15:58:31",
+                    "data": {}
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:58:26",
+                    "data": {
+                        "page": "/",
+                        "referrer": "http://127.0.0.1:5000/rentals",
+                        "timestamp": "2025-04-28T13:58:26.359Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:58:24",
+                    "data": {
+                        "page": "/rentals",
+                        "referrer": "http://127.0.0.1:5000/login",
+                        "timestamp": "2025-04-28T13:58:24.580Z",
+                        "interests": [
+                            "apartment",
+                            "house",
+                            "condo",
+                            "studio",
+                            "parking",
+                            "elevator",
+                            "terrace",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:58:17",
+                    "data": {
+                        "page": "/login",
+                        "referrer": "http://127.0.0.1:5000/leasing",
+                        "timestamp": "2025-04-28T13:58:17.527Z",
+                        "interests": [
+                            "security",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:58:16",
+                    "data": {
+                        "page": "/leasing",
+                        "referrer": "http://127.0.0.1:5000/visiting",
+                        "timestamp": "2025-04-28T13:58:16.579Z",
+                        "interests": [
+                            "house",
+                            "office",
+                            "retail",
+                            "industrial",
+                            "warehouse",
+                            "commercial",
+                            "downtown",
+                            "parking",
+                            "security",
+                            "elevator",
+                            "rent",
+                            "lease",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:58:15",
+                    "data": {
+                        "page": "/visiting",
+                        "referrer": "http://127.0.0.1:5000/leasing",
+                        "timestamp": "2025-04-28T13:58:15.315Z",
+                        "interests": [
+                            "house",
+                            "townhouse",
+                            "industrial",
+                            "commercial",
+                            "residential",
+                            "beachfront",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:58:13",
+                    "data": {
+                        "page": "/leasing",
+                        "referrer": "http://127.0.0.1:5000/purchase",
+                        "timestamp": "2025-04-28T13:58:13.656Z",
+                        "interests": [
+                            "house",
+                            "office",
+                            "retail",
+                            "industrial",
+                            "warehouse",
+                            "commercial",
+                            "downtown",
+                            "parking",
+                            "security",
+                            "elevator",
+                            "rent",
+                            "lease",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:58:12",
+                    "data": {
+                        "page": "/purchase",
+                        "referrer": "http://127.0.0.1:5000/rentals",
+                        "timestamp": "2025-04-28T13:58:12.505Z",
+                        "interests": [
+                            "house",
+                            "condo",
+                            "villa",
+                            "townhouse",
+                            "downtown",
+                            "pool",
+                            "parking",
+                            "elevator",
+                            "terrace",
+                            "luxury",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 15:58:11",
+                    "data": {
+                        "page": "/rentals",
+                        "referrer": "http://127.0.0.1:5000/",
+                        "timestamp": "2025-04-28T13:58:11.212Z",
+                        "interests": [
+                            "apartment",
+                            "house",
+                            "condo",
+                            "studio",
+                            "parking",
+                            "elevator",
+                            "terrace",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                }
+            ],
+            "interests": [
+                "apartment",
+                "house",
+                "condo",
+                "studio",
+                "parking",
+                "elevator",
+                "terrace",
+                "rent",
+                "visit",
+                "schedule",
+                "contact",
+                "villa",
+                "townhouse",
+                "downtown",
+                "pool",
+                "luxury",
+                "office",
+                "retail",
+                "industrial",
+                "warehouse",
+                "commercial",
+                "security",
+                "lease",
+                "residential",
+                "beachfront",
+                "historic",
+                "paris"
+            ],
+            "locations_viewed": [],
+            "property_types_viewed": []
+        },
+        {
+            "visitor_id": "03accafa-4cdd-4a69-b305-ae3828b20ad5",
+            "first_seen": "2025-04-28 17:05:26",
+            "last_seen": "2025-04-28 17:05:26",
+            "user_id": null,
+            "page_views": 1,
+            "actions": [
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 17:05:26",
+                    "data": {
+                        "page": "/",
+                        "referrer": "",
+                        "timestamp": "2025-04-28T15:05:26.017Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                }
+            ],
+            "interests": [
+                "paris",
+                "historic",
+                "rent",
+                "visit",
+                "schedule",
+                "contact"
+            ],
+            "locations_viewed": [],
+            "property_types_viewed": []
+        }
+    ],
+    "last_updated": "2025-04-28 17:05:26"
 }
