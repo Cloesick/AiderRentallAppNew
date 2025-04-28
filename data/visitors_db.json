@@ -1188,10 +1188,34 @@
         {
             "visitor_id": "03accafa-4cdd-4a69-b305-ae3828b20ad5",
             "first_seen": "2025-04-28 17:05:26",
-            "last_seen": "2025-04-28 17:05:26",
+            "last_seen": "2025-04-28 17:16:38",
             "user_id": null,
-            "page_views": 1,
+            "page_views": 2,
             "actions": [
+                {
+                    "action": "page_view",
+                    "timestamp": "2025-04-28 17:16:38",
+                    "data": {
+                        "page": "/",
+                        "referrer": "",
+                        "timestamp": "2025-04-28T15:16:38.180Z",
+                        "interests": [
+                            "paris",
+                            "historic",
+                            "rent",
+                            "visit",
+                            "schedule",
+                            "contact"
+                        ],
+                        "device": {
+                            "screen_width": 1920,
+                            "screen_height": 1080,
+                            "viewport_width": 1865,
+                            "viewport_height": 954,
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0"
+                        }
+                    }
+                },
                 {
                     "action": "page_view",
                     "timestamp": "2025-04-28 17:05:26",
@@ -1229,5 +1253,5 @@
             "property_types_viewed": []
         }
     ],
-    "last_updated": "2025-04-28 17:05:26"
+    "last_updated": "2025-04-28 17:16:38"
 }
