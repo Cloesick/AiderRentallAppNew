@@ -1,0 +1,142 @@
+name: Cypress Tests with Windsurf Auto-Fix
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run Cypress tests
+        id: cypress
+        continue-on-error: true
+        run: npm run test:learn
+      
+      - name: Report to Windsurf
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node .windsurf/scripts/github-windsurf-reporter.js \
+            "cypress-tests" \
+            "cypress/insights/latest.json" \
+            "cypress" \
+            "${{ steps.cypress.outcome }}"
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-results
+          path: |
+            cypress/insights/
+            cypress/screenshots/
+            cypress/videos/
+          retention-days: 30
+      
+      - name: Upload Windsurf notification
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windsurf-notification
+          path: .windsurf/notifications/github-actions-failure.json
+          retention-days: 7
+      
+      - name: Fail if tests failed
+        if: steps.cypress.outcome == 'failure'
+        run: exit 1
+
+  notify-windsurf:
+    runs-on: ubuntu-latest
+    needs: cypress-tests
+    if: failure()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download notification
+        uses: actions/download-artifact@v4
+        with:
+          name: windsurf-notification
+          path: .windsurf/notifications/
+      
+      - name: Create issue for failures
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const notification = JSON.parse(
+              fs.readFileSync('.windsurf/notifications/github-actions-failure.json', 'utf8')
+            );
+            
+            const failures = notification.failures.slice(0, 10);
+            const body = `## 🔴 Automated Test Failures Detected
+            
+            **Workflow:** ${notification.github.workflow}
+            **Run:** [#${notification.github.run_number}](${notification.github.run_url})
+            **Failed Tests:** ${notification.summary.failed}/${notification.summary.total}
+            **Pass Rate:** ${notification.summary.pass_rate}%
+            
+            ### Failed Tests
+            ${failures.map(f => `- **${f.test}**
+              - Pattern: \`${f.pattern}\`
+              - Recommended Fix: ${f.recommended_fix}
+              - Error: \`\`\`
+            ${f.error.substring(0, 200)}...
+            \`\`\``).join('\n\n')}
+            
+            ${notification.summary.failed > 10 ? `\n_...and ${notification.summary.failed - 10} more failures_\n` : ''}
+            
+            ### 🤖 Windsurf Auto-Fix Available
+            
+            These failures have been sent to Windsurf for automatic resolution.
+            
+            **To fix locally:**
+            1. Pull latest code
+            2. Open Windsurf
+            3. Say: "Fix GitHub Actions failures"
+            4. Verify: \`npm run test:learn\`
+            5. Push fixes
+            
+            [View full run →](${notification.github.run_url})
+            `;
+            
+            // Check if issue already exists for this run
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'automated-test-failure'
+            });
+            
+            const existingIssue = issues.data.find(issue => 
+              issue.title.includes(`Run #${notification.github.run_number}`)
+            );
+            
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🔴 Test Failures - Run #${notification.github.run_number}`,
+                body: body,
+                labels: ['automated-test-failure', 'windsurf-auto-fix']
+              });
+            }
